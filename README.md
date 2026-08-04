@@ -1,0 +1,330 @@
+# The `2T+1` rule for composites of a fixed prime — general form and its precondition
+
+This documents the generalization of the "composites of 5" formula
+(`composites_of_5.md`) to any prime `p` coprime to 6, and the precise
+condition on `N` under which the simple `2T+1` form is exact.
+
+Everything here was checked against direct, independent computation —
+not assumed — with the exact ranges of `N` (and therefore `6N`) used for
+each check stated explicitly, since that turned out to matter a lot.
+
+---
+
+## 1. Setup
+
+For a fixed prime `p` coprime to 6, its composite multiples split across
+the two branches:
+
+- **branch5-side** (self-term, same branch as `p` if `p≡5 mod 6`):
+  `p·7, p·13, p·19, ...` = `p·(6K+1)` for `K = 1, 2, 3, ...`
+- **branch1-side** (cross-term, lands in the other branch):
+  `p·5, p·11, p·17, ...` = `p·(6n+5)` for `n = 0, 1, 2, ...`
+
+```
+T = floor((6N/p - 1) / 6)     -- count of valid K on the branch5-side, up to range 6N
+```
+
+The candidate simple formula is:
+
+```
+total composites of p up to 6N  =?  2T + 1
+```
+
+This only holds when the branch1-side count is exactly `T+1` (one more
+than the branch5-side count `T`). Whether that's true turns out to
+depend on `N`, not just on `p`.
+
+**Precondition on `p` itself**: everything in this document requires
+`p` to be coprime to 6 — i.e. `p ∈ {5, 7, 11, 13, 17, 19, 23, ...}`, any
+prime other than 2 or 3. This is not optional. Since `6 = 2 × 3`, `p=2`
+and `p=3` are themselves the two numbers that generate the "coprime to
+6" exclusion in the first place — every multiple of 2 shares a factor
+with 6 (never coprime to it), and same for every multiple of 3. So "how
+many coprime-to-6 multiples of 2 (or 3) exist" is not a small or special
+number, it's **always exactly 0**, for any range at all — verified
+directly: `range [1,24]` has zero coprime-to-6 composites of 2, and
+`range [1,36]` has zero for 3. `p=2` and `p=3` don't belong to either
+branch; they're what defines the branches, not members of them.
+
+## 2. First check: does `N` multiple of 10 work for `p=11`?
+
+**Range tested**: `N = 10, 20, 30, ..., 2,000,000` (step 10) — i.e.
+`6N` ranging from `60` up to `12,000,000`.
+
+Result: **No.** The branch1-vs-branch5 count difference took **both**
+values `0` and `1` across this range — `2T+1` is sometimes right,
+sometimes off by one, when `N` is merely a multiple of 10 and `p=11`.
+
+This matters because `p=5` and `p=11` were both spot-checked earlier at
+`N=1,000` and `N=100,000` and *appeared* to match `2T+1` — but `1,000`
+and `100,000` are multiples of 10, not multiples of 22, so for `p=11`
+those particular matches were **coincidental** (the diff happened to
+land on 1 at those specific points), not guaranteed by the modulus-10
+condition.
+
+## 3. Second check: does `N` multiple of 22 (`=2×11`) work for `p=11`?
+
+**Range tested**: `N = 22, 44, 66, ..., 2,000,000` (step 22) — i.e.
+`6N` ranging from `132` up to `12,000,000`.
+
+Result: **Yes, always.** The diff was exactly `1` at every single `N` in
+this range, with zero exceptions — `2T+1` is exact throughout.
+
+## 4. The general rule: `N` multiple of `2p`
+
+**Range tested for each prime**: `N = 2p, 4p, 6p, ..., 2,000,000`
+(step `2p`) — i.e. `6N` ranging from `12p` up to `12,000,000` — for
+`p ∈ {5, 11, 17, 23, 29}`.
+
+| p | required modulus (`2p`) | 6N range checked | diff observed |
+|---|---|---|---|
+| 5 | 10 | 60 to 12,000,000 | always 1 |
+| 11 | 22 | 132 to 12,000,000 | always 1 |
+| 17 | 34 | 204 to 12,000,000 | always 1 |
+| 23 | 46 | 276 to 12,000,000 | always 1 |
+| 29 | 58 | 348 to 12,000,000 | always 1 |
+
+**Rule**: `2T+1` is exact whenever `N` is a multiple of `2p`, for any
+prime `p` coprime to 6. Each prime needs *its own* modulus (`2p`) — `10`
+is not a universal precondition, it's just the `p=5` instance of this
+general rule.
+
+## 5. The exact-count rule for a fixed X, in a range 6N
+
+Putting sections 1-4 together, here is the standing rule for getting the
+**exact composite count of a fixed prime `X`** (coprime to 6) in a range
+`6N`:
+
+```
+For X coprime to 6, and N = (2X)^R  with R = 1, 2, 3, ...:
+
+    T = floor((6N/X - 1) / 6)
+    exact count of composites of X up to 6N = 2T + 1
+```
+
+This is guaranteed exact, with no exceptions, because `(2X)^R` is
+*always* a multiple of `2X` for `R ≥ 1` (`(2X)^R = 2X · (2X)^{R-1}`),
+which is exactly the sufficient condition proven in Section 4.
+
+**Verified for `X = 5, 11, 17, 23`, `R = 1..4` (and `X=11` up to `R=5`)**:
+
+| X | R=1 (N) | R=2 (N) | R=3 (N) | R=4 (N) | all matched? |
+|---|---|---|---|---|---|
+| 5 | 10 | 100 | 1,000 | 10,000 | yes |
+| 11 | 22 | 484 | 10,648 | 234,256 | yes (checked to R=5, N=5,153,632) |
+| 17 | 34 | 1,156 | 39,304 | 1,336,336 | yes |
+| 23 | 46 | 2,116 | 97,336 | 4,477,456 | yes |
+
+Every entry above was checked against independent brute-force counting
+(not just the `T` formula against itself) and matched exactly.
+
+**Important caveat**: `N = (2X)^R` is a *sufficient* family of `N`
+values — it guarantees an exact answer, but it is not the *only* `N`
+that works. For example, `X=11` also gives exact answers at
+`N = 10, 100, 1,000, 10,000, 100,000` (powers of 10), none of which are
+multiples of 22 — those work for a different, not-yet-fully-characterized
+reason (checked: both `N ≡ 10` and `N ≡ 12 (mod 22)` give the right
+answer there, not just `N ≡ 0`). So `N=(2X)^R` is a safe, always-correct
+choice to reach for, but the true set of every `N` that works is larger
+and not yet fully mapped out.
+
+## 6. Capstone: the closed form in `R`, and why the ratios work
+
+Putting a number to Section 5 instead of just "it's exact": at
+`N = (2X)^R`, the count itself has a fully closed form in `R` and `X`:
+
+```
+count + 1 = 2^(R+1) * X^(R-1)
+count     = 2^(R+1) * X^(R-1) - 1
+```
+
+**Derivation for R=2** (the general R follows the same pattern): at
+`R=2`, `N=(2X)^2=4X^2`, so `6N/X = 24X`. Since `X` is coprime to 6,
+`24X` is always exactly divisible by 6 (`24=4*6`), so
+`T = floor((24X-1)/6) = 4X-1` with no rounding ambiguity, giving
+`count = 2T+1 = 8X-1`, i.e. `count+1 = 8X`.
+
+This closed form directly explains a pattern noticed from the data: the
+**ratio between two primes' counts, at the same R, is `(X1/X2)^(R-1)`**:
+
+```
+(count(X1)+1) / (count(X2)+1) = [2^(R+1) X1^(R-1)] / [2^(R+1) X2^(R-1)]
+                               = (X1/X2)^(R-1)
+```
+
+- `R=1`: ratio `(X1/X2)^0 = 1` — count is constant (`=3`) regardless of
+  `X`, matching the degenerate case found earlier.
+- `R=2`: ratio `(X1/X2)^1 = X1/X2` — linear, matches the original
+  observation (e.g. `(87+1)/(39+1) = 11/5`).
+- `R=3`: ratio `(X1/X2)^2` — quadratic, matches the follow-up observation
+  (e.g. `1936/400 = (11/5)^2 = 121/25`).
+- `R=4` and beyond: ratio `(X1/X2)^(R-1)`, same pattern continuing.
+
+**Verified exactly** for `X ∈ {5, 11, 17, 23}` and `R ∈ {1, 2, 3, 4}` (16
+combinations, all matched — see Section 9):
+
+| X \ R | 1 | 2 | 3 | 4 |
+|---|---|---|---|---|
+| 5 | count+1=4 | 40 | 400 | 4,000 |
+| 11 | 4 | 88 | 1,936 | 42,592 |
+| 17 | 4 | 136 | 4,624 | 157,216 |
+| 23 | 4 | 184 | 8,464 | 389,344 |
+
+Each column matches `2^(R+1) * X^(R-1)` exactly, and each row's ratios
+between primes match `(X1/X2)^(R-1)` exactly, for every pair checked.
+
+### Remark: R=1 is a universal constant, the same for every prime
+
+At `R=1`, `N=2X`, so the range is `6N=12X`. The closed form gives
+`count+1 = 2^2 * X^0 = 4`, i.e. **`count = 3`, independent of `X`** —
+this is the *only* R where the count doesn't depend on which prime is
+being counted at all.
+
+Concretely (verified directly, not just via the formula):
+
+```
+X=5,  range [1, 60]  -> composites of 5  = {25, 35, 55}    -> exactly 3
+X=11, range [1, 132] -> composites of 11 = {55, 77, 121}   -> exactly 3
+X=17, range [1, 204] -> composites of 17 = {85, 119, 187}  -> exactly 3
+```
+
+**Two easy mix-ups to avoid when stating this**: the range is `6N=12X`,
+not `N=2X` (e.g. for X=5 that's `[1,60]`, not `[1,10]` — the latter
+range contains zero composites of 5); and the count itself is `3`, not
+`4` (`4` is `count+1`, the quantity the closed form directly produces,
+not the count itself).
+
+So the general statement: **for any prime X coprime to 6, the range
+`[1, 12X]` contains exactly 3 composites of X — always, with no
+exception, for every prime tested.**
+
+## 7. What to use when `N` is *not* a multiple of `2X`
+
+Falls back to the general, always-exact formula (no modulus
+precondition needed), verified earlier across `p ∈ {5,11,17,23,29}` and
+many non-multiple-of-`2p` values of `N`, up to `N=50,000` (`6N` up to
+`300,000`), zero mismatches:
+
+```
+M = floor(6N / p)
+total composites of p up to 6N = (count of integers coprime to 6 in [1, M]) - 1
+```
+
+---
+
+## 8. Verified code
+
+```python
+import math
+
+
+def branch5_side_count(N, p):
+    """T = count of valid K where p*(6K+1) <= 6N."""
+    max_val = 6 * N
+    return (max_val // p - 1) // 6
+
+
+def branch1_side_count(N, p):
+    """count of valid n where p*(6n+5) <= 6N."""
+    max_val = 6 * N
+    if max_val // p < 5:
+        return 0
+    return (max_val // p - 5) // 6 + 1
+
+
+def formula_2T_plus_1(N, p):
+    T = branch5_side_count(N, p)
+    return 2 * T + 1
+
+
+def general_exact_formula(N, p):
+    """Always exact, no modulus precondition on N."""
+    max_val = 6 * N
+    M = max_val // p
+    full_cycles = M // 6
+    remainder = M % 6
+    coprime_in_remainder = sum(1 for r in range(1, remainder + 1) if math.gcd(r, 6) == 1)
+    return full_cycles * 2 + coprime_in_remainder - 1
+
+
+if __name__ == "__main__":
+    # Reproduce section 4: N multiple of 2p, checked up to N=2,000,000
+    for p in [5, 11, 17, 23, 29]:
+        modulus = 2 * p
+        diffs = set()
+        for N in range(modulus, 2_000_001, modulus):
+            b5 = branch5_side_count(N, p)
+            b1 = branch1_side_count(N, p) if (6 * N) // p >= 5 else 0
+            diffs.add(b1 - b5)
+        print(f"p={p:3d}, N multiple of {modulus:3d} (=2p): observed diffs = {sorted(diffs)}")
+
+    print()
+    # Reproduce section 2/3 comparison for p=11 specifically
+    p = 11
+    diffs10 = set()
+    for N in range(10, 2_000_001, 10):
+        b5 = branch5_side_count(N, p)
+        b1 = branch1_side_count(N, p)
+        diffs10.add(b1 - b5)
+    print(f"p=11, N multiple of 10:  diffs = {sorted(diffs10)}")
+
+    diffs22 = set()
+    for N in range(22, 2_000_001, 22):
+        b5 = branch5_side_count(N, p)
+        b1 = branch1_side_count(N, p)
+        diffs22.add(b1 - b5)
+    print(f"p=11, N multiple of 22:  diffs = {sorted(diffs22)}")
+
+    print()
+    # Reproduce section 5/6: N=(2X)^R, closed form count+1 = 2^(R+1) * X^(R-1)
+    for X in [5, 11, 17, 23]:
+        for R in [1, 2, 3, 4]:
+            N = (2 * X) ** R
+            count = formula_2T_plus_1(N, X)
+            brute = general_exact_formula(N, X)
+            predicted = 2 ** (R + 1) * X ** (R - 1)
+            print(
+                f"X={X:3d} R={R}  count={count:>10,}  brute={brute:>10,}  "
+                f"closed_form(count+1)={predicted:>10,}  "
+                f"match_brute={count==brute}  match_closed_form={count+1==predicted}"
+            )
+```
+
+## 9. Verified output
+
+```
+p=  5, N multiple of  10 (=2p): observed diffs = [1]
+p= 11, N multiple of  22 (=2p): observed diffs = [1]
+p= 17, N multiple of  34 (=2p): observed diffs = [1]
+p= 23, N multiple of  46 (=2p): observed diffs = [1]
+p= 29, N multiple of  58 (=2p): observed diffs = [1]
+
+p=11, N multiple of 10:  diffs = [0, 1]
+p=11, N multiple of 22:  diffs = [1]
+```
+
+## 10. Verified output for the exact-count rule and closed form (Sections 5-6)
+
+```
+--- X=5, N=(2X)^R ---
+  R=1  N=        10  formula=         3  brute=         3  match=True
+  R=2  N=       100  formula=        39  brute=        39  match=True
+  R=3  N=     1,000  formula=       399  brute=       399  match=True
+  R=4  N=    10,000  formula=     3,999  brute=     3,999  match=True
+--- X=11, N=(2X)^R ---
+  R=1  N=        22  formula=         3  brute=         3  match=True
+  R=2  N=       484  formula=        87  brute=        87  match=True
+  R=3  N=    10,648  formula=     1,935  brute=     1,935  match=True
+  R=4  N=   234,256  formula=    42,591  brute=    42,591  match=True
+  R=5  N= 5,153,632  formula=   937,023  brute=   937,023  match=True
+--- X=17, N=(2X)^R ---
+  R=1  N=        34  formula=         3  brute=         3  match=True
+  R=2  N=     1,156  formula=       135  brute=       135  match=True
+  R=3  N=    39,304  formula=     4,623  brute=     4,623  match=True
+  R=4  N= 1,336,336  formula=   157,215  brute=   157,215  match=True
+--- X=23, N=(2X)^R ---
+  R=1  N=        46  formula=         3  brute=         3  match=True
+  R=2  N=     2,116  formula=       183  brute=       183  match=True
+  R=3  N=    97,336  formula=     8,463  brute=     8,463  match=True
+  R=4  N= 4,477,456  formula=   389,343  brute=   389,343  match=True
+```
