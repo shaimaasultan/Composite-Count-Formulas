@@ -198,6 +198,27 @@ So the general statement: **for any prime X coprime to 6, the range
 `[1, 12X]` contains exactly 3 composites of X — always, with no
 exception, for every prime tested.**
 
+**The direct, simpler reason why (no formula needed)**: any composite of
+`X` in this range has the form `X*k` for some cofactor `k >= 2`, and
+since the range is `12X`, that cofactor must satisfy `k <= 12`. Among
+`2..12`, the *only* integers coprime to 6 are **exactly `{5, 7, 11}`** —
+nothing else in that span survives (`2,3,4,6,8,9,10,12` all share a
+factor with 6). So the composites are always precisely
+`{5X, 7X, 11X}` — three terms, no more, no fewer, for *any* `X` coprime
+to 6 (verified for `X ∈ {5,11,17,23,29,35,41}`, including `X=35`, which
+isn't even prime — confirming the rule never actually depended on `X`
+being prime, only on `X` being coprime to 6):
+
+```
+X= 5:  {5*5,  5*7,  5*11}  = {25, 35, 55}
+X=11:  {11*5, 11*7, 11*11} = {55, 77, 121}
+X=17:  {17*5, 17*7, 17*11} = {85, 119, 187}
+X=23:  {23*5, 23*7, 23*11} = {115, 161, 253}
+X=29:  {29*5, 29*7, 29*11} = {145, 203, 319}
+X=35:  {35*5, 35*7, 35*11} = {175, 245, 385}   (35=5*7, not prime -- rule still holds)
+X=41:  {41*5, 41*7, 41*11} = {205, 287, 451}
+```
+
 ## 7. What to use when `N` is *not* a multiple of `2X`
 
 Falls back to the general, always-exact formula (no modulus
