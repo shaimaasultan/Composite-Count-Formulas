@@ -423,3 +423,21 @@ Each bar's own span independently contains exactly 3 composites (Section
 fixed collisions from `{5,7,11}` (Section 7) — the staircase is just a
 visual way of seeing all those windows laid out together from their
 shared starting point.
+
+## 12. The same staircase for branch1
+
+Branch1 (`1, 7, 13, 19, 25, ...`) follows the identical structure, with
+one adjustment: the anchor is `7`, not `1` — `1` is excluded throughout
+this document (neither prime nor composite, and meaningless as an `X`).
+
+![Branch-1 R=1 staircase, anchor 7, each level offset by 6, span 12X](staircase_branch1.svg)
+
+```
+X(m)    = 7 + 6m               -- the branch-1 value at level m
+span(m) = 12 * X(m) = 84 + 72m -- that level's own [1, 12X] range
+```
+
+Verified exactly the same way: every level gives exactly 3 composites
+(`{5X, 7X, 11X}`, per Section 5-6), including `m=3` (`X=25`, itself
+composite — `5²` — confirming again that the rule only needs `X` coprime
+to 6, not prime, the same finding as `X=35` in Section 5-6).
