@@ -219,7 +219,50 @@ X=35:  {35*5, 35*7, 35*11} = {175, 245, 385}   (35=5*7, not prime -- rule still 
 X=41:  {41*5, 41*7, 41*11} = {205, 287, 451}
 ```
 
-## 7. What to use when `N` is *not* a multiple of `2X`
+## 7. Overlaps between R=1 tables: flat and permanently bounded (not growing)
+
+Section 6 established `total composites (summed naively across many
+primes) overcounts, and the overcount grows` — but that test used one
+*shared, extended* range covering all the primes at once. Using instead
+each prime's *own* `[1, 12X]` range (the natural R=1 scope from Section
+5's remark) gives a completely different, much better result.
+
+**Claim, verified**: across `{5, 7, 11, 17, 23, 29, 35, 41, 47, 53, 59,
+61, 67, 71}` (14 values coprime to 6, going up to 71), the number of
+values that appear in more than one prime's own-range table is exactly
+**3**: `{35, 55, 77}` — and adding more (larger) primes to the list never
+increases this count.
+
+```
+X= 5: {25, 35, 55}      X= 7: {35, 49, 77}      X=11: {55, 77, 121}
+X=17: {85, 119, 187}    X=23: {115, 161, 253}   X=29: {145, 203, 319}
+X=35: {175, 245, 385}   X=41: {205, 287, 451}   X=47: {235, 329, 517}
+X=53: {265, 371, 583}   X=59: {295, 413, 649}   X=61: {305, 427, 671}
+X=67: {335, 469, 737}   X=71: {355, 497, 781}
+
+overlaps: 35 (in X=5's and X=7's tables), 55 (X=5, X=11), 77 (X=7, X=11)
+```
+
+**Why it's provably bounded, not just observed to be flat**: a value can
+only appear in both `X1`'s table and `X2`'s table if
+`X1·a = X2·b` for some `a, b ∈ {5, 7, 11}` (the only valid cofactors in
+a `12X` range, per Section 5-6). Since `X1 ≠ X2` are both coprime to 6,
+this forces one of them to itself equal `5`, `7`, or `11` — there is no
+other way for the equation to balance. **Any prime greater than 11 can
+never collide with another prime's own-range table, no matter how many
+more are added.** So the only possible overlaps are the `C(3,2)=3` pairs
+formed by `5, 7, 11` themselves (`5×7=35`, `5×11=55`, `7×11=77`) — a
+fixed, permanent ceiling of 3, not a count that grows with the number of
+primes considered.
+
+This is the opposite behavior from Section 6's shared-range sum: the
+overcounting problem there came specifically from letting every prime's
+multiples reach into a common range large enough for cross-products with
+*every other* prime. Restricting each prime to its own small `12X` scope
+removes that possibility entirely, except for the three smallest primes
+colliding with each other.
+
+## 8. What to use when `N` is *not* a multiple of `2X`
 
 Falls back to the general, always-exact formula (no modulus
 precondition needed), verified earlier across `p ∈ {5,11,17,23,29}` and
@@ -233,7 +276,7 @@ total composites of p up to 6N = (count of integers coprime to 6 in [1, M]) - 1
 
 ---
 
-## 8. Verified code
+## 9. Verified code
 
 ```python
 import math
@@ -309,9 +352,18 @@ if __name__ == "__main__":
                 f"closed_form(count+1)={predicted:>10,}  "
                 f"match_brute={count==brute}  match_closed_form={count+1==predicted}"
             )
+
+    print()
+    # Reproduce section 7: own-range R=1 overlaps stay flat at 3, forever
+    from collections import Counter
+    r1_primes = [5, 7, 11, 17, 23, 29, 35, 41, 47, 53, 59, 61, 67, 71]
+    tables = {X: {5 * X, 7 * X, 11 * X} for X in r1_primes}
+    all_values = [v for X in r1_primes for v in tables[X]]
+    dupes = {v: c for v, c in Counter(all_values).items() if c > 1}
+    print(f"R=1 own-range overlaps across {len(r1_primes)} primes: {dupes}")
 ```
 
-## 9. Verified output
+## 10. Verified output
 
 ```
 p=  5, N multiple of  10 (=2p): observed diffs = [1]
