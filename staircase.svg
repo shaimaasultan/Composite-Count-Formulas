@@ -1,0 +1,45 @@
+<svg viewBox="0 0 820 420" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>Branch-5 R=1 staircase: anchor 5, levels 5+6m, each with its own 12X span</title>
+<desc>Four horizontal bars anchored on a common left edge, each offset down by 6, with lengths proportional to 12X for X=5,11,17,23</desc>
+<rect x="0" y="0" width="820" height="420" fill="var(--bg,#0b0f14)"/>
+
+<!-- anchor vertical line -->
+<line x1="90" y1="40" x2="90" y2="380" stroke="#5b6b7a" stroke-width="2"/>
+
+<!-- level bars: m=0..3, X=5,11,17,23, bar length scaled -->
+<!-- scale: 12X max=276 -> map to ~600px, so scale factor ~2.17 -->
+
+<!-- m=0, X=5, 12X=60 -->
+<line x1="90" y1="70" x2="220" y2="70" stroke="#e63946" stroke-width="3"/>
+<text x="150" y="58" text-anchor="middle" font-size="15" font-weight="700" fill="#e63946" font-family="ui-sans-serif,system-ui">12X = 60</text>
+<text x="70" y="75" text-anchor="end" font-size="13" fill="#94a3b8" font-family="ui-sans-serif,system-ui">X=5</text>
+
+<!-- gap label 6 -->
+<text x="55" y="110" text-anchor="middle" font-size="16" font-weight="700" fill="#5b6b7a" font-family="ui-monospace,monospace">6</text>
+
+<!-- m=1, X=11, 12X=132 -->
+<line x1="90" y1="150" x2="374" y2="150" stroke="#f4a261" stroke-width="3"/>
+<text x="230" y="138" text-anchor="middle" font-size="15" font-weight="700" fill="#f4a261" font-family="ui-sans-serif,system-ui">12X = 132</text>
+<text x="70" y="155" text-anchor="end" font-size="13" fill="#94a3b8" font-family="ui-sans-serif,system-ui">X=11</text>
+
+<text x="55" y="190" text-anchor="middle" font-size="16" font-weight="700" fill="#5b6b7a" font-family="ui-monospace,monospace">6</text>
+
+<!-- m=2, X=17, 12X=204 -->
+<line x1="90" y1="230" x2="530" y2="230" stroke="#2a9d8f" stroke-width="3"/>
+<text x="310" y="218" text-anchor="middle" font-size="15" font-weight="700" fill="#2a9d8f" font-family="ui-sans-serif,system-ui">12X = 204</text>
+<text x="70" y="235" text-anchor="end" font-size="13" fill="#94a3b8" font-family="ui-sans-serif,system-ui">X=17</text>
+
+<text x="55" y="270" text-anchor="middle" font-size="16" font-weight="700" fill="#5b6b7a" font-family="ui-monospace,monospace">6</text>
+
+<!-- m=3, X=23, 12X=276 -->
+<line x1="90" y1="310" x2="686" y2="310" stroke="#457b9d" stroke-width="3"/>
+<text x="390" y="298" text-anchor="middle" font-size="15" font-weight="700" fill="#457b9d" font-family="ui-sans-serif,system-ui">12X = 276</text>
+<text x="70" y="315" text-anchor="end" font-size="13" fill="#94a3b8" font-family="ui-sans-serif,system-ui">X=23</text>
+
+<!-- anchor node -->
+<circle cx="90" cy="70" r="5" fill="#cbd5e1"/>
+<text x="100" y="30" font-size="14" font-weight="700" fill="#cbd5e1" font-family="ui-sans-serif,system-ui">anchor = 5</text>
+
+<!-- formula -->
+<text x="410" y="370" text-anchor="middle" font-size="15" font-weight="700" fill="#cbd5e1" font-family="ui-sans-serif,system-ui">level m:  X(m) = 5 + 6m    span(m) = 12·X(m) = 60 + 72m</text>
+</svg>

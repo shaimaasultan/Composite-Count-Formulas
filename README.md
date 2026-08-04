@@ -401,3 +401,25 @@ p=11, N multiple of 22:  diffs = [1]
   R=3  N=    97,336  formula=     8,463  brute=     8,463  match=True
   R=4  N= 4,477,456  formula=   389,343  brute=   389,343  match=True
 ```
+
+## 11. Visualizing the R=1 structure: the branch-5 staircase
+
+Section 5's "exactly 3 composites" result and Section 7's "flat, bounded
+overlap" result are both really statements about one shape: each branch-5
+value (`5, 11, 17, 23, ...`, stepping by 6) owns its own `[1, 12X]`
+window, and these windows can be drawn stacked on a shared anchor point:
+
+![Branch-5 R=1 staircase, anchor 5, each level offset by 6, span 12X](staircase.svg)
+
+As one unified description, parameterized by level `m = 0, 1, 2, 3, ...`:
+
+```
+X(m)    = 5 + 6m               -- the branch-5 value at level m
+span(m) = 12 * X(m) = 60 + 72m -- that level's own [1, 12X] range
+```
+
+Each bar's own span independently contains exactly 3 composites (Section
+5-6), and any overlap between two different bars is capped at the 3
+fixed collisions from `{5,7,11}` (Section 7) — the staircase is just a
+visual way of seeing all those windows laid out together from their
+shared starting point.
