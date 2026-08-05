@@ -493,3 +493,30 @@ underlying Section 6's closed form (`2^(R+1)*X^(R-1)-1`, which reduces
 to a `12X`-scale window at `R=1`) — the treemap is just a way to see
 that scaling directly, across several X at once, instead of one X at a
 time.
+
+## 15. The same treemap, extended to `X=5` through `X=29`
+
+Same construction as Section 14 (one block per X, area `= 12X²`,
+squarified-treemap packing), extended to eight primes instead of four:
+
+![Packed treemap of composite-shape areas for X=5,7,11,13,17,19,23,29](treemap_X5_7_11_13_17_19_23_29.svg)
+
+```
+X=5:   12*5²  = 300
+X=7:   12*7²  = 588
+X=11:  12*11² = 1452
+X=13:  12*13² = 2028
+X=17:  12*17² = 3468
+X=19:  12*19² = 4332
+X=23:  12*23² = 6348
+X=29:  12*29² = 10092
+```
+
+`X=29`'s block alone is `10092/28608 ≈ 35%` of the whole square's area
+— more than the combined area of the four smallest X's (`5, 7, 11, 13`)
+put together (`300+588+1452+2028 = 4368`, barely 15%). Extending the
+range makes the same point as Section 14 more forcefully: `12X²` growth
+means the largest few X's dominate the total area, not the count of
+X's involved — a visual echo of why Part 6/7 of the sieve-log README
+found the overcounting sum `Σ2K(X)` grows the way it does as N (and the
+range of X's swept) increases.

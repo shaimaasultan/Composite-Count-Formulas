@@ -1,0 +1,29 @@
+<svg viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>Packed treemap of composite-shape areas for X=5,7,11,13,17,19,23,29</title>
+<desc>A square packed with eight blocks, one per X, each block's area proportional to 2X*6X=12X squared</desc>
+<rect x="0" y="0" width="420" height="420" fill="var(--bg,#0b0f14)"/>
+<rect x="10.00" y="10.00" width="229.87" height="245.55" fill="#e63946" opacity="0.88" stroke="#0b0f14" stroke-width="1.5"/>
+<text x="124.94" y="128.78" text-anchor="middle" font-size="16" font-weight="700" fill="#0b0f14" font-family="ui-sans-serif,system-ui">X=29</text>
+<text x="124.94" y="144.78" text-anchor="middle" font-size="12" fill="#0b0f14" font-family="ui-monospace,monospace">12*29^2=10092</text>
+<rect x="10.00" y="255.55" width="229.87" height="154.45" fill="#f4a261" opacity="0.88" stroke="#0b0f14" stroke-width="1.5"/>
+<text x="124.94" y="328.77" text-anchor="middle" font-size="16" font-weight="700" fill="#0b0f14" font-family="ui-sans-serif,system-ui">X=23</text>
+<text x="124.94" y="344.77" text-anchor="middle" font-size="12" fill="#0b0f14" font-family="ui-monospace,monospace">12*23^2=6348</text>
+<rect x="239.87" y="10.00" width="94.49" height="256.41" fill="#e9c46a" opacity="0.88" stroke="#0b0f14" stroke-width="1.5"/>
+<text x="287.12" y="134.21" text-anchor="middle" font-size="15" font-weight="700" fill="#0b0f14" font-family="ui-sans-serif,system-ui">X=19</text>
+<text x="287.12" y="150.21" text-anchor="middle" font-size="9" fill="#0b0f14" font-family="ui-monospace,monospace">12*19^2=4332</text>
+<rect x="334.36" y="10.00" width="75.64" height="256.41" fill="#2a9d8f" opacity="0.88" stroke="#0b0f14" stroke-width="1.5"/>
+<text x="372.18" y="134.21" text-anchor="middle" font-size="12" font-weight="700" fill="#0b0f14" font-family="ui-sans-serif,system-ui">X=17</text>
+<text x="372.18" y="150.21" text-anchor="middle" font-size="8" fill="#0b0f14" font-family="ui-monospace,monospace">12*17^2=3468</text>
+<rect x="239.87" y="266.41" width="78.99" height="143.59" fill="#457b9d" opacity="0.88" stroke="#0b0f14" stroke-width="1.5"/>
+<text x="279.37" y="334.21" text-anchor="middle" font-size="13" font-weight="700" fill="#0b0f14" font-family="ui-sans-serif,system-ui">X=13</text>
+<text x="279.37" y="350.21" text-anchor="middle" font-size="8" fill="#0b0f14" font-family="ui-monospace,monospace">12*13^2=2028</text>
+<rect x="318.86" y="266.41" width="91.14" height="89.10" fill="#6d8fac" opacity="0.88" stroke="#0b0f14" stroke-width="1.5"/>
+<text x="364.43" y="306.96" text-anchor="middle" font-size="15" font-weight="700" fill="#0b0f14" font-family="ui-sans-serif,system-ui">X=11</text>
+<text x="364.43" y="322.96" text-anchor="middle" font-size="9" fill="#0b0f14" font-family="ui-monospace,monospace">12*11^2=1452</text>
+<rect x="318.86" y="355.51" width="60.35" height="54.49" fill="#a8dadc" opacity="0.88" stroke="#0b0f14" stroke-width="1.5"/>
+<text x="349.04" y="378.75" text-anchor="middle" font-size="10" font-weight="700" fill="#0b0f14" font-family="ui-sans-serif,system-ui">X=7</text>
+<text x="349.04" y="394.75" text-anchor="middle" font-size="8" fill="#0b0f14" font-family="ui-monospace,monospace">12*7^2=588</text>
+<rect x="379.21" y="355.51" width="30.79" height="54.49" fill="#c9d6df" opacity="0.88" stroke="#0b0f14" stroke-width="1.5"/>
+<text x="394.60" y="378.75" text-anchor="middle" font-size="9" font-weight="700" fill="#0b0f14" font-family="ui-sans-serif,system-ui">X=5</text>
+<rect x="10" y="10" width="400" height="400" fill="none" stroke="#2a3542" stroke-width="2"/>
+</svg>
