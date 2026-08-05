@@ -520,3 +520,25 @@ means the largest few X's dominate the total area, not the count of
 X's involved — a visual echo of why Part 6/7 of the sieve-log README
 found the overcounting sum `Σ2K(X)` grows the way it does as N (and the
 range of X's swept) increases.
+
+## 16. Making the overlaps themselves visible: one shared axis, not separate columns
+
+Sections 13-15 keep each X's bars in their own column or block. Placing
+them all on one shared *value* axis instead — same band, semi-transparent
+fill — makes genuine overlaps between different X's show up directly as
+blended color, instead of only being computable from the `hits` array
+(sieve-log README, Part 7):
+
+![All X=5,7,11,13,17,19,23,29 composite bars on one shared value axis, showing real overlaps](overlapping_bars_X5_to_29.svg)
+
+Scanning every pair of bars for `X=5, 7, 11, 13, 17, 19, 23, 29` (three
+bars each, so `8*3=24` bars total) and checking which ones share more
+than a single endpoint finds **27 genuine overlaps** — e.g. `X=5`'s
+`[55,65]` sits entirely inside `X=11`'s `[55,77]`, and `X=13`'s
+`[65,91]` fully contains `X=7`'s `[77,91]`. This is the same
+double-counting mechanism from the sieve-log README's `Σ2K(X)`
+investigation (there, composites like `35=5*7` and `175=5²*7` getting
+marked by more than one X), now visible geometrically instead of only
+numerically: wherever two bars' colors blend, that's a value (or a
+shared sub-range) that more than one X would independently claim credit
+for marking composite.
