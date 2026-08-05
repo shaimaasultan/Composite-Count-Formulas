@@ -441,3 +441,31 @@ Verified exactly the same way: every level gives exactly 3 composites
 (`{5X, 7X, 11X}`, per Section 5-6), including `m=3` (`X=25`, itself
 composite — `5²` — confirming again that the rule only needs `X` coprime
 to 6, not prime, the same finding as `X=35` in Section 5-6).
+
+## 13. A different cut through the same structure: fixed width, fixed step
+
+Sections 11-12 stack each level's *own* `[1, 12X]` window on a shared
+anchor. There's a second, complementary way to draw the same underlying
+arithmetic: fix a single X, and stack its own composite pairs
+`(X*(6k-1), X*(6k+1))` for `k = 1, 2, 3, ...` as a column of bars.
+
+![Stacked composite shape for X=7: constant width 2X, vertical step 6X](stacked_shape_X7.svg)
+
+Every bar has the *same* width, and every step down the stack is the
+*same* size — neither one depends on `k`:
+
+```
+bar_k  = [X*(6k-1), X*(6k+1)]
+width  = X*(6k+1) - X*(6k-1) = 2X          -- constant, independent of k
+step   = 6X                                -- constant offset between rows
+```
+
+For `X=7`: every bar is `2*7=14` wide (`35–49`, `77–91`, `119–133`,
+`161–175`), and each row is offset from the last by exactly `6*7=42`.
+This is the same fact used throughout Sections 5-12 (the common
+difference `6X` between consecutive terms of either family) — Sections
+11-12 draw it as *growing windows around a fixed X*, this section draws
+the *same numbers* as a *fixed-size shape marching down a fixed step*.
+Like the staircases, this holds for any `X` coprime to 6, prime or not
+(Sections 11-12 already confirmed this for composite `X=25`; the same
+`2X`/`6X` arithmetic applies identically there).
