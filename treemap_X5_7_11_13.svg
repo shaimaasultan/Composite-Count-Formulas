@@ -1,0 +1,23 @@
+<svg viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>Packed treemap of composite-shape areas for X=5,7,11,13</title>
+<desc>A square packed with four blocks, one per X (5,7,11,13), each block's area proportional to 2X*6X=12X squared, showing how quickly the area grows with X</desc>
+<rect x="0" y="0" width="340" height="340" fill="var(--bg,#0b0f14)"/>
+
+<rect x="10" y="10" width="199" height="146" fill="#457b9d" opacity="0.85"/>
+<text x="109" y="88" text-anchor="middle" font-size="15" font-weight="700" fill="#0b0f14" font-family="ui-sans-serif,system-ui">X=13</text>
+<text x="109" y="106" text-anchor="middle" font-size="11" fill="#0b0f14" font-family="ui-monospace,monospace">12*13^2=2028</text>
+
+<rect x="10" y="156" width="199" height="104" fill="#2a9d8f" opacity="0.85"/>
+<text x="109" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#0b0f14" font-family="ui-sans-serif,system-ui">X=11</text>
+<text x="109" y="221" text-anchor="middle" font-size="11" fill="#0b0f14" font-family="ui-monospace,monospace">12*11^2=1452</text>
+
+<rect x="209" y="10" width="61" height="175" fill="#f4a261" opacity="0.85"/>
+<text x="239" y="93" text-anchor="middle" font-size="14" font-weight="700" fill="#0b0f14" font-family="ui-sans-serif,system-ui">X=7</text>
+<text x="239" y="111" text-anchor="middle" font-size="10" fill="#0b0f14" font-family="ui-monospace,monospace">12*7^2=588</text>
+
+<rect x="209" y="185" width="61" height="75" fill="#e63946" opacity="0.85"/>
+<text x="239" y="219" text-anchor="middle" font-size="13" font-weight="700" fill="#0b0f14" font-family="ui-sans-serif,system-ui">X=5</text>
+<text x="239" y="235" text-anchor="middle" font-size="10" fill="#0b0f14" font-family="ui-monospace,monospace">12*5^2=300</text>
+
+<rect x="0" y="0" width="340" height="340" fill="none" stroke="#2a3542" stroke-width="2"/>
+</svg>

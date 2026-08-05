@@ -469,3 +469,27 @@ the *same numbers* as a *fixed-size shape marching down a fixed step*.
 Like the staircases, this holds for any `X` coprime to 6, prime or not
 (Sections 11-12 already confirmed this for composite `X=25`; the same
 `2X`/`6X` arithmetic applies identically there).
+
+## 14. One square, several X's: area grows as `12X²`
+
+Section 13's bar for a given X has area `width * step = 2X * 6X =
+12X²` — quadratic in X, not linear. Packing one such block per X into a
+single square (area proportional to `12X²`) makes that growth rate
+directly visible, instead of reading it off a formula:
+
+![Packed treemap of composite-shape areas for X=5,7,11,13](treemap_X5_7_11_13.svg)
+
+```
+X=5:   12*5²  = 300
+X=7:   12*7²  = 588
+X=11:  12*11² = 1452
+X=13:  12*13² = 2028
+```
+
+`X=13`'s block is nearly 7× the area of `X=5`'s, even though `13` is
+only `2.6×` larger than `5` — the quadratic growth in Section 13's
+`width * step` compounds fast. This is the same `12X²`-shaped quantity
+underlying Section 6's closed form (`2^(R+1)*X^(R-1)-1`, which reduces
+to a `12X`-scale window at `R=1`) — the treemap is just a way to see
+that scaling directly, across several X at once, instead of one X at a
+time.
