@@ -245,6 +245,74 @@ The figure is drawn to scale for the square of Section~\ref{sec:ex},
 for which $t \approx 0.7006$. The midpoint structure is universal; the
 left-to-right ordering is not, and permutes with $t$.
 
+\paragraph{De-normalised form.}
+Writing $S = B^2 - F^2$ for the scale, the table above rescales to
+\[
+X = F^2 + \tfrac12 S, \qquad
+E^2 = F^2 + \tfrac{t}{2} S, \qquad
+D^2 = F^2 + tS, \qquad
+I^2 = F^2 + \tfrac{1+t}{2} S .
+\]
+Each cell is $t$ --- a fixed shape, invariant under scaling --- combined
+with the two free parameters $F^2$ and $S$, which carry the square's
+actual size. For the square of Section~\ref{sec:ex}, $F^2 = 83521$ and
+$S = 277200$, and these reproduce $X = 222121$, $E^2 = 180625$,
+$D^2 = 277729$, $I^2 = 319225$ exactly.
+
+\section{A Second Normalisation: $D^2$ and $B^2$}\label{sec:norm2}
+
+The Medial Configuration has three vertices, $B^2$, $D^2$, $F^2$, and
+any two of them may be placed at the endpoints, with the third left as
+the free parameter. Section~\ref{sec:norm} fixed $F^2$ and $B^2$;
+fixing $D^2$ and $B^2$ instead, and setting
+\[
+t' = \frac{F^2 - D^2}{B^2 - D^2},
+\]
+gives the same six points a second, equally valid labelling.
+
+\begin{center}
+\begin{tabular}{lcl}
+\hline
+Point & Position & Origin \\
+\hline
+$D^2$ & $0$        & endpoint \\
+$E^2$ & $t'/2$     & midpoint of $D^2, F^2$ \\
+$X$   & $(1+t')/2$ & midpoint of $F^2, B^2$ \\
+$F^2$ & $t'$       & free parameter \\
+$I^2$ & $1/2$      & midpoint of $D^2, B^2$ \\
+$B^2$ & $1$        & endpoint \\
+\hline
+\end{tabular}
+\end{center}
+
+The roles have swapped: it is now $I^2$ that sits fixed at $1/2$, and
+$X - E^2 = 1/2$ that stays constant as $t'$ varies, mirroring how
+$X$ and $I^2 - E^2$ were the fixed quantities in
+Section~\ref{sec:norm}. As before, $t' = 0$ and $t' = 1$ are excluded,
+forcing $F^2 = D^2$ and $F^2 = B^2$ respectively.
+
+For the square of Section~\ref{sec:ex}, $t' = -578/247 \approx -2.340$
+--- negative, and outside $[0,1]$, because $F^2$ is the smallest of
+the three vertices $B^2, D^2, F^2$, not a point strictly between $D^2$
+and $B^2$. The six points themselves are unchanged --- this is the
+same diagram as Section~\ref{sec:norm}, read with a different pair
+fixed as $0$ and $1$ --- only their coordinates differ:
+$D^2 = 8.407$, $I^2 = 10.204$, $B^2 = 12$ in the earlier figure's
+units, with $F^2$ now falling to the left of the origin rather than
+at it.
+
+\paragraph{De-normalised form.}
+Writing $S' = B^2 - D^2$,
+\[
+X = D^2 + \tfrac12 S', \qquad
+E^2 = D^2 + \tfrac{t'}{2} S', \qquad
+F^2 = D^2 + t'S', \qquad
+I^2 = D^2 + \tfrac12 S' .
+\]
+For the square of Section~\ref{sec:ex}, $D^2 = 277729$ and
+$S' = 82992$, reproducing $F^2 = 83521$, $E^2 = 180625$,
+$X = 222121$, $I^2 = 319225$ exactly.
+
 \section{The Determinant}
 
 \begin{proposition}
