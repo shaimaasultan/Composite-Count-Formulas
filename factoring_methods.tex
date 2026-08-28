@@ -1,0 +1,176 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\definecolor{codebg}{gray}{0.96}
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color{codebg},
+  keywordstyle=\color{blue!70!black},
+  commentstyle=\color{green!45!black},
+  stringstyle=\color{red!60!black},
+  numbers=left, numberstyle=\tiny\color{gray}, numbersep=6pt,
+  breaklines=true, frame=single, framesep=4pt, columns=fullflexible,
+  showstringspaces=false,
+}
+
+\title{Two $6k\pm1$ Factoring Methods: the Wheel Scan and the Small-Factor Sieve\\
+\large A comparison}
+\author{Shaimaa Soltan}
+\date{August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Both methods rest on the single fact that, after peeling $2$ and $3$, every prime
+factor is of the form $6k\pm1$. The first, \texttt{wheel\_scan}, is $6k\pm1$
+\emph{trial division} with early exit: it returns the smallest factor of a single
+$N$. The second builds a reusable list $P$ of small factors once, then screens many
+$N$ against it. We give both, then compare them on completeness, cost, memory, and
+behaviour on large semiprimes.
+\end{abstract}
+
+\section{Method 1 --- the wheel scan}
+
+Peel $2$ and $3$; then scan the candidates $M=6m-1$ and $M=6m+1$ for
+$m=1,2,3,\dots$ up to $\sqrt N$, returning at the first $M$ with $N\bmod M=0$.
+Covering \emph{both} residue classes $\{6m-1,\,6m+1\}$ is essential --- a factor may
+lie in either (e.g.\ $55=5\cdot11$ has $N\equiv1\bmod6$ but both primes
+$\equiv5$).
+
+\begin{lstlisting}
+def wheel_scan(N):
+    """Scan M = 6m-1 and 6m+1 for m = 1,2,3,...; EXIT at the first M with N%M==0.
+    Peels 2 and 3 first; returns N if no factor <= sqrt(N) (N is prime)."""
+    for p in (2, 3):                      # peel 2 and 3
+        if N % p == 0:
+            return p
+    lim = isqrt(N)
+    m = 1
+    while 6 * m - 1 <= lim:
+        for M in (6 * m - 1, 6 * m + 1):  # both classes: 5,7 / 11,13 / 17,19 / ...
+            if M <= lim and N % M == 0:
+                return M                  # early exit at the first m giving mod 0
+        m += 1
+    return N                              # prime
+\end{lstlisting}
+
+\noindent\textbf{Properties.} Deterministic and \emph{complete}: it returns the
+smallest prime factor of $N$ if one is $\le\sqrt N$, else declares $N$ prime. Cost
+$O(\sqrt N)$ in the worst case (smallest factor near $\sqrt N$); $O(1)$ memory; no
+precomputation. Instant when a small factor exists (early exit).
+
+\section{Method 2 --- the small-factor sieve}
+
+Build a set $S$ of $6k\pm1$ numbers; sweep a range and record, in a list $P$, every
+small divisor $k\in S$ of the swept numbers together with the cofactor $x/\!/k$
+(\emph{integer} division). Then \texttt{N\_P} screens any $N$ against $P$.
+
+\begin{lstlisting}
+L = {}
+for x in range(1, 10000, 2):
+    if x % 6 == 5:                 # what B==8.5 and D==0.5 actually select
+        L[x] = x + 2               # the pair (6k-1, 6k+1)
+
+L2_Y = [k % v for v in L.values() for k in L.keys()
+        if k != v and v % k == 0 and k % v not in L.values()]
+L2_X = [v % k for k in L.keys() for v in L.values()
+        if k != v and k % v == 0 and v % k not in L.keys()]
+S = set(L2_X) | set(L2_Y)
+
+P = []
+for x in range(10001, 100000, 6):
+    if x % 2 == 0 or x % 3 == 0:
+        continue
+    for k in S:
+        if (x % k == 0) and k != 1 and k != x:
+            if k not in P:      P.append(k)
+            if x // k not in P: P.append(x // k)   # //  (integer!) -- not /
+
+def N_P(N):
+    L = [k for k in P if N % k == 0]
+    print(f"Factors of {N}: {L}")
+\end{lstlisting}
+
+\noindent\textbf{Properties.} After a one-time $O(\text{range}\times|S|)$ build,
+each query is only $O(|P|)$ --- fast for screening \emph{many} numbers. But it is
+\emph{partial}: it finds only factors that live in $P$ (small ones), and it lists
+\emph{composite} divisors too (e.g.\ $161=7\cdot23$). It also skips multiples of $3$
+while building $P$, so it cannot report the factor $3$ itself.
+
+\paragraph{A subtle bug worth flagging.} The original used
+\texttt{P.append(x/k)} (true division), putting \emph{floats} like \texttt{13763.0}
+in $P$. For a large integer $N$, \texttt{N \% 13763.0} first rounds $N$ to $\sim16$
+digits, so it returns \texttt{0.0} by accident --- a \emph{false} factor
+($N\bmod13763=6862\neq0$). The fix is one character: \texttt{x // k}.
+
+\section{Comparison}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{4.4cm} p{5.0cm} p{5.0cm}}
+\toprule
+& \textbf{wheel\_scan} & \textbf{sieve ($P$, N\_P)}\\
+\midrule
+Strategy & $6k\pm1$ trial division, early exit & precompute small-factor list, screen $N$\\
+Peels $2,3$ & yes (explicit) & skips them (cannot report $3$)\\
+Returns & smallest prime factor $\le\sqrt N$ & small divisors in $P$ (incl.\ composites)\\
+Completeness & \textbf{complete} ($\le\sqrt N$) & \textbf{partial} (only factors in $P$)\\
+Per-$N$ cost & $O(\sqrt N)$ worst case & $O(|P|)$ after build\\
+Precompute & none & $O(\text{range}\times|S|)$ once\\
+Memory & $O(1)$ & $O(|P|)$\\
+Big semiprime, no small factor & correct but slow ($\sqrt N$) & returns \texttt{[]} (misses)\\
+Best use & one-shot smallest-factor engine & screening many $N$ for small factors\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{On the shared test numbers.}
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{6.6cm} p{3.2cm} p{4.4cm}}
+\toprule
+$N$ & \textbf{wheel\_scan} & \textbf{sieve N\_P}\\
+\midrule
+$4126375141919523791919279$ & $3$ (instant) & $[148021]$ (misses $3$)\\
+$4126375141919523791919271$ & $7$ (instant) & $[7,23,47,161,329,1081,7567]$\\
+$7334938410324762341973827534$\newline$419726354193798261$ & $2521$ (instant) & $[2521]$\\
+$412637514191952379171729$ & too slow ($\sim\!4{\times}10^{8}$ steps) & $[\,]$ (no small factor)\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Note the two disagreements. For $4126375141919523791919279$,
+\texttt{wheel\_scan} returns $3$ (it peels $3$ first), while the sieve misses $3$
+entirely and reports $148021$ --- because $P$ was built skipping multiples of $3$.
+For $4126375141919523791919271$ the sieve lists composite divisors
+($161=7\cdot23$, $329=7\cdot47$, $1081=23\cdot47$, $7567=7\cdot23\cdot47$) alongside
+the primes; \texttt{wheel\_scan} returns just the smallest prime, $7$.
+
+\section{Conclusion}
+
+The two methods are complementary faces of the same $6k\pm1$ idea:
+\begin{itemize}
+\item \texttt{wheel\_scan} is a \emph{complete, one-shot} smallest-factor finder:
+correct for every $N$, instant when a small factor exists, and $O(\sqrt N)$ in the
+worst case.
+\item the \emph{sieve} is a \emph{reusable, partial} screen: cheap per query after
+one build, ideal for testing many numbers for \emph{small} factors, but blind to
+factors larger than its range (it returns \texttt{[]} on
+$412637514191952379171729$, whose factors are $\sim\!2.5{\times}10^9$ and
+$\sim\!1.6{\times}10^{14}$).
+\end{itemize}
+Neither escapes the $\sqrt N$ wall: the sieve is fast only because it does
+\emph{less} (small factors only), and \texttt{wheel\_scan} is exactly
+$2,3$-peeled trial division. For semiprimes with two large prime factors, both give
+way to Pollard's rho / $p-1$ or ECM. The natural pipeline is: \textbf{sieve or wheel
+first} (peel small factors cheaply), \textbf{then Pollard} for the large cofactor.
+
+\end{document}

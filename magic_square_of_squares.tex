@@ -1,0 +1,600 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newcommand{\N}{\mathbf{N}}
+\newcommand{\M}{\mathbf{M}}
+\newcommand{\PP}{\mathbf{P}}
+\newcommand{\QQ}{\mathbf{Q}}
+\newcommand{\JJ}{\mathbf{J}}
+\newcommand{\I}{\mathbf{I}}
+
+\title{The $3\times3$ Magic Square of Squares:\\ Structure, Conditions, Eigenmatrix, and Value Limits}
+\author{Shaimaa Soltan}
+\date{August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A summary of the algebraic structure of the $3\times3$ magic square, reduced to
+its two shape parameters, together with the conditions for nine distinct cells,
+the modular sieves on the offsets, the eigen-structure of the offset matrix
+$\N$, and the numerical limits on all the parameters. The governing object is a
+single shape ratio $r=C/A$ and an offset matrix $\N=a\PP+c\QQ$.
+\end{abstract}
+
+\section{Setup and parametrization}
+
+A $3\times3$ magic square is written row-major as
+\[
+\begin{pmatrix} A & B & C\\ D & E & F\\ G & H & I\end{pmatrix},
+\qquad
+\text{all three rows, three columns and both diagonals equal the sum } S.
+\]
+
+\paragraph{Center law.} Every line through the center forces
+\[
+\boxed{\,E=\tfrac{S}{3}\,}\qquad\Longleftrightarrow\qquad S=3E,
+\]
+because the two cells flanking the center are $E\mp(A-C)$, whose offsets cancel.
+Equivalently, each cell plus its point-reflection through the center satisfies
+\[
+A+I=B+H=C+G=D+F=2E \quad(\text{opposite cells sum to }2E).
+\]
+
+\paragraph{Generator basis.} Subtracting the center and factoring gives the
+\emph{offset matrix}
+\[
+\N=a\,\PP+c\,\QQ,\qquad
+\PP=\begin{pmatrix}1&-1&0\\-1&0&1\\0&1&-1\end{pmatrix},\quad
+\QQ=\begin{pmatrix}0&-1&1\\1&0&-1\\-1&1&0\end{pmatrix},
+\]
+\[
+\N=\begin{pmatrix} a & -a-c & c\\ -a+c & 0 & a-c\\ -c & a+c & -a\end{pmatrix},
+\]
+where $\PP=\PP^{\mathsf T}$ is symmetric (the ``$a$'' generator) and
+$\QQ=-\QQ^{\mathsf T}$ is skew-symmetric (the ``$c$'' generator). Each of
+$\PP,\QQ$ has every line summing to $0$.
+
+\paragraph{Full square.} With $\JJ$ the all-ones matrix and center scale $E$,
+\[
+\boxed{\ \text{Square}=E\,(\JJ+\N)\ },\qquad
+\text{cell}=E\,(1+n),\quad n\in\{0,\pm a,\pm c,\pm(a+c),\pm(a-c)\}.
+\]
+
+\section{Magic conditions and degrees of freedom}
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+Object & Independent line-equations & Degrees of freedom\\
+\hline
+Full magic square & $7$ (of $8$; one is dependent) & $9-7=2$ (plus scale $E$)\\
+Semi-magic (rows+cols) & $5$ & $9-5=4$\\
+\hline
+\end{tabular}
+\end{center}
+
+The single dependency among the eight lines is the grand total:
+$R_1+R_2+R_3=\text{(all cells)}=C_1+C_2+C_3$. In the normalized variables the two
+non-trivial magic conditions are
+\[
+a+b+c=0,\qquad a+d-c=0
+\qquad\Longrightarrow\qquad b=-a-c,\ \ d=c-a,
+\]
+leaving exactly the two free parameters $a$ and $c$.
+
+\section{Normalized forms}
+
+\[
+\underbrace{\text{cells}}_{\text{sum }3E}
+\ \xrightarrow{\ \div E\ }\
+\M=\JJ+\N \quad(\text{center }1,\ \text{sum }3)
+\ \xrightarrow{\ \div 3\ }\
+\tfrac13\M \quad(\text{center }\tfrac13,\ \text{sum }1).
+\]
+\[
+\M=\begin{pmatrix}
+1+a & 1-a-c & 1+c\\
+1-a+c & 1 & 1+a-c\\
+1-c & 1+a+c & 1-a
+\end{pmatrix}.
+\]
+\begin{itemize}[nosep]
+\item \textbf{Center-1 form} ($\div E$): \emph{square-friendly}. Since $E=\rho^2$
+is a perfect square, an integer-square cell $\Leftrightarrow$ a rational-square
+entry of $\M$. Use this frame for the square hunt.
+\item \textbf{Sum-1 form} ($\div 3E$): \emph{barycentric}. Center $=\tfrac13$,
+each flanking pair $=\tfrac23$. Do \emph{not} use for squares: dividing by $3$
+(not a square) breaks the integer$\leftrightarrow$rational-square correspondence.
+\end{itemize}
+
+\section{Reduced problem: shape ratio and forbidden values}
+
+Factor $a$ from $\N$ and set the shape ratio
+\[
+\boxed{\,r=\frac{c}{a}=\frac{C}{A}\,},\qquad \N=a\,(\PP+r\,\QQ).
+\]
+The four offset magnitudes are proportional to $1,\ r,\ 1+r,\ 1-r$
+(directions $0^\circ,90^\circ,45^\circ,135^\circ$ in the $(a,c)$ plane).
+
+\paragraph{Symmetry.} The $8$ magic-square symmetries act on the ratio as
+$r\mapsto\{-r,\ 1/r,\ -1/r\}$, so every distinct shape has a representative in
+\[
+\boxed{\,0<r<1\,}\quad(\text{fundamental domain}).
+\]
+
+\paragraph{Forbidden ratios (no $9$ distinct cells).} A cell duplicates or hits
+the center exactly when
+\[
+\boxed{\,r\in\{0,\ \pm\tfrac12,\ \pm1,\ \pm2,\ \infty\}\,}
+\]
+i.e.\ the axes ($0,\infty$), the diagonals ($\pm1$), and their $45^\circ$
+reflection partners ($\pm\tfrac12,\pm2$). In the fundamental range the only
+forbidden value is $r=\tfrac12$ (endpoints $0,1$ excluded).
+
+\paragraph{Positivity (all nine cells $>0$).}
+\[
+|a|<\frac{1}{\max\bigl(1,|r|,|1+r|,|1-r|\bigr)}=\frac{1}{1+r}\quad(0<r<1).
+\]
+This bounds the offset scale $a$; it does \emph{not} bound $r$.
+
+\paragraph{Two kinds of boundary (radius vs.\ direction).} Read $(r,a)$ as polar
+coordinates: $r$ is the \emph{direction} and $a$ is the \emph{radius} along it.
+The two limits act on different coordinates:
+\begin{itemize}[nosep]
+\item The \textbf{forbidden ratios} delete whole \emph{directions} (rays through
+the origin): $r\in\{0,\pm\tfrac12,\pm1,\pm2,\infty\}$. This is a limit \emph{on
+$r$}---it removes values of the shape.
+\item \textbf{Positivity} caps the \emph{radius}: $|a|<1/(1+r)$. This is a limit
+\emph{on $a$}. Its numerical value is a \emph{function of} $r$, but it never
+deletes a direction: every admissible $r\in(0,1)$ keeps a nonempty window
+$|a|<1/(1+r)$. A direction-dependent cap on the radius is not a restriction on the
+direction.
+\end{itemize}
+Thus ``bounds $a$, not $r$'' means exactly: positivity excludes no value of $r$;
+it only fixes how large $|a|$ may be once the direction $r$ is chosen. The tightest
+cell is $1-a(1+r)$ (largest magnitude $1+r$ on $0<r<1$), which is why the cap is
+$1/(1+r)$.
+
+\medskip
+\noindent\textbf{Geometry in the $(a,c)$-plane.} Positivity is the open hexagon
+about the origin
+\[
+\max\bigl(|a|,\ |c|,\ |a+c|,\ |a-c|\bigr)<1,
+\]
+and the forbidden ratios are the finite set of \emph{rays} $c=r\,a$,
+$r\in\{0,\pm\tfrac12,\pm1,\pm2,\infty\}$, deleted from it. The hexagon caps the
+radius (the $a$-bound, tighter in some directions); the deleted rays cut out
+directions (the $r$-limit)---two different boundaries on the same $2$-dimensional
+shape region.
+
+\section{Square conditions and the elliptic curve}
+
+Nine cells are perfect squares iff, in the center-$1$ frame,
+\[
+1\pm a,\quad 1\pm c,\quad 1\pm(a+c),\quad 1\pm(a-c)
+\]
+are all rational squares (the center $1$ is free). Each pair
+``$1\pm x$ both squares'' is a rational point on the conic $p^2+q^2=2$ (genus $0$,
+$\cong$ a line). The two \emph{coupled} conditions on $a+c$ and $a-c$ intersect
+these into a \textbf{genus-$1$ elliptic curve}; its rational points are the
+many-square magic squares.
+
+\medskip
+\noindent\textbf{Coordinates: scale versus shape.} The two free parameters are
+$(a,c)$; equivalently use $(a,r)$ with
+\[
+r=\frac{C}{A}=\frac{c}{a}\qquad(\text{scale-invariant shape}),\qquad
+a\ (\text{scale}),\qquad c=a\,r .
+\]
+Here $r$ is \emph{built from} $a$ and $c$, but $(a,r)$ is a genuine coordinate
+system: $r$ is unchanged under a common rescaling $(a,c)\mapsto(\lambda a,\lambda c)$,
+while $a$ carries the magnitude.
+
+\medskip
+\noindent\textbf{Independence of the two conditions (not of the variables).}
+\begin{itemize}[nosep]
+\item The \emph{distinctness} condition (avoid the forbidden ratios) depends
+\emph{only on the shape} $r$; scaling $a$ leaves it untouched.
+\item The \emph{squareness} conditions depend on \emph{both} $a$ and $r$
+(the actual values $1\pm a,\,1\pm ar,\dots$ must be rational squares).
+\end{itemize}
+Hence the two \emph{conditions} are logically independent---choosing a permitted
+shape neither implies nor precludes the existence of a scale $a$ making the cells
+square---so they cannot contradict each other. In particular, squaring a
+magnitude never forces $r$ into the forbidden set: the record family below squares
+one diagonal magnitude fully at $r\notin$ forbidden set.
+
+\section{Modular sieves on the offsets}
+
+A square is $0$ or $1\pmod 3$, $0,1,4\pmod 8$, etc. Writing the nine cells as
+$E\pm(\text{offset})$ gives necessary conditions on $A,C$:
+\[
+\begin{array}{lll}
+\text{mod }3: & A\equiv C\equiv 0 & (\text{necessary for } \ge 7 \text{ squares})\\
+\text{mod }8/16: & A\equiv C\equiv 0 \bmod 8 &\\
+\text{mod }5\ (\text{last digit}): & A\equiv 0 \text{ or } C\equiv 0 &\\
+\hline
+\text{mod }240=16\cdot3\cdot5: & \text{only } 1/2880 \text{ of }(A,C)\text{ survive} &
+\end{array}
+\]
+Every record family passes all sieves. A pair value from
+$\mathrm{squarepairs}(2E)$ is already a perfect square, hence passes every
+sieve automatically---so drawing free cells from square-pairs is strictly
+stronger than the sieve and runs in $O(\text{pairs}^2)$.
+
+\section{Eigenmatrix of $\N$}
+
+The offset matrix is rank $2$ and generates its own powers:
+\[
+\boxed{\ \N^2=(a^2-c^2)\,(3\I-\JJ)\ },\qquad
+\boxed{\ \N^3=3(a^2-c^2)\,\N\ }.
+\]
+Writing $\kappa=a^2-c^2=(a+c)(a-c)$ (the product of the two diagonal magnitudes),
+the eigenvalues are
+\[
+\operatorname{spec}(\N)=\Bigl\{\,0,\ +\sqrt{3\kappa},\ -\sqrt{3\kappa}\,\Bigr\}.
+\]
+The all-ones vector $\mathbf 1$ is the $0$-eigenvector (line sums vanish). Note
+$\N^2$ has only two distinct entries---squaring collapses the shape to the single
+scalar $\kappa$; the nine-distinct structure lives only in the \emph{linear}
+$\N$.
+
+\subsection*{Derivation of $\N^{1/2}$}
+
+Since $\N$ generates its own powers
+\[
+\N^2=\kappa\,(3\I-\JJ),\qquad \N^3=3\kappa\,\N,\qquad
+\N^4=\N\cdot\N^3=3\kappa\,\N^2=3\kappa^2(3\I-\JJ),\qquad \kappa=a^2-c^2,
+\]
+any polynomial in $\N$ closes on the two building blocks $\N$ and $(3\I-\JJ)$.
+Because $\N$ annihilates the all-ones vector ($0$ eigenvalue), the square root has
+no constant term, so it is a \emph{quadratic in $\N$}:
+\[
+\N^{1/2}=q\,\N+p\,\N^2 .
+\]
+Squaring and reducing with the identities above,
+\[
+\bigl(q\N+p\N^2\bigr)^2
+= q^2\N^2+2pq\,\N^3+p^2\N^4
+= \underbrace{\bigl(q^2\kappa+3p^2\kappa^2\bigr)}_{\text{coeff. of }(3\I-\JJ)}(3\I-\JJ)
+\;+\;\underbrace{6pq\kappa}_{\text{coeff. of }\N}\,\N .
+\]
+Matching this to $\N$ (no $(3\I-\JJ)$ part, unit $\N$ part) gives the two
+coefficient equations
+\[
+6pq\kappa=1,\qquad q^2\kappa+3p^2\kappa^2=0
+\quad\Longrightarrow\quad
+pq=\frac{1}{6\kappa},\qquad q^2=-3\kappa\,p^2 .
+\]
+Eliminating in turn,
+\[
+\boxed{\ \N^{1/2}=q\,\N+p\,\N^2\ },\qquad
+\boxed{\ q^4=\frac{-1}{12\kappa},\qquad p^4=\frac{-1}{108\,\kappa^3}\ },
+\qquad \kappa=a^2-c^2 .
+\]
+Because $p^4,q^4<0$, $\N^{1/2}$ is \textbf{complex} (forced by the eigenvalue
+$-\sqrt{3\kappa}$). It is \emph{semi-magic} (rows and columns sum to $0$) but not
+full magic (diagonals differ), and it fails to exist when $\kappa=0$, i.e.\ at the
+forbidden diagonal ratios $r=\pm1$ (there $\N$ is nilpotent, $\N^2=0$).
+
+\subsection*{Limits on the coefficients $p,q$ from the $a,c$ limits}
+
+Everything passes through the single invariant $\kappa=a^2-c^2=a^2(1-r^2)$. The
+shape and positivity limits of \S4 pin its range:
+\[
+0<r<1\ \Rightarrow\ \kappa>0,\qquad
+|a|<\frac{1}{1+r}\ \Rightarrow\ \kappa<\frac{1-r}{1+r}<1
+\qquad\Longrightarrow\qquad
+\boxed{\,0<\kappa<1\,}.
+\]
+The supremum $\kappa\to1$ is approached as $r\to0,\ a\to1$; the infimum
+$\kappa\to0$ as $r\to1$ (the degenerate diagonal). From
+$|p|^4=\tfrac{1}{108\kappa^3}$ and $|q|^4=\tfrac{1}{12\kappa}$,
+\[
+|p|=\frac{1}{\bigl(108\,\kappa^3\bigr)^{1/4}},\qquad
+|q|=\frac{1}{\bigl(12\,\kappa\bigr)^{1/4}},
+\]
+which, on $0<\kappa<1$, give
+\[
+\boxed{\ |p|>108^{-1/4}\approx0.3102,\qquad |q|>12^{-1/4}\approx0.5373\ }
+\qquad(\text{both}\ \to\infty\ \text{as}\ \kappa\to0,\ r\to1).
+\]
+The two coefficients are tied by clean invariants:
+\[
+|p\,q|=\frac{1}{6\kappa}>\frac16,\qquad
+\left|\frac{q}{p}\right|=\sqrt{3\kappa}<\sqrt3
+\quad\bigl(=\ |\mu|,\ \text{the nonzero eigenvalue}\bigr).
+\]
+So the square-root coefficients have \emph{lower} bounds $\bigl(108^{-1/4},\,
+12^{-1/4}\bigr)$ at the maximal shape ($\kappa\to1$) and \emph{blow up} at the
+degenerate diagonal ($\kappa\to0$, $r\to\pm1$), consistent with $\N^{1/2}$ ceasing
+to exist there. The phase of $p,q$ is fixed by $p^4,q^4<0$ (fourth roots of a
+negative real, i.e.\ arguments $\tfrac{\pi}{4}+\tfrac{k\pi}{2}$).
+
+\subsection*{Remark: factoring $6pq$ yields the diagonal magnitudes}
+
+Because $\kappa=(a+c)(a-c)$ and $pq=\tfrac{1}{6\kappa}$, the reciprocal
+\[
+6pq=\frac{1}{\kappa}=\frac{1}{(a+c)(a-c)}
+\]
+carries the whole diagonal structure. A single value $pq$ fixes only the invariant
+$\kappa$ (a hyperbola $a^2-c^2=\text{const}$, with the shape $r$ still free), but a
+\emph{factorization} $6pq=m\cdot n$ distributes it into the two diagonal
+magnitudes:
+\[
+a+c=\frac1m,\qquad a-c=\frac1n
+\quad\Longrightarrow\quad
+a=\frac{m+n}{2mn},\quad c=\frac{n-m}{2mn},\quad r=\frac{c}{a}=\frac{n-m}{n+m}.
+\]
+Each factor pair is a distinct rational shape. For example $pq=35$ gives
+$6pq=210=2\cdot3\cdot5\cdot7$; the pairing with the $6$ is $(m,n)=(6,35)$, whence
+\[
+a+c=\tfrac16,\quad a-c=\tfrac1{35},\quad a=\tfrac{41}{420},\quad c=\tfrac{29}{420},
+\quad r=\tfrac{29}{41},
+\]
+and the eight factor pairs of $210$ give eight admissible shapes (all in $(0,1)$,
+none equal to $\tfrac12$). Thus the \emph{product} $pq$ sets the invariant, while
+\emph{factoring} $6pq$ is exactly factoring $(a+c)(a-c)$ into the two diagonals.
+
+\section{Shape $\leftrightarrow$ factorization}
+
+The additive representation $a+c=\tfrac1m,\ a-c=\tfrac1n$ (with $mn=6pq$) links the
+\emph{shape} to the \emph{factorization} through two exact, additive bridges.
+
+\subsection*{The shape numerators are symmetric about $n$}
+
+Over the common denominator $2mn$, the offsets are
+\[
+a=\frac{m+n}{2mn},\qquad c=\frac{n-m}{2mn},
+\]
+so the two numerators are $n+m$ and $n-m$: symmetric about $n$ with half-gap $m$,
+\[
+c\text{-num}=n-m,\qquad a\text{-num}=n+m,\qquad
+\text{center}=\frac{(n+m)+(n-m)}{2}=n,\qquad \text{half-gap}=m.
+\]
+The Möbius map on the shape recovers the factor pair exactly:
+\[
+\boxed{\ \frac{1+r}{1-r}=\frac{n}{m}\ },\qquad r=\frac{c}{a}=\frac{n-m}{n+m},
+\]
+and the reciprocal shape $r\mapsto1/r$ flips the sign, $\tfrac{1+1/r}{1-1/r}=-\tfrac nm$.
+(This is the same $45^\circ$ Möbius map of \S5, turning axis magnitudes into
+diagonal ones.) In the special case $m=6$ the center is $n=pq$ itself and the
+half-gap is $6$, e.g.\ $71=77-6$, $83=77+6$, giving $\tfrac{1+r}{1-r}=\tfrac{77}{6}$.
+
+\subsection*{Euler: two sums of two squares factor the center}
+
+The magic-square richness lives in $2c=u^2+v^2$; a center with two \emph{distinct}
+such representations factors by Euler's method:
+\[
+N=a^2+b^2=c^2+d^2\quad(\{a,b\}\neq\{c,d\})
+\;\Longrightarrow\;
+\gcd(ad\pm bc,\ N)\ \text{are nontrivial factors of }N.
+\]
+For instance $65=1^2+8^2=4^2+7^2\Rightarrow\gcd(1\cdot7\mp8\cdot4,65)=5,13$, and
+$2501=1^2+50^2=10^2+49^2\Rightarrow41,61$. Hence
+\[
+\text{many additive reps of }2c
+\iff c\text{ built from primes }\equiv1\!\!\pmod4
+\iff \text{Euler factors }c .
+\]
+Richness (\,$\mathrm{square\_pairs}(2c)$\,) and factorability are the same fact:
+this is why the record families sit at highly composite centers.
+
+\subsection*{Why neither factors ``for free''}
+
+Both bridges are genuine identities, yet neither is a shortcut, for the same
+reason:
+\begin{itemize}[nosep]
+\item $\tfrac{1+r}{1-r}=\tfrac nm$ is a \emph{bijection} shape $\leftrightarrow$
+factor pair. Using it presupposes the shape $r=C/A$, which is itself built from
+$m,n$; it returns what was put in.
+\item Euler's $\gcd$ is instant \emph{given} two representations, but finding even
+one (searching $a$ with $N-a^2$ square) costs $\Theta(\sqrt N)$.
+\end{itemize}
+Any fixed arithmetic rule that output a nontrivial factor of $N$ would either take
+a factor as (possibly hidden) input or scan $\Theta(\sqrt N)$ candidates with a
+divisibility test---so no residue/floor/Möbius expression escapes the
+$\sqrt N$ cost. The additive lens \emph{organizes} the problem correctly; it does
+not cheapen the factoring.
+
+\subsection*{Where ``peel 2, 3'' legitimately leads: the $6k\pm1$ wheel}
+
+There \emph{is} a real, correct algorithm at the end of this line, and it is the
+one the $6k\pm1$ structure points to. Consider the candidate modulus
+\[
+M=(N\bmod 6)+6m,\qquad m=0,1,2,\dots
+\]
+For $N$ coprime to $6$ (i.e.\ after peeling the factors $2$ and $3$), $N\bmod6\in\{1,5\}$,
+so $M$ runs through one residue class $\{5,11,17,23,\dots\}$ or $\{1,7,13,19,\dots\}$
+---exactly the $6k\pm1$ numbers, the only possible prime factors of $N$. Testing
+$N\bmod M=0$ is a divisibility check, and scanning $m$ is
+\textbf{wheel ($6k\pm1$) trial division}: a genuine method, $\sim\!3\times$ faster
+than testing every integer because multiples of $2$ and $3$ are skipped. Two
+requirements make it correct, and one caveat bounds it:
+\begin{itemize}[nosep]
+\item \textbf{Scan $m$.} A single fixed $m$ tests one candidate; factoring needs
+$m$ incremented until $M\mid N$ or $M>\sqrt N$.
+\item \textbf{Both classes.} A factor may lie in \emph{either} $\{1,5\}\bmod6$.
+E.g.\ $55=5\cdot11$ has $N\equiv1\pmod6$ yet both primes are $\equiv5$; scanning
+only the class $N\bmod6$ misses them.
+\item \textbf{Still $\Theta(\sqrt N)$.} The wheel removes a constant fraction of
+candidates but marches $M$ up to $\sqrt N$; it is a constant-factor win, not an
+asymptotic one.
+\end{itemize}
+This is the honest terminus of the ``peel $2,3$, then everything is $6k\pm1$''
+structure (the same $6k\pm1$ blocks $5=6-1$, $7=6+1$ that seed the flanking-pair
+arithmetic): the residue and M\"obius shortcuts dissolve under a fair sample of
+semiprimes, but the $6k\pm1$ wheel survives---because it \emph{is} trial division,
+in its $2,3$-peeled form, and therefore respects the $\sqrt N$ cost rather than
+evading it.
+
+\subsection*{Closing the loop: the $\{1,2,3,+,-,*\}$ canonical form}
+
+The same $6k\pm1$ fact gives a canonical representation of \emph{every} natural
+number over the alphabet $\{1,2,3,+,-,*\}$. Factor $N$ with the wheel; then $2$ and
+$3$ are atoms, and every prime $p>3$ is
+\[
+p = 2\cdot3\cdot k \pm 1,\qquad k=\frac{p\mp1}{6},
+\]
+with $k$ written in the same form, recursively. Thus
+\[
+N=\prod_i p_i,\qquad p_i=2\cdot3\cdot(\text{canonical }k_i)\pm1 .
+\]
+For example
+\[
+5=(2{\cdot}3{\cdot}1-1),\quad 7=(2{\cdot}3{\cdot}1+1),\quad 17=(2{\cdot}3{\cdot}3-1),
+\]
+\[
+425=5\cdot5\cdot17=(2{\cdot}3{\cdot}1-1)(2{\cdot}3{\cdot}1-1)(2{\cdot}3{\cdot}3-1),
+\qquad
+180625=425^2=(2{\cdot}3{\cdot}1-1)^4(2{\cdot}3{\cdot}3-1)^2,
+\]
+and primes recurse, e.g.\ $2501=41\cdot61=(2{\cdot}3{\cdot}(2{\cdot}3{\cdot}1+1)-1)\,
+(2{\cdot}3{\cdot}2{\cdot}(2{\cdot}3{\cdot}1-1)+1)$.
+The wheel is the engine (it yields the primes); the $6k\pm1$ identity is the rule
+that rebuilds each prime from $\{1,2,3,\pm1,*\}$. This is the same single fact---%
+\emph{after $2$ and $3$, everything is $6k\pm1$}---that underlies the flanking-pair
+richness ($2c=u^2+v^2$ needs primes $\equiv1\bmod4$ but the blocks are $6k\pm1$),
+the factorization wheel, and this canonical form: one structure, three faces.
+
+\section{Summary of value limits}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{p{4.7cm} p{9.5cm}}
+\hline
+\textbf{Quantity} & \textbf{Condition / limit}\\
+\hline
+Center $E$ & $E=\rho^2$ (perfect square) so cell$/E$ is a rational square; sum $=3E$.\\
+Degrees of freedom & $2$ shape (a,c) $+\,1$ scale $E$; semi-magic has $4$.\\
+Shape ratio $r=C/A$ & fundamental domain $0<r<1$; symmetry $r\sim\{-r,1/r,-1/r\}$.\\
+Forbidden $r$ (no $9$ distinct) & $r\in\{0,\pm\tfrac12,\pm1,\pm2,\infty\}$ (only $\tfrac12$ inside $(0,1)$).\\
+Offset scale $a$ (positivity) & $|a|<\dfrac{1}{1+r}$ for $0<r<1$.\\
+Offsets $A,C$ (mod sieve, $\ge7$ sq.) & $A\equiv C\equiv0\ (\mathrm{mod}\ 3)$; combined mod $240$ keeps $1/2880$.\\
+Eigenvalues of $\N$ & $0,\ \pm\sqrt{3(a^2-c^2)}$; real iff $|r|<1$.\\
+Invariant $\kappa$ & $\kappa=a^2-c^2=(a+c)(a-c)$; $\kappa>0$ on $0<r<1$; $\kappa=0$ at $r=\pm1$.\\
+Cells vs.\ sum & every cell $<2E=\tfrac23 S$ (opposite $>0$).\\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Worked examples: the $425$ and $195364$ squares}
+
+In each grid the nine cells are shown with perfect squares marked $^\star$ (root
+given in the caption). The right-hand column lists the three \textbf{row sums};
+the bottom row lists the three \textbf{column sums}; and the bottom-right corner
+gives the two \textbf{diagonal sums} ($\diagdown$ = main, $\diagup$ = anti).
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|rrr||r|}
+\hline
+$139129^\star$ & $83521^\star$ & $319225^\star$ & $\mathbf{541875}$\\
+$360721$ & $180625^\star$ & $529^\star$ & $\mathbf{541875}$\\
+$42025^\star$ & $277729^\star$ & $222121$ & $\mathbf{541875}$\\
+\hline\hline
+$\mathbf{541875}$ & $\mathbf{541875}$ & $\mathbf{541875}$
+   & \shortstack{$\diagdown\,\mathbf{541875}$\\[2pt]$\diagup\,\mathbf{541875}$}\\
+\hline
+\end{tabular}
+\caption{\textbf{$425$ family} --- root $\rho=425$, center $E=425^2=180625$, magic
+sum $3E=541875$. All rows, columns \emph{and} both diagonals equal $541875$.
+\textbf{Magic}, $7$ squares: $373^2,289^2,565^2,425^2,23^2,205^2,527^2$; the two
+non-squares are $360721$ and $222121$.}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|rrr||r|}
+\hline
+$40804^\star$ & $386884^\star$ & $158404^\star$ & $\mathbf{586092}$\\
+$312964$ & $195364^\star$ & $77764$ & $\mathbf{586092}$\\
+$232324^\star$ & $3844^\star$ & $349924$ & $\mathbf{586092}$\\
+\hline\hline
+$\mathbf{586092}$ & $\mathbf{586092}$ & $\mathbf{586092}$
+   & \shortstack{$\diagdown\,\mathbf{586092}$\\[2pt]$\diagup\,\mathbf{586092}$}\\
+\hline
+\end{tabular}
+\caption{\textbf{$195364$ magic square} --- center $E=442^2=195364$, magic sum
+$3E=586092$. All rows, columns and both diagonals equal $586092$. \textbf{Magic},
+$6$ squares:
+$202^2,622^2,398^2,442^2,482^2,62^2$; non-squares $312964,77764,349924$. This is the
+best \emph{magic} square-count reachable at this center.}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|rrr||r|}
+\hline
+$3844^\star$ & $33124^\star$ & $56644^\star$ & $93612$\\
+$158404^\star$ & $195364^\star$ & $232324^\star$ & $\mathbf{586092}$\\
+$334084^\star$ & $357604^\star$ & $386884^\star$ & $1078572$\\
+\hline\hline
+$496332$ & $\mathbf{586092}$ & $675852$
+   & \shortstack{$\diagdown\,\mathbf{586092}$\\[2pt]$\diagup\,\mathbf{586092}$}\\
+\hline
+\end{tabular}
+\caption{\textbf{$195364$ nine-square} (point-symmetric) --- all $9$ cells are
+squares ($62^2,182^2,238^2,398^2,442^2,482^2,578^2,598^2,622^2$), but \textbf{NOT
+magic}. Only the center cross reaches $586092$: middle row, middle column, and
+\emph{both diagonals} ($\diagdown=\diagup=586092$, shown in the corner). The outer
+rows ($93612,\,1078572$) and outer columns ($496332,\,675852$) are off by $\pm X$
+($X=492480$ for rows) --- the signature of a point-symmetric grid that is not
+magic.}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|rrr||r|}
+\hline
+$349924$ & $33124^\star$ & $386884^\star$ & $769932$\\
+$232324^\star$ & $195364^\star$ & $158404^\star$ & $\mathbf{586092}$\\
+$3844^\star$ & $357604^\star$ & $40804^\star$ & $402252$\\
+\hline\hline
+$\mathbf{586092}$ & $\mathbf{586092}$ & $\mathbf{586092}$
+   & \shortstack{$\diagdown\,\mathbf{586092}$\\[2pt]$\diagup\,\mathbf{586092}$}\\
+\hline
+\end{tabular}
+\caption{\textbf{$195364$ eight-square} (point-symmetric) --- $8$ of the $9$ cells
+are squares ($182^2,622^2,482^2,442^2,398^2,62^2,598^2,202^2$); only the top-left
+$349924$ is not ($\sqrt{349924}\approx591.54$). Here \emph{all three columns} and
+\emph{both diagonals} \emph{and} the middle row equal $586092$ --- six of the eight
+lines are magic --- but the top and bottom rows are off by $\pm183840$
+($769932$ and $402252$). It is the closest approach to a magic $8$-square: to make
+it magic the top-left cell is forced to $586092-33124-386884=166084=407.5^2\ldots$,
+which is \emph{not} a perfect square. That single stubborn cell is the $7\!\to\!8$
+wall in one picture.}
+\end{table}
+
+\section{Records and open problem}
+
+\begin{itemize}[nosep]
+\item \textbf{$9$ distinct squares, non-magic:} easy---any center with
+$\ge 4$ flanking square-pairs (point-symmetric grid).
+\item \textbf{Magic, $7$ squares:} the ``$425$ family'' at root $\rho=425$,
+center $E=180625$, shape $r=-247/825$ (in $(0,1)$ up to symmetry, avoids
+$\tfrac12$). Two of the four magnitudes are fully squared.
+\item \textbf{Magic, $8$ or $9$ squares:} \emph{open}. Requires all four
+magnitudes $1\pm\{a,c,a+c,a-c\}$ simultaneously square---a rational point on the
+elliptic curve. No local/modular obstruction rules out any admissible $r$; the
+obstruction, if any, is global.
+\end{itemize}
+
+\section*{Acknowledgments}
+
+This note grew out of an extended exploration by the author, reducing the
+$3\times3$ magic square of squares to its two-parameter shape $(a,c)$, the single
+scale-invariant ratio $r=C/A$, and the offset matrix $\N=a\PP+c\QQ$. The symbolic
+identities ($\N^2=(a^2-c^2)(3\I-\JJ)$, $\N^3=3(a^2-c^2)\N$, the closed form of
+$\N^{1/2}$), the modular sieves, and the numerical checks throughout were verified
+computationally with \texttt{SymPy} and \texttt{NumPy}. The author thanks these
+open-source tools, whose symbolic and numerical support made the verification of
+every claim in this note routine.
+
+\end{document}

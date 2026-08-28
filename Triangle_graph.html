@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Symbolic Euclidean Triangle Diagram</title>
+  <style>
+    svg {
+      border: 1px solid #ccc;
+      background: #fafafa;
+    }
+    text {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+    }
+    .node {
+      fill: black;
+    }
+    .hyp {
+      stroke: black;
+      stroke-width: 2;
+    }
+    .tri {
+      stroke: #0074D9;
+      stroke-width: 1.5;
+      fill: none;
+    }
+    .label {
+      fill: #111;
+    }
+  </style>
+</head>
+<body>
+<svg width="800" height="400" viewBox="0 0 800 400">
+
+  <!-- Coordinates (symbolic layout) -->
+  <!-- Main hypotenuse A--I -->
+  <!-- A at (100,200), I at (700,200) -->
+  <line x1="100" y1="200" x2="700" y2="200" class="hyp" />
+
+  <!-- Nodes on hypotenuse -->
+  <circle cx="100" cy="200" r="4" class="node" />
+  <text x="90" y="190" class="label">A</text>
+
+  <circle cx="700" cy="200" r="4" class="node" />
+  <text x="705" y="190" class="label">I</text>
+
+  <!-- Upper nodes: B, C, F (between A and I) -->
+  <!-- B at 250,150; C at 350,130; F at 500,140 -->
+  <circle cx="250" cy="150" r="4" class="node" />
+  <text x="245" y="135" class="label">B</text>
+
+  <circle cx="350" cy="130" r="4" class="node" />
+  <text x="345" y="115" class="label">C</text>
+
+  <circle cx="500" cy="140" r="4" class="node" />
+  <text x="495" y="125" class="label">F</text>
+
+  <!-- Lower nodes: H, G, D (between I and A) -->
+  <!-- H at 250,250; G at 350,270; D at 500,260 -->
+  <circle cx="250" cy="250" r="4" class="node" />
+  <text x="245" y="270" class="label">H</text>
+
+  <circle cx="350" cy="270" r="4" class="node" />
+  <text x="345" y="290" class="label">G</text>
+
+  <circle cx="500" cy="260" r="4" class="node" />
+  <text x="495" y="280" class="label">D</text>
+
+  <!-- Triangle 1: A^2 + I^2 = 2K^2 -->
+  <!-- Represented by hypotenuse A--I and a symbolic right angle marker in the middle -->
+  <line x1="100" y1="200" x2="700" y2="200" class="tri" />
+  <!-- Right angle marker at midpoint -->
+  <rect x="395" y="195" width="10" height="10" fill="none" stroke="#FF4136" stroke-width="1" />
+  <text x="380" y="190" class="label">A² + I² = 2K²</text>
+
+  <!-- Triangle 2: B^2 + H^2 = 2K^2 -->
+  <line x1="250" y1="150" x2="250" y2="250" class="tri" />
+  <line x1="250" y1="150" x2="100" y2="200" class="tri" />
+  <line x1="250" y1="250" x2="700" y2="200" class="tri" />
+  <!-- Right angle marker near midpoint of BH -->
+  <rect x="245" y="195" width="10" height="10" fill="none" stroke="#FF4136" stroke-width="1" />
+  <text x="260" y="195" class="label">B² + H² = 2K²</text>
+
+  <!-- Triangle 3: C^2 + G^2 = 2K^2 -->
+  <line x1="350" y1="130" x2="350" y2="270" class="tri" />
+  <line x1="350" y1="130" x2="100" y2="200" class="tri" />
+  <line x1="350" y1="270" x2="700" y2="200" class="tri" />
+  <!-- Right angle marker near midpoint of CG -->
+  <rect x="345" y="195" width="10" height="10" fill="none" stroke="#FF4136" stroke-width="1" />
+  <text x="360" y="195" class="label">C² + G² = 2K²</text>
+
+  <!-- Triangle 4: F^2 + D^2 = 2K^2 -->
+  <line x1="500" y1="140" x2="500" y2="260" class="tri" />
+  <line x1="500" y1="140" x2="100" y2="200" class="tri" />
+  <line x1="500" y1="260" x2="700" y2="200" class="tri" />
+  <!-- Right angle marker near midpoint of FD -->
+  <rect x="495" y="195" width="10" height="10" fill="none" stroke="#FF4136" stroke-width="1" />
+  <text x="510" y="195" class="label">F² + D² = 2K²</text>
+
+</svg>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Canonical AST Transformer (No Factorization)</title>
+<style>
+  body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+  .tree-container { margin-top: 30px; position: relative; min-height: 300px; }
+  .node {
+    position: absolute;
+    padding: 6px 10px;
+    background: white;
+    border: 2px solid #444;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: bold;
+  }
+  svg { position: absolute; top: 0; left: 0; overflow: visible; }
+  input {
+    width: 400px;
+    padding: 10px;
+    font-size: 16px;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin-left: 10px;
+  }
+  h2 { margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<h1>Canonical AST Transformer (No Factorization)</h1>
+
+<p>Enter any expression (e.g. <b>2*2*2*2-1</b>, <b>3*(2*3-1)</b>, <b>12+3*5</b>):</p>
+
+<input id="exprInput" placeholder="Enter expression here">
+<button onclick="parseAndShow()">Parse</button>
+<button onclick="canonicalize()">Canonicalize</button>
+
+<h2>Original AST</h2>
+<div id="treeOriginal" class="tree-container"></div>
+
+<h2>Canonical AST</h2>
+<div id="treeCanonical" class="tree-container"></div>
+
+<script>
+// -----------------------------
+// AST Node
+// -----------------------------
+class Node {
+  constructor({ op = null, left = null, right = null, value = null } = {}) {
+    this.op = op;
+    this.left = left;
+    this.right = right;
+    this.value = value;
+  }
+  isLeaf() { return this.op === null; }
+}
+
+// -----------------------------
+// Tokenizer + Parser
+// -----------------------------
+function tokenize(expr) {
+  // Normalize [] and {} to ()
+  expr = expr.replace(/\[/g, "(")
+             .replace(/\]/g, ")")
+             .replace(/\{/g, "(")
+             .replace(/\}/g, ")");
+
+  return expr.replace(/\s+/g, "")
+             .match(/(\d+|[\+\-\*\(\)])/g) || [];
+}
+
+function parseExpressionFromTokens(tokens) {
+  let pos = 0;
+
+  function parsePrimary() {
+    const t = tokens[pos++];
+    if (t === "(") {
+      const node = parseAddSub();
+      pos++; // skip ')'
+      return node;
+    }
+    return new Node({ value: Number(t) });
+  }
+
+  function parseMul() {
+    let node = parsePrimary();
+    while (tokens[pos] === "*") {
+      pos++;
+      node = new Node({ op: "*", left: node, right: parsePrimary() });
+    }
+    return node;
+  }
+
+  function parseAddSub() {
+    let node = parseMul();
+    while (tokens[pos] === "+" || tokens[pos] === "-") {
+      const op = tokens[pos++];
+      node = new Node({ op, left: node, right: parseMul() });
+    }
+    return node;
+  }
+
+  return parseAddSub();
+}
+
+function parseExpression(expr) {
+  const tokens = tokenize(expr);
+  return parseExpressionFromTokens(tokens);
+}
+
+// -----------------------------
+// Evaluate AST
+// -----------------------------
+function evalAst(node) {
+  if (node.isLeaf()) return node.value;
+  const L = evalAst(node.left);
+  const R = evalAst(node.right);
+  if (node.op === "+") return L + R;
+  if (node.op === "-") return L - R;
+  if (node.op === "*") return L * R;
+}
+
+// -----------------------------
+// Canonical form WITHOUT factorization
+// Build N from 1 using only *2, *3, +1
+// -----------------------------
+function canonicalBuild(n) {
+  if (n === 1) return new Node({ value: 1 });
+
+  let root = new Node({ value: 1 });
+
+  function chain(op, val) {
+    return new Node({ op, left: root, right: new Node({ value: val }) });
+  }
+
+  let x = 1;
+
+  while (x < n) {
+    if (n % (x * 3) === 0) {
+      root = chain("*", 3);
+      x *= 3;
+    } else if (n % (x * 2) === 0) {
+      root = chain("*", 2);
+      x *= 2;
+    } else {
+      root = chain("+", 1);
+      x += 1;
+    }
+  }
+
+  return root;
+}
+
+// -----------------------------
+// Draw AST
+// -----------------------------
+function drawAst(node, x, y, spacing, svg, container) {
+  const div = document.createElement("div");
+  div.className = "node";
+  div.style.left = x + "px";
+  div.style.top = y + "px";
+  div.textContent = node.isLeaf() ? node.value : node.op;
+  container.appendChild(div);
+
+  if (!node.isLeaf()) {
+    const leftX = x - spacing;
+    const rightX = x + spacing;
+    const childY = y + 80;
+
+    drawAst(node.left, leftX, childY, spacing / 1.6, svg, container);
+    drawAst(node.right, rightX, childY, spacing / 1.6, svg, container);
+
+    svg.innerHTML += `
+      <line x1="${x+30}" y1="${y+20}" x2="${leftX+30}" y2="${childY}" stroke="black" stroke-width="2"/>
+      <line x1="${x+30}" y1="${y+20}" x2="${rightX+30}" y2="${childY}" stroke="black" stroke-width="2"/>
+    `;
+  }
+}
+
+function renderTree(ast, containerId) {
+  const area = document.getElementById(containerId);
+  area.innerHTML = "";
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  area.appendChild(svg);
+  drawAst(ast, 400, 20, 200, svg, area);
+}
+
+// -----------------------------
+// UI
+// -----------------------------
+let lastAst = null;
+
+function parseAndShow() {
+  const expr = document.getElementById("exprInput").value;
+  lastAst = parseExpression(expr);
+  renderTree(lastAst, "treeOriginal");
+  document.getElementById("treeCanonical").innerHTML = "";
+}
+
+function canonicalize() {
+  if (!lastAst) return alert("Parse an expression first.");
+  const val = evalAst(lastAst);
+  const canonAst = canonicalBuild(val);
+  renderTree(canonAst, "treeCanonical");
+}
+</script>
+
+</body>
+</html>

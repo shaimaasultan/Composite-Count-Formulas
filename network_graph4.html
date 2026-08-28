@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  body { margin:0; overflow:hidden; }
+  text { font-family: sans-serif; font-size: 14px; }
+  circle { cursor: pointer; }
+</style>
+
+<div id="tooltip" 
+     style="position:absolute; 
+            padding:6px 10px; 
+            background:#222; 
+            color:white; 
+            border-radius:6px; 
+            font-size:14px; 
+            pointer-events:none; 
+            opacity:0;">
+</div>
+
+<svg width="1200" height="800"></svg>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+// Base nodes
+const baseNodes = ["A","B","C","D","F","G","H","I"];
+
+// SUM nodes
+const sum2Node = "SUM2";
+const sum3Nodes = ["SUM3_ABC","SUM3_ADG","SUM3_CFI","SUM3_GHI"];
+
+// Node colors
+const nodes = [
+  ...baseNodes.map(id => ({id, color:"#66aaff"})),
+  {id: sum2Node, color:"#ff4444"},
+  ...sum3Nodes.map(id => ({id, color:"#ffaa33"}))
+];
+
+let links = [];
+
+// 1) Neighbor cycle (forward + reverse)
+const cycleForward = [
+  ["A","B"], ["B","C"], ["C","F"], ["F","I"],
+  ["I","H"], ["H","G"], ["G","D"], ["D","A"]
+];
+
+cycleForward.forEach(([u,v]) => {
+  links.push({
+    source:u, target:v, weight:1, type:"cycle_forward",
+    equation:`${u} + ${v} = 2`
+  });
+  links.push({
+    source:v, target:u, weight:1, type:"cycle_reverse",
+    equation:`${v} + ${u} = 2`
+  });
+});
+
+// 2) Pairwise via SUM2
+baseNodes.forEach(n1 => {
+  baseNodes.forEach(n2 => {
+    if (n1 !== n2) {
+      links.push({
+        source:n1, target:sum2Node, weight:1, type:"sum",
+        equation:`${n1} + ${n2} = 2`
+      });
+      links.push({
+        source:sum2Node, target:n2, weight:1, type:"sum",
+        equation:`${n1} + ${n2} = 2`
+      });
+    }
+  });
+});
+
+// 3) Triple relations
+const triples = {
+  "SUM3_ADG": ["A","D","G"],
+  "SUM3_CFI": ["C","F","I"],
+  "SUM3_ABC": ["A","B","C"],
+  "SUM3_GHI": ["G","H","I"]
+};
+
+for (let Znode in triples) {
+  triples[Znode].forEach(n => {
+    links.push({
+      source:n, target:Znode, weight:1, type:"sum3",
+      equation:`${triples[Znode].join(" + ")} = 3`
+
+    });
+    links.push({
+      source:Znode, target:n, weight:1, type:"sum3",
+      equation:`${triples[Znode].join(" + ")} = 3`
+
+    });
+  });
+}
+
+const svg = d3.select("svg");
+const width = window.innerWidth;
+const height = window.innerHeight;
+
+// Arrowheads
+svg.append("defs").html(`
+  <marker id="arrowhead"
+          markerWidth="20"
+          markerHeight="20"
+          refX="18"
+          refY="10"
+          orient="auto"
+          markerUnits="userSpaceOnUse">
+    <path d="M0,0 L0,20 L20,10 z" fill="#333" />
+  </marker>
+`);
+
+const simulation = d3.forceSimulation(nodes)
+  .force("link", d3.forceLink(links).id(d => d.id).distance(160))
+  .force("charge", d3.forceManyBody().strength(-900))
+  .force("center", d3.forceCenter(width/2, height/2));
+
+const link = svg.append("g")
+  .selectAll("line")
+  .data(links)
+  .enter().append("line")
+  .attr("stroke-width", 3)
+  .attr("marker-end", "url(#arrowhead)")
+  .attr("stroke", d => d.type === "cycle_forward" ? "red" : "#777")
+  .on("mouseover", (event, d) => {
+      const tip = document.getElementById("tooltip");
+      tip.innerHTML = d.equation;
+      tip.style.opacity = 1;
+  })
+  .on("mousemove", (event) => {
+      const tip = document.getElementById("tooltip");
+      tip.style.left = (event.pageX + 15) + "px";
+      tip.style.top = (event.pageY + 15) + "px";
+  })
+  .on("mouseout", () => {
+      const tip = document.getElementById("tooltip");
+      tip.style.opacity = 0;
+  });
+
+const weightLabel = svg.append("g")
+  .selectAll("text")
+  .data(links)
+  .enter().append("text")
+  .text(d => d.weight)
+  .attr("font-size", 12)
+  .attr("fill", "#444");
+
+const node = svg.append("g")
+  .selectAll("circle")
+  .data(nodes)
+  .enter().append("circle")
+  .attr("r", 26)
+  .attr("fill", d => d.color)
+  .call(drag(simulation));
+
+const label = svg.append("g")
+  .selectAll("text")
+  .data(nodes)
+  .enter().append("text")
+  .text(d => d.id)
+  .attr("text-anchor", "middle")
+  .attr("dy", 5);
+
+function lineEndOffset(source, target) {
+  const dx = target.x - source.x;
+  const dy = target.y - source.y;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  const offset = 30;
+  return {
+    x1: source.x + (dx/dist) * offset,
+    y1: source.y + (dy/dist) * offset,
+    x2: target.x - (dx/dist) * offset,
+    y2: target.y - (dy/dist) * offset
+  };
+}
+
+simulation.on("tick", () => {
+  link
+    .attr("x1", d => lineEndOffset(d.source, d.target).x1)
+    .attr("y1", d => lineEndOffset(d.source, d.target).y1)
+    .attr("x2", d => lineEndOffset(d.source, d.target).x2)
+    .attr("y2", d => lineEndOffset(d.source, d.target).y2);
+
+  node
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y);
+
+  label
+    .attr("x", d => d.x)
+    .attr("y", d => d.y);
+
+  weightLabel
+    .attr("x", d => (lineEndOffset(d.source, d.target).x1 + lineEndOffset(d.source, d.target).x2) / 2)
+    .attr("y", d => (lineEndOffset(d.source, d.target).y1 + lineEndOffset(d.source, d.target).y2) / 2);
+});
+
+function drag(simulation) {
+  function dragstarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+  function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+  }
+  function dragended(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+  return d3.drag()
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended);
+}
+</script>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>No-Factors AST Builder</title>
+<style>
+  :root {
+    --bg:#f5f6f8; --panel:#fff; --ink:#1f2430; --muted:#6b7280; --accent:#2563eb;
+    --mul:#7c3aed; --add:#059669; --sub:#dc2626; --leaf:#334155; --six:#b45309;
+  }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--ink); margin:0; padding:24px; }
+  h1 { margin:0 0 4px; font-size:22px; }
+  .sub { color:var(--muted); margin:0 0 16px; font-size:14px; line-height:1.55; }
+  .sub code { background:#eef1f6; padding:1px 6px; border-radius:4px; }
+  .controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:10px; }
+  input { flex:1 1 320px; min-width:220px; padding:11px 12px; font-size:16px; border:1px solid #cbd2dc; border-radius:8px; background:#fff; }
+  input:focus { outline:2px solid var(--accent); border-color:transparent; }
+  button { padding:11px 16px; font-size:14px; font-weight:600; cursor:pointer; border:none; border-radius:8px; background:var(--accent); color:#fff; }
+  button.alt { background:#7c3aed; } button.ghost { background:#e5e9f0; color:var(--ink); }
+  button:hover { filter:brightness(1.05); }
+  .examples { font-size:13px; color:var(--muted); margin:2px 0 14px; }
+  .examples a { color:var(--accent); text-decoration:none; margin-right:12px; cursor:pointer; }
+  .examples a:hover { text-decoration:underline; }
+  .status { padding:12px 16px; border-radius:10px; margin:12px 0; font-size:15px; border:1px solid transparent; }
+  .status.ok { background:#ecfdf5; border-color:#a7f3d0; color:#065f46; }
+  .status.info { background:#eff6ff; border-color:#bfdbfe; color:#1e40af; }
+  .status.err { background:#fffbeb; border-color:#fde68a; color:#92400e; }
+  .status b { font-weight:700; }
+  .panels { display:grid; grid-template-columns:1fr; gap:16px; }
+  @media (min-width:900px){ .panels { grid-template-columns:1fr 300px; } }
+  .card { background:var(--panel); border:1px solid #e5e7eb; border-radius:12px; padding:14px 16px; }
+  .card h2 { font-size:14px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:0 0 10px; }
+  .tree-container { position:relative; min-height:220px; overflow:auto; }
+  .node { position:absolute; transform:translate(-50%,0); padding:5px 10px; background:#fff; border:2px solid var(--leaf); border-radius:8px; text-align:center; font-weight:700; font-size:14px; white-space:nowrap; z-index:2; }
+  .node.mul { border-color:var(--mul); color:var(--mul); }
+  .node.add { border-color:var(--add); color:var(--add); }
+  .node.sub { border-color:var(--sub); color:var(--sub); }
+  .node.leaf { border-color:var(--leaf); color:var(--leaf); background:#f8fafc; }
+  .node.six { border-color:var(--six); color:var(--six); }
+  svg.wires { position:absolute; top:0; left:0; overflow:visible; z-index:1; }
+  .steps { list-style:none; margin:0; padding:0; font-size:13px; }
+  .steps li { padding:6px 0; border-bottom:1px dashed #e5e7eb; }
+  .steps li:last-child { border-bottom:none; }
+  .steps .lv { color:var(--muted); font-weight:700; margin-right:6px; }
+  .steps code { font-family:ui-monospace,Menlo,Consolas,monospace; word-break:break-all; }
+  .kv { font-size:14px; line-height:1.7; }
+  .kv b { display:inline-block; min-width:120px; color:var(--muted); font-weight:600; }
+  .canon { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:15px; word-break:break-all; }
+</style>
+</head>
+<body>
+
+<h1>No-Factors AST Builder</h1>
+<p class="sub">
+  Represents <b>any</b> whole number as sums of <b>only</b> the blocks <code>{5, 6, 7, 11, 17}</code> &mdash; no <code>1/2/3</code> filler
+  (if a big block would force a leftover <code>+1/+2</code>, it pops one and uses smaller blocks instead: <code>30 = 17+7+6</code>, not <code>17+11+2</code>).
+  Only the six gaps <code>{1,2,3,4,8,9}</code> can't be done. No factorization is ever used. <b>Decompose</b> shows the repeated sums;
+  <b>Fold</b> collapses equal blocks into <code>count&middot;block</code> products; <b>Collect common term</b> first divides out any <code>2</code> and <code>3</code> (as <code>2&middot;()</code>, <code>3&middot;()</code>), then on the remaining number tries each block <code>d</code> as a shared term &mdash; it collects (<code>d&middot;(M/d)</code>, e.g. <code>143 = 13&middot;11</code>) exactly when <code>d</code> divides it. So it finds factors <code>2, 3</code> and any block factor. <b>Collect all</b> repeats this &mdash; peel a block, collect again on the cofactor, and so on until no block divides &mdash; giving <code>N = 2<sup>a</sup>&middot;3<sup>b</sup>&middot;5<sup>c</sup>&middot;7<sup>d</sup>&middot;11<sup>e</sup>&middot;17<sup>f</sup> &middot; residual</code>. Builds the canonical tree over <code>{1,2,3,+,&minus;,*}</code>.
+  Blocks decode as <code>5=2&middot;3&minus;1</code>, <code>6=2&middot;3</code>, <code>7=2&middot;3+1</code>, <code>11=2&middot;3&middot;2&minus;1</code>, <code>17=2&middot;3&middot;3&minus;1</code>. Uses <b>BigInt</b>.
+</p>
+
+<div class="controls">
+  <input id="exprInput" placeholder="Enter a number, e.g.  143  or  100*4+3" />
+  <button onclick="decompose()">Decompose (sums)</button>
+  <button class="alt" onclick="foldBuild()">Fold &rarr; tree</button>
+  <button class="alt" onclick="collectBuild()">Collect common term</button>
+  <button class="alt" onclick="collectAll()">Collect all</button>
+  <button class="ghost" onclick="clearAll()">Clear</button>
+</div>
+<div class="examples">
+  Try:
+  <a onclick="setEx('30')">30</a>
+  <a onclick="setEx('143')">143</a>
+  <a onclick="setEx('100')">100</a>
+  <a onclick="setEx('4126375')">4126375</a>
+  <a onclick="setEx('412637514191952379171729')">412637514191952379171729</a>
+</div>
+
+<div id="status"></div>
+
+<div class="panels">
+  <div class="card">
+    <h2 id="treeTitle">Tree</h2>
+    <div id="treeArea" class="tree-container"></div>
+  </div>
+  <div>
+    <div class="card" style="margin-bottom:16px">
+      <h2>Summary</h2>
+      <div id="summary" class="kv">&mdash;</div>
+    </div>
+    <div class="card">
+      <h2>Detail</h2>
+      <ol id="steps" class="steps"><li>&mdash;</li></ol>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+// ---------- AST ----------
+class Node {
+  constructor({ op=null, left=null, right=null, value=null } = {}) { this.op=op; this.left=left; this.right=right; this.value=value; }
+  isLeaf() { return this.op === null; }
+}
+const leaf = v => new Node({ value: v });
+function evalAst(n){ if(n.isLeaf()) return n.value; const L=evalAst(n.left), R=evalAst(n.right); return n.op==="+"?L+R:n.op==="-"?L-R:L*R; }
+function toInfix(n){ if(n.isLeaf()) return String(n.value); return "("+toInfix(n.left)+" "+n.op+" "+toInfix(n.right)+")"; }
+function countLeaves(n){ return n.isLeaf()?1:countLeaves(n.left)+countLeaves(n.right); }
+
+// ---------- tiny parser (accepts a number or + - * ( ) expression) ----------
+function parseInput(expr){
+  const t = (expr.replace(/\s+/g,"").match(/(\d+|[\+\-\*\(\)])/g)) || [];
+  let p=0;
+  function prim(){ const x=t[p++]; if(x==="("){ const n=add(); if(t[p]===")")p++; return n; } if(x===undefined||!/^\d+$/.test(x)) throw new Error("bad token "+x); return leaf(BigInt(x)); }
+  function mul(){ let n=prim(); while(t[p]==="*"){ p++; n=new Node({op:"*",left:n,right:prim()}); } return n; }
+  function add(){ let n=mul(); while(t[p]==="+"||t[p]==="-"){ const o=t[p++]; n=new Node({op:o,left:n,right:mul()}); } return n; }
+  const a=add(); if(p!==t.length) throw new Error("trailing "+t[p]); return a;
+}
+
+// ---------- blocks drawn in {1,2,3,-,+,*} ----------
+const six = () => new Node({ op:"*", left:leaf(2n), right:leaf(3n) });                                 // 6
+function baseNode(b){
+  if(b===5n)  return new Node({ op:"-", left:six(), right:leaf(1n) });                                  // 2*3-1
+  if(b===6n)  return six();                                                                             // 2*3
+  if(b===7n)  return new Node({ op:"+", left:six(), right:leaf(1n) });                                  // 2*3+1
+  if(b===11n) return new Node({ op:"-", left:new Node({op:"*",left:six(),right:leaf(2n)}), right:leaf(1n) }); // 2*3*2-1
+  return new Node({ op:"-", left:new Node({op:"*",left:six(),right:leaf(3n)}), right:leaf(1n) });        // 17 = 2*3*3-1
+}
+
+// ---------- EXACT additive decomposition into ONLY {5,6,7,11,17} (no factoring, no 1/2/3 filler) ----------
+// Every N>=10 (plus 5,6,7) is representable; the only gaps are {1,2,3,4,8,9}.
+function representableExact(n){ return n===0n || n===5n || n===6n || n===7n || n>=10n; }
+function decompose567(m){                                  // represent m with {5,6,7} via residue mod 6
+  const rr = ((m % 6n) + 6n) % 6n; let legs;
+  if(rr===0n) legs=[]; else if(rr===1n) legs=[7n]; else if(rr===2n) legs=[7n,7n];
+  else if(rr===3n) legs=[5n,5n,5n]; else if(rr===4n) legs=[5n,5n]; else legs=[5n];
+  let c5=0n,c7=0n,s=0n; for(const l of legs){ if(l===5n) c5+=1n; else c7+=1n; s+=l; }
+  return { c5, c6:(m-s)/6n, c7 };
+}
+// -> [[base,count],...] using ONLY the blocks; or null for a gap.
+// Pops a 17 (then an 11) whenever keeping it would force a 1/2/3 filler, and makes the
+// difference up with smaller blocks instead -- exactly the "pop a big one, use smaller" rule.
+function decomposeExact(N){
+  if(!representableExact(N)) return null;
+  let n = N;
+  let k17 = n/17n; while(k17>0n && !representableExact(n - k17*17n)) k17-=1n; n -= k17*17n;
+  let k11 = n/11n; while(k11>0n && !representableExact(n - k11*11n)) k11-=1n; n -= k11*11n;
+  const { c5, c6, c7 } = decompose567(n);
+  return [[17n,k17],[11n,k11],[7n,c7],[6n,c6],[5n,c5]].filter(([,q]) => q>0n);
+}
+function sumList(ts){ let t=ts[0]; for(let i=1;i<ts.length;i++) t=new Node({op:"+",left:t,right:ts[i]}); return t; }
+
+// counts are drawn the SAME way (still no factoring); only the 6 gaps {1,2,3,4,8,9} use a small 1/2/3.
+function drawNum(k){
+  if(k<=3n) return leaf(k);                                              // primitive 1,2,3
+  if(k===4n) return new Node({op:"+",left:leaf(2n),right:leaf(2n)});     // 4 = 2+2
+  if(k===8n) return new Node({op:"+",left:baseNode(5n),right:leaf(3n)}); // 8 = 5+3
+  if(k===9n) return new Node({op:"+",left:baseNode(6n),right:leaf(3n)}); // 9 = 6+3
+  const list = decomposeExact(k);
+  const ts = list.map(([b,q]) => q===1n ? baseNode(b) : new Node({op:"*",left:drawNum(q),right:baseNode(b)}));
+  return sumList(ts);
+}
+function buildFolded(N){ if(!representableExact(N)) return null; return drawNum(N); }
+
+// raw repeated-sum tree (only when the block count is small)
+function buildRawSum(N){
+  const list = decomposeExact(N); if(!list) return null;
+  let total = 0n; for(const [,q] of list) total += q;
+  if(total > 200n || total < 1n) return null;
+  const blocks = [];
+  for(const [b,q] of list) for(let i=0n;i<q;i+=1n) blocks.push(baseNode(b));
+  return sumList(blocks);
+}
+
+// ---------- collect a common block term (no general factoring; only the 5 blocks are tried) ----------
+// Collecting toward block d works exactly when d | N.  Among the blocks that divide, the SMALLEST
+// gives the most common terms (N/d copies of d).  Rewriting each block b = q*d + r and gathering
+// the remainder (itself a multiple of d) rebuilds N = (N/d)*d.
+function collectCommon(N){
+  const divs = [];
+  for(const d of [17n,11n,7n,6n,5n]) if(N % d === 0n) divs.push([d, N/d]);
+  if(divs.length === 0) return null;
+  let primary = divs[0]; for(const x of divs) if(x[1] > primary[1]) primary = x; // most copies = smallest d
+  return { divs, primary };
+}
+function collectDerivation(N, d){
+  const list = decomposeExact(N);
+  let mainCoeff = 0n, rem = 0n; const rw = [];
+  for(const [b,c] of list){
+    const q = b/d, r = b%d; mainCoeff += c*q; rem += c*r;
+    let e = q>0n ? (q===1n ? (""+d) : (q+"&middot;"+d)) : "";
+    if(r>0n) e = e ? e+"+"+r : (""+r);
+    rw.push(c + "&middot;(" + e + ")");
+  }
+  const s = rem/d;
+  return { startEq:list.map(([b,c])=>c+"&middot;"+b).join(" + "), rewriteEq:rw.join(" + "),
+           mainCoeff, rem, s, total: mainCoeff+s, quotient: N/d };
+}
+
+// repeatedly divide by the smallest block (2,3,5,7,11,17) that divides, until none does.
+function recursiveCollect(N){
+  const factors = [], steps = []; let n = N;
+  while(n > 1n){
+    let hit = false;
+    for(const b of [2n,3n,5n,7n,11n,17n]){ if(n % b === 0n){ steps.push({ d:b, before:n, after:n/b }); factors.push(b); n /= b; hit = true; break; } }
+    if(!hit) break;
+  }
+  return { factors, residual:n, steps };
+}
+function tallyFactors(factors){
+  const m = new Map();
+  for(const f of factors){ const k = f.toString(); m.set(k, (m.get(k)||0n)+1n); }
+  return [...m.entries()].map(([k,c]) => [BigInt(k), c]).sort((a,b) => a[0]<b[0]?-1:1);
+}
+
+// ---------- rendering ----------
+function classFor(n){
+  if(n.isLeaf()) return "leaf";
+  if(n.op==="*") return (n.left.isLeaf()&&n.left.value===2n&&n.right.isLeaf()&&n.right.value===3n) ? "six" : "mul";
+  if(n.op==="+") return "add";
+  return "sub";
+}
+function renderTree(root){
+  const area = document.getElementById("treeArea"); area.innerHTML="";
+  const n = countLeaves(root);
+  if(n > 200){ area.innerHTML = "<p style='padding:12px;color:#6b7280'>Tree has "+n+" leaves &mdash; too large to draw. Infix form:</p><p class='canon' style='padding:0 12px 12px'>"+toInfix(root)+"</p>"; return; }
+  let counter=0; const pos=new Map();
+  (function assign(nd,depth){ if(!nd.isLeaf()) assign(nd.left,depth+1); pos.set(nd,{col:counter++,depth}); if(!nd.isLeaf()) assign(nd.right,depth+1); })(root,0);
+  const colGap=58, rowGap=72, padX=32, padY=14;
+  let maxCol=0,maxDepth=0; pos.forEach(p=>{maxCol=Math.max(maxCol,p.col);maxDepth=Math.max(maxDepth,p.depth);});
+  const width=padX*2+maxCol*colGap, height=padY*2+maxDepth*rowGap+36;
+  area.style.width="100%"; area.style.minHeight=height+"px";
+  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg"); svg.setAttribute("class","wires"); svg.setAttribute("width",width); svg.setAttribute("height",height); area.appendChild(svg);
+  const xy=nd=>{const p=pos.get(nd);return{x:padX+p.col*colGap,y:padY+p.depth*rowGap};};
+  (function wires(nd){ if(nd.isLeaf())return; const a=xy(nd); for(const c of [nd.left,nd.right]){ const b=xy(c); const ln=document.createElementNS("http://www.w3.org/2000/svg","line"); ln.setAttribute("x1",a.x);ln.setAttribute("y1",a.y+13);ln.setAttribute("x2",b.x);ln.setAttribute("y2",b.y);ln.setAttribute("stroke","#94a3b8");ln.setAttribute("stroke-width","2"); svg.appendChild(ln); wires(c);} })(root);
+  pos.forEach((p,nd)=>{ const pt=xy(nd); const div=document.createElement("div"); div.className="node "+classFor(nd); div.style.left=pt.x+"px"; div.style.top=pt.y+"px"; div.textContent=nd.isLeaf()?nd.value:nd.op; area.appendChild(div); });
+}
+
+// ---------- controller ----------
+function setStatus(kind,html){ const el=document.getElementById("status"); el.className="status "+kind; el.innerHTML=html; }
+function setTitle(t){ document.getElementById("treeTitle").innerHTML=t; }
+function currentN(){
+  const raw=document.getElementById("exprInput").value.trim();
+  if(!raw){ setStatus("err","Enter a number first."); return null; }
+  try { const v=evalAst(parseInput(raw)); return { raw, value:v }; }
+  catch(e){ setStatus("err","Could not parse: "+e.message); return null; }
+}
+function eqString(N){
+  const list = decomposeExact(N); if(!list) return null;
+  return list.map(([b,q]) => q + "&middot;" + b).join(" + ") || "0";
+}
+function summaryFor(cur, tree){
+  const check = tree ? evalAst(tree) : null;
+  const rows = { Number: cur.value, "Blocks used": eqString(cur.value) || "(gap)",
+    "No factoring": "yes &mdash; pure sums of {5,6,7,11,17}",
+    "Tree leaves": tree ? countLeaves(tree) : "&mdash;",
+    "Re-evaluates": check!==null ? (check + (check===cur.value ? " &#10003;" : " &#10007;")) : "&mdash;" };
+  return { rows, check };
+}
+
+function decompose(){
+  const cur=currentN(); if(!cur) return;
+  if(cur.value<1n){ setStatus("err","Enter a positive integer."); return; }
+  setTitle("Repeated sums of {5,6,7,11,17}");
+  const list = decomposeExact(cur.value);
+  if(!list){
+    document.getElementById("treeArea").innerHTML = "<p style='padding:12px;color:#991b1b'>"+cur.value+" is one of the gaps {1,2,3,4,8,9} &mdash; it can't be written as pure sums of {5,6,7,11,17}.</p>";
+    setStatus("err","<b>"+cur.value+"</b> is a gap {1,2,3,4,8,9} &mdash; not expressible without a 1/2/3 filler.");
+    document.getElementById("summary").innerHTML = "<div><b>Number</b> "+cur.value+"</div><div><b>Blocks</b> none (gap)</div>";
+    document.getElementById("steps").innerHTML = "<li>&mdash;</li>"; return;
+  }
+  const raw = buildRawSum(cur.value); const eq = eqString(cur.value);
+  if(raw){
+    renderTree(raw);
+    setStatus("info","<b>"+cur.raw+"</b> = <b>"+cur.value+"</b> = "+eq+" &mdash; repeated sums, blocks only (no filler). Click <b>Fold &rarr; tree</b> to collapse.");
+  } else {
+    document.getElementById("treeArea").innerHTML = "<p style='padding:12px;color:#6b7280'>"+cur.value+" needs too many blocks to draw the raw sum ("+eq+"). Click <b>Fold &rarr; tree</b>.</p>";
+    setStatus("info","<b>"+cur.raw+"</b> = <b>"+cur.value+"</b> = "+eq+" &mdash; too many blocks for the raw view; use Fold.");
+  }
+  const s = summaryFor(cur, raw || buildFolded(cur.value));
+  document.getElementById("summary").innerHTML = Object.entries(s.rows).map(([k,v])=>"<div><b>"+k+"</b> "+v+"</div>").join("");
+  document.getElementById("steps").innerHTML =
+    list.map(([b,q])=>"<li><span class='lv'>"+q+" &times; "+b+"</span><code>"+b+" = "+toInfix(baseNode(b)).replace(/[()]/g,"")+"</code></li>").join("") +
+    "<li><span class='lv'>fold</span>collapses each run of equal blocks into count &times; block</li>";
+}
+
+function foldBuild(){
+  const cur=currentN(); if(!cur) return;
+  if(cur.value<1n){ setStatus("err","Enter a positive integer."); return; }
+  const tree = buildFolded(cur.value);
+  if(!tree){ setStatus("err","<b>"+cur.value+"</b> is a gap {1,2,3,4,8,9} &mdash; not expressible as pure {5,6,7,11,17} sums."); return; }
+  setTitle("Canonical tree (folded, no factors)");
+  renderTree(tree);
+  const { rows, check } = summaryFor(cur, tree);
+  setStatus(check===cur.value?"ok":"err",
+    "<b>"+cur.raw+"</b> = <b>"+cur.value+"</b> = "+eqString(cur.value)+" &rarr; <span class='canon'>"+toInfix(tree)+"</span>"+(check===cur.value?"":"  (mismatch!)"));
+  document.getElementById("summary").innerHTML = Object.entries(rows).map(([k,v])=>"<div><b>"+k+"</b> "+v+"</div>").join("");
+  const list = decomposeExact(cur.value);
+  document.getElementById("steps").innerHTML =
+    "<li><span class='lv'>fold</span><code>"+eqString(cur.value)+"</code></li>" +
+    list.filter(([,q])=>q>1n).map(([b,q])=>"<li><span class='lv'>"+q+" &times; "+b+"</span><code>count "+q+" is itself drawn as sums (no factoring)</code></li>").join("") +
+    "<li><span class='lv'>tree</span><code>"+toInfix(tree)+"</code></li>";
+}
+
+function powNode(base, count){                 // base multiplied count times (a real factor 2^a etc.)
+  const mk = () => (base<=3n ? leaf(base) : baseNode(base));
+  let t = mk(); for(let i=1n; i<count; i+=1n) t = new Node({op:"*", left:t, right:mk()}); return t;
+}
+function powLabel(base, count){ return count===1n ? (""+base) : (base+"<sup>"+count+"</sup>"); }
+
+function collectBuild(){
+  const cur=currentN(); if(!cur) return;
+  if(cur.value<1n){ setStatus("err","Enter a positive integer."); return; }
+  setTitle("Collect: divide by 2/3 first, then a common block term");
+  // initial divide: peel factors of 2 and 3 (2*() and 3*())
+  let M=cur.value, a=0n, b=0n;
+  while(M%2n===0n){ a+=1n; M/=2n; }
+  while(M%3n===0n){ b+=1n; M/=3n; }
+  const c = (M>1n) ? collectCommon(M) : null;   // collect a block from the remaining number
+
+  const factors=[];
+  if(a>0n) factors.push(powNode(2n,a));
+  if(b>0n) factors.push(powNode(3n,b));
+  let d=null,q=null;
+  if(M>1n){
+    if(c){ [d,q]=c.primary; factors.push(q===1n ? baseNode(d) : new Node({op:"*",left:drawNum(q),right:baseNode(d)})); }
+    else factors.push(drawNum(M));
+  }
+  if(factors.length===0) factors.push(leaf(cur.value));
+  const tree = factors.reduce((acc,f)=> acc ? new Node({op:"*",left:acc,right:f}) : f, null);
+  renderTree(tree);
+  const check = evalAst(tree);
+
+  const eqParts=[];
+  if(a>0n) eqParts.push(powLabel(2n,a));
+  if(b>0n) eqParts.push(powLabel(3n,b));
+  if(M>1n) eqParts.push(c ? (q===1n ? String(d) : (q+"&middot;"+d)) : String(M));
+  const eq = eqParts.join(" &middot; ");
+  setStatus(check===cur.value ? "ok" : "err",
+    "<b>"+cur.value+"</b> = "+eq+" &rarr; <span class='canon'>"+toInfix(tree)+"</span>"+(check===cur.value?"":"  (mismatch!)"));
+
+  const rows={ Number: cur.value };
+  if(a>0n||b>0n) rows["Divide 2,3"] = [a>0n?powLabel(2n,a):null, b>0n?powLabel(3n,b):null].filter(Boolean).join(" &middot; ");
+  if(M>1n){ if(c){ rows["Remaining"]=M; rows["Common term"]=d+"  ("+q+" copies)"; rows["Block divisors"]=c.divs.map(([dd,qq])=>dd+" ("+qq+"&times;)").join(", "); }
+            else rows["Remaining"]=M+" &mdash; no block divisor (drawn as sums)"; }
+  else rows["Remaining"]="1 (fully 2,3-smooth)";
+  rows["Re-evaluates"]=check+(check===cur.value?" &#10003;":" &#10007;");
+  document.getElementById("summary").innerHTML=Object.entries(rows).map(([k,v])=>"<div><b>"+k+"</b> "+v+"</div>").join("");
+
+  let steps="";
+  if(a>0n||b>0n) steps+="<li><span class='lv'>divide 2,3</span><code>"+cur.value+" = "+[a>0n?powLabel(2n,a):null,b>0n?powLabel(3n,b):null].filter(Boolean).join(" · ").replace(/<[^>]+>/g,m=>m==="<sup>"?"^":m==="</sup>"?"":m)+" · "+M+"</code></li>";
+  if(M>1n && c){ const der=collectDerivation(M,d);
+    steps+="<li><span class='lv'>collect</span><code>"+M+" = "+der.startEq+" = "+d+"&middot;("+der.mainCoeff+"+"+der.s+") = "+d+" &middot; "+der.total+"</code></li>";
+  } else if(M>1n){ steps+="<li><span class='lv'>remaining</span><code>"+M+" has no block divisor &mdash; drawn as sums of {5,6,7,11,17}</code></li>"; }
+  steps+="<li><span class='lv'>tree</span><code>"+toInfix(tree)+"</code></li>";
+  document.getElementById("steps").innerHTML=steps;
+}
+
+function collectAll(){
+  const cur=currentN(); if(!cur) return;
+  if(cur.value<1n){ setStatus("err","Enter a positive integer."); return; }
+  setTitle("Collect repeatedly (peel every block factor)");
+  const { factors, residual, steps } = recursiveCollect(cur.value);
+  const tally = tallyFactors(factors);
+  const fnodes = tally.map(([base,cnt]) => powNode(base,cnt));
+  if(residual>1n) fnodes.push(drawNum(residual));
+  if(fnodes.length===0) fnodes.push(leaf(cur.value));
+  const tree = fnodes.reduce((acc,f)=> acc ? new Node({op:"*",left:acc,right:f}) : f, null);
+  renderTree(tree);
+  const check = evalAst(tree);
+
+  const eqParts = tally.map(([b,c]) => powLabel(b,c));
+  if(residual>1n) eqParts.push(String(residual));
+  const eq = eqParts.join(" &middot; ") || String(cur.value);
+  setStatus(check===cur.value ? "ok" : "err",
+    "<b>"+cur.value+"</b> = "+eq+(residual>1n ? "  (last term is the residual &mdash; coprime to all blocks)" : "")+
+    " &rarr; <span class='canon'>"+toInfix(tree)+"</span>"+(check===cur.value?"":"  (mismatch!)"));
+  document.getElementById("summary").innerHTML =
+    "<div><b>Number</b> "+cur.value+"</div>"+
+    "<div><b>Block factors</b> "+(tally.map(([b,c])=>powLabel(b,c)).join(" &middot; ")||"none")+"</div>"+
+    "<div><b>Residual</b> "+(residual>1n ? residual+" (no block divides it)" : "1 (fully peeled)")+"</div>"+
+    "<div><b>Collect steps</b> "+steps.length+(steps.length?" &mdash; "+steps.map(s=>s.d).join(", "):"")+"</div>"+
+    "<div><b>Re-evaluates</b> "+check+(check===cur.value?" &#10003;":" &#10007;")+"</div>";
+  let li = steps.map(s => "<li><span class='lv'>collect "+s.d+"</span><code>"+s.before+" = "+s.d+" &middot; "+s.after+"</code></li>").join("");
+  if(residual>1n) li += "<li><span class='lv'>stop</span><code>"+residual+" &mdash; no block {2,3,5,7,11,17} divides it</code></li>";
+  li += "<li><span class='lv'>tree</span><code>"+toInfix(tree)+"</code></li>";
+  document.getElementById("steps").innerHTML = li;
+}
+
+function setEx(s){ document.getElementById("exprInput").value=s; decompose(); }
+function clearAll(){
+  document.getElementById("exprInput").value="";
+  document.getElementById("status").className="status"; document.getElementById("status").innerHTML="";
+  document.getElementById("treeArea").innerHTML=""; document.getElementById("summary").innerHTML="&mdash;";
+  document.getElementById("steps").innerHTML="<li>&mdash;</li>"; setTitle("Tree");
+}
+document.getElementById("exprInput").addEventListener("keydown", e => { if(e.key==="Enter") decompose(); });
+</script>
+
+</body>
+</html>

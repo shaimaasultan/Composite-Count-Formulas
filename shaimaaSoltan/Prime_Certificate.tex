@@ -1,0 +1,222 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\hypersetup{colorlinks=true, linkcolor=blue!50!black, urlcolor=blue!50!black}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue!60!black}\bfseries,
+  commentstyle=\color{green!40!black}\itshape,
+  stringstyle=\color{orange!70!black},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{black!25},
+  language=Python,
+}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\title{Prime Certificate:\\ The Mod-6 Wheel, Base 60, and the Totient}
+\author{Shaimaa Soltan}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note records the structural chain connecting a period-6 sawtooth,
+the base-60 numeral inheritance, wheel factorization, and Euler's totient.
+The central result is that a single function, $\varphi$, plays two roles:
+it measures the \emph{width of a prime-sieving wheel} and it encodes the
+\emph{primality of an individual integer}.
+\end{abstract}
+
+%==================================================================
+\section{Background: the mod-6 wheel}
+%==================================================================
+
+Every integer occupies one of six lanes modulo $6$. Lanes
+$0,2,4$ are even and lane $3$ is divisible by $3$, so beyond the base
+primes $2$ and $3$ only lanes $1$ and $5$ can hold primes:
+\[
+p > 3 \;\Longrightarrow\; p \equiv 1 \text{ or } 5 \pmod 6,
+\qquad\text{i.e.}\qquad p = 6m \pm 1 .
+\]
+These two survivors are exactly the fold (reset) positions of the two
+sawtooth waves
+\[
+B = \bigl((x - \tfrac{6}{8}) \bmod 6\bigr)\cdot 2,
+\qquad
+D = \bigl((x + 2 - \tfrac{6}{8}) \bmod 6\bigr)\cdot 2 ,
+\]
+which reset at $x \bmod 6 = 1$ and $x \bmod 6 = 5$ respectively.
+
+%==================================================================
+\section{Base-60 inheritance}
+%==================================================================
+
+Base $60$ factors as $60 = 6 \times 10$: a mod-$6$ ``tens'' wheel geared to
+a base-$10$ ``units'' wheel. We compute in base $10$ but time and angle
+keep the base-$60$ rollover, whose reset is precisely the $x \bmod 6 = 5$
+event of the wheel above. The sieving power of $60$ lives entirely in its
+squarefree kernel $30 = 2\cdot 3\cdot 5$.
+
+%==================================================================
+\section*{\textbf{Details: The Totient Relation}}
+\addcontentsline{toc}{section}{Details: The Totient Relation}
+%==================================================================
+\markboth{Details: The Totient Relation}{}
+
+Euler's totient $\varphi$ is the hinge of this entire construction. It
+appears in \emph{two} distinct roles: once attached to the wheel modulus
+$M$, and once attached to the integer $N$ under test.
+
+\begin{definition}[Totient]
+For a positive integer $n$,
+\[
+\varphi(n) \;=\; \bigl|\{\, k : 1 \le k \le n,\ \gcd(k,n)=1 \,\}\bigr|,
+\]
+the count of integers up to $n$ that are coprime to $n$.
+\end{definition}
+
+\subsection*{Role 1 --- $\varphi(M)$ is the wheel width}
+
+For a wheel with modulus $M$, the spokes are exactly the residues coprime
+to $M$, so the number of spokes is $\varphi(M)$ and the surviving density
+of the number line is $\varphi(M)/M$. This density is governed by the
+multiplicative product formula.
+
+\begin{theorem}[Euler product formula]
+\[
+\varphi(M) \;=\; M \prod_{p \mid M} \Bigl(1 - \frac{1}{p}\Bigr),
+\]
+the product ranging over the \emph{distinct} primes dividing $M$.
+Consequently the wheel density is
+\[
+\frac{\varphi(M)}{M} \;=\; \prod_{p \mid M}\Bigl(1 - \frac1p\Bigr).
+\]
+\end{theorem}
+
+Each factor $(1-1/p)$ is one prime's worth of lanes struck out. This one
+equation explains every empirical observation about the wheels:
+
+\begin{center}
+\begin{tabular}{r r c c l}
+\toprule
+$M$ & $\varphi(M)$ & $\varphi(M)/M$ & $\prod(1-1/p)$ & distinct primes of $M$\\
+\midrule
+$6$    & $2$   & $0.3333$ & $0.3333$ & $\{2,3\}$\\
+$30$   & $8$   & $0.2667$ & $0.2667$ & $\{2,3,5\}$\\
+$60$   & $16$  & $0.2667$ & $0.2667$ & $\{2,3,5\}$ \quad(no gain over $30$)\\
+$210$  & $48$  & $0.2286$ & $0.2286$ & $\{2,3,5,7\}$\\
+$2310$ & $480$ & $0.2078$ & $0.2078$ & $\{2,3,5,7,11\}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Two consequences follow immediately:
+\begin{itemize}
+  \item \textbf{$60$ gains nothing over $30$:} they share the distinct
+        primes $\{2,3,5\}$, so the product---and hence the density---is
+        identical. The extra factor of $2$ in $60=2^2\cdot3\cdot5$ never
+        enters the product, which counts only \emph{distinct} primes.
+  \item \textbf{$210$ does gain:} it introduces a genuinely new factor
+        $(1-1/7)$, lowering the density from $0.2667$ to $0.2286$.
+\end{itemize}
+
+\subsection*{Role 2 --- $\varphi(N)$ is a primality signature}
+
+For the integer $N$ passed to the scan, the totient encodes primality
+directly:
+\[
+N \text{ is prime} \;\Longleftrightarrow\; \varphi(N) = N-1,
+\qquad\qquad
+\varphi(p^k) = p^k - p^{k-1}.
+\]
+A prime shares a factor with nothing below it, so all $N-1$ smaller
+integers are coprime---the maximal possible totient. Every composite
+satisfies $\varphi(N) < N-1$.
+
+\subsection*{The bridge --- Euler's theorem}
+
+The two roles are joined by Euler's theorem, which also underlies the
+fast primality tests (Fermat, Miller--Rabin) that outperform trial
+division for large $N$.
+
+\begin{theorem}[Euler]
+If $\gcd(a,N)=1$ then
+\[
+a^{\varphi(N)} \equiv 1 \pmod{N}.
+\]
+For prime $p$ this specialises, via $\varphi(p)=p-1$, to Fermat's little
+theorem $a^{\,p-1}\equiv 1 \pmod p$.
+\end{theorem}
+
+Miller--Rabin checks whether $N$ \emph{violates} this congruence: a
+violation certifies compositeness with a single modular exponentiation,
+whereas the wheel must trial-divide up to $\sqrt N$.
+
+\subsection*{Summary}
+
+\[
+\boxed{\;
+\underbrace{\varphi(M)}_{\text{sieve width}}
+\;=\; M\!\prod_{p\mid M}\!\Bigl(1-\tfrac1p\Bigr)
+\qquad\text{and}\qquad
+\underbrace{\varphi(N)=N-1}_{\text{primality signature}}
+\;\Longleftrightarrow\; N \text{ prime},
+\;}
+\]
+the same function serving once as a wheel's width and once as an integer's
+primality signature, bridged by $a^{\varphi(N)}\equiv 1 \pmod N$.
+
+%==================================================================
+\section{Reference implementation}
+%==================================================================
+
+The mod-$210$ wheel ($210 = 2\cdot3\cdot5\cdot7$, $\varphi(210)=48$ spokes)
+used as a trial-division primality scanner:
+
+\begin{lstlisting}
+from math import gcd, isqrt
+
+WHEEL210 = [r for r in range(210) if gcd(r, 210) == 1]   # 48 spokes
+
+def wheel_scan_210(N):
+    """Smallest factor of N via a mod-210 wheel, or None if N is prime."""
+    if N < 2:
+        return None
+    for p in (2, 3, 5, 7):            # base primes the wheel skips
+        if N == p:  return None
+        if N % p == 0: return p
+    limit = isqrt(N)
+    m = 0
+    while 210*m + 1 <= limit:
+        for r in WHEEL210:
+            n = 210*m + r             # actual candidate = block offset + spoke
+            if n == 1:                # skip trivial divisor
+                continue
+            if n > limit:
+                break
+            if N % n == 0:
+                return n              # real factor -> composite
+        m += 1
+    return None                       # nothing up to sqrt(N) -> prime
+
+def is_prime(N):
+    return N >= 2 and wheel_scan_210(N) is None
+\end{lstlisting}
+
+\end{document}

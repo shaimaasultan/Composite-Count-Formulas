@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Symbolic Euclidean Triangle Diagram</title>
+<style>
+  svg { background:#fafafa; border:1px solid #ccc; }
+  text { font-family:Arial; font-size:12px; }
+  .node { fill:black; }
+  .hyp { stroke:black; stroke-width:2; }
+  .tri { stroke:#0074D9; stroke-width:1.5; fill:none; }
+  .label { fill:#111; }
+</style>
+</head>
+<body>
+
+<svg width="900" height="450">
+
+  <!-- Horizontal distance L -->
+  <!-- A at (100,225), I at (800,225) -->
+  <line x1="100" y1="225" x2="800" y2="225" class="hyp" />
+
+  <!-- A and I -->
+  <circle cx="100" cy="225" r="4" class="node" />
+  <text x="90" y="210" class="label">A</text>
+
+  <circle cx="800" cy="225" r="4" class="node" />
+  <text x="805" y="210" class="label">I</text>
+
+  <!-- Upper nodes: B, C, F -->
+  <!-- Same horizontal spacing as A--I -->
+  <circle cx="300" cy="150" r="4" class="node" />
+  <text x="295" y="135" class="label">B (height = B²)</text>
+
+  <circle cx="450" cy="120" r="4" class="node" />
+  <text x="445" y="105" class="label">C (height = C²)</text>
+
+  <circle cx="650" cy="140" r="4" class="node" />
+  <text x="645" y="125" class="label">F (height = F²)</text>
+
+  <!-- Lower nodes: H, G, D -->
+  <circle cx="300" cy="300" r="4" class="node" />
+  <text x="295" y="320" class="label">H (height = H²)</text>
+
+  <circle cx="450" cy="330" r="4" class="node" />
+  <text x="445" y="350" class="label">G (height = G²)</text>
+
+  <circle cx="650" cy="310" r="4" class="node" />
+  <text x="645" y="330" class="label">D (height = D²)</text>
+
+  <!-- Triangle A-I -->
+  <text x="400" y="210" class="label">A² + I² = 2K²</text>
+
+  <!-- Triangle B-H -->
+  <line x1="300" y1="150" x2="300" y2="300" class="tri" />
+  <line x1="300" y1="150" x2="100" y2="225" class="tri" />
+  <line x1="300" y1="300" x2="800" y2="225" class="tri" />
+  <text x="310" y="225" class="label">B² + H² = 2K²</text>
+
+  <!-- Triangle C-G -->
+  <line x1="450" y1="120" x2="450" y2="330" class="tri" />
+  <line x1="450" y1="120" x2="100" y2="225" class="tri" />
+  <line x1="450" y1="330" x2="800" y2="225" class="tri" />
+  <text x="460" y="225" class="label">C² + G² = 2K²</text>
+
+  <!-- Triangle F-D -->
+  <line x1="650" y1="140" x2="650" y2="310" class="tri" />
+  <line x1="650" y1="140" x2="100" y2="225" class="tri" />
+  <line x1="650" y1="310" x2="800" y2="225" class="tri" />
+  <text x="660" y="225" class="label">F² + D² = 2K²</text>
+
+</svg>
+
+</body>
+</html>

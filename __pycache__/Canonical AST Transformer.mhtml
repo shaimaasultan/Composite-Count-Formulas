@@ -1,0 +1,222 @@
+From: <Saved by Blink>
+Snapshot-Content-Location: file:///C:/MATH_e/AST.html
+Subject: Canonical AST Transformer
+Date: Tue, 11 Aug 2026 11:50:49 -0400
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----MultipartBoundary--ozLbRlYaTE1ZrMlp1EycHVsJdNn5XoCu2SCIpwoKaJ----"
+
+
+------MultipartBoundary--ozLbRlYaTE1ZrMlp1EycHVsJdNn5XoCu2SCIpwoKaJ----
+Content-Type: text/html
+Content-ID: <frame-C27FAF48A472A5E4A808AB7701D99F18@mhtml.blink>
+Content-Transfer-Encoding: quoted-printable
+Content-Location: file:///C:/MATH_e/AST.html
+
+<!DOCTYPE html><html lang=3D"en"><head><meta http-equiv=3D"Content-Type" co=
+ntent=3D"text/html; charset=3DUTF-8"><link rel=3D"stylesheet" type=3D"text/=
+css" href=3D"cid:css-16901580-8fdc-42e7-8fe8-711447d7905e@mhtml.blink" />
+
+<meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=3D1"=
+>
+<title>Canonical AST Transformer</title>
+
+</head>
+<body>
+
+<h1>Canonical AST Transformer</h1>
+<p class=3D"sub">
+  Enter an arithmetic expression (<code>+ =E2=88=92 * ( )</code>). Three vi=
+ews of the value:
+  <b>Canonical</b> factors it into a tree rooted at <code>*</code> with eve=
+ry prime leg drawn in its
+  <code>6k=C2=B11</code> skeleton (<code>5 =3D 2=C2=B73=E2=88=921</code>, <=
+code>7 =3D 2=C2=B73+1</code>, =E2=80=A6) =E2=80=94
+  so every <b>composite</b> gets a <code>*</code> root, while a <b>prime</b=
+> has no factor and stays at a
+  <code>=C2=B11</code> remainder; <b>Expand</b> applies the distributive la=
+w down to atoms;
+  <b>6k=C2=B11 core</b> peels the value into sixes plus its remainder.
+</p>
+
+<div class=3D"controls">
+  <input id=3D"exprInput" placeholder=3D"e.g.  2*2*2*3+1   or   3*(2*3-1)">
+  <button>Canonical (root =C3=97)</button>
+  <button class=3D"ghost">Clear</button>
+</div>
+
+<div class=3D"toolbar">
+  <span class=3D"label">Distributive:</span>
+  <button class=3D"alt">Expand one level</button>
+  <button class=3D"alt">Expand fully</button>
+  <button class=3D"alt2">Show 6k=C2=B11 core</button>
+  <span id=3D"levelTag" class=3D"label"></span>
+</div>
+
+<div class=3D"examples">
+  Try:
+  <a>35</a>
+  <a>49</a>
+  <a>143</a>
+  <a>97</a>
+  <a>2*2*2*3+1</a>
+</div>
+
+<div id=3D"status"></div>
+
+<div class=3D"panels">
+  <div class=3D"card">
+    <h2 id=3D"treeTitle">Tree</h2>
+    <div id=3D"treeArea" class=3D"tree-container"></div>
+  </div>
+  <div>
+    <div class=3D"card" style=3D"margin-bottom:16px">
+      <h2>Summary</h2>
+      <div id=3D"summary" class=3D"kv">=E2=80=94</div>
+    </div>
+    <div class=3D"card">
+      <h2 id=3D"stepsTitle">Detail</h2>
+      <ol id=3D"steps" class=3D"steps"><li>=E2=80=94</li></ol>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+</body></html>
+------MultipartBoundary--ozLbRlYaTE1ZrMlp1EycHVsJdNn5XoCu2SCIpwoKaJ----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: cid:css-16901580-8fdc-42e7-8fe8-711447d7905e@mhtml.blink
+
+@charset "utf-8";
+
+:root { --bg: #f5f6f8; --panel: #ffffff; --ink: #1f2430; --muted: #6b7280; =
+--accent: #2563eb; --mul: #7c3aed; --add: #059669; --sub: #dc2626; --leaf: =
+#334155; --six: #b45309; }
+
+* { box-sizing: border-box; }
+
+body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; b=
+ackground: var(--bg); color: var(--ink); margin: 0px; padding: 24px; }
+
+h1 { margin: 0px 0px 4px; font-size: 22px; }
+
+.sub { color: var(--muted); margin: 0px 0px 16px; font-size: 14px; line-hei=
+ght: 1.5; }
+
+.sub code { background: rgb(238, 241, 246); padding: 1px 6px; border-radius=
+: 4px; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; =
+margin-bottom: 8px; }
+
+input { flex: 1 1 320px; min-width: 220px; padding: 11px 12px; font-size: 1=
+6px; border: 1px solid rgb(203, 210, 220); border-radius: 8px; background: =
+rgb(255, 255, 255); }
+
+input:focus { outline: 2px solid var(--accent); border-color: transparent; =
+}
+
+button { padding: 10px 16px; font-size: 14px; font-weight: 600; cursor: poi=
+nter; border-width: medium; border-style: none; border-color: currentcolor;=
+ border-image: none; border-radius: 8px; background: var(--accent); color: =
+rgb(255, 255, 255); }
+
+button.ghost { background: rgb(229, 233, 240); color: var(--ink); }
+
+button.alt { background: rgb(124, 58, 237); }
+
+button.alt2 { background: rgb(180, 83, 9); }
+
+button:hover { filter: brightness(1.05); }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; m=
+argin: 6px 0px 10px; }
+
+.toolbar .label { font-size: 13px; color: var(--muted); font-weight: 600; m=
+argin-right: 2px; }
+
+.examples { font-size: 13px; color: var(--muted); margin: 2px 0px 14px; }
+
+.examples a { color: var(--accent); text-decoration: none; margin-right: 12=
+px; cursor: pointer; }
+
+.examples a:hover { text-decoration: underline; }
+
+.status { padding: 12px 16px; border-radius: 10px; margin: 12px 0px; font-s=
+ize: 15px; border: 1px solid transparent; }
+
+.status.ok { background: rgb(236, 253, 245); border-color: rgb(167, 243, 20=
+8); color: rgb(6, 95, 70); }
+
+.status.no { background: rgb(254, 242, 242); border-color: rgb(254, 202, 20=
+2); color: rgb(153, 27, 27); }
+
+.status.err { background: rgb(255, 251, 235); border-color: rgb(253, 230, 1=
+38); color: rgb(146, 64, 14); }
+
+.status.info { background: rgb(239, 246, 255); border-color: rgb(191, 219, =
+254); color: rgb(30, 64, 175); }
+
+.status b { font-weight: 700; }
+
+.panels { display: grid; grid-template-columns: 1fr; gap: 16px; }
+
+@media (min-width: 900px) {
+  .panels { grid-template-columns: 1fr 300px; }
+}
+
+.card { background: var(--panel); border: 1px solid rgb(229, 231, 235); bor=
+der-radius: 12px; padding: 14px 16px; }
+
+.card h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.04=
+em; color: var(--muted); margin: 0px 0px 10px; }
+
+.tree-container { position: relative; min-height: 220px; overflow: auto; }
+
+.node { position: absolute; transform: translate(-50%, 0px); padding: 5px 1=
+0px; background: rgb(255, 255, 255); border: 2px solid var(--leaf); border-=
+radius: 8px; text-align: center; font-weight: 700; font-size: 14px; white-s=
+pace: nowrap; z-index: 2; }
+
+.node.mul { border-color: var(--mul); color: var(--mul); }
+
+.node.add { border-color: var(--add); color: var(--add); }
+
+.node.sub { border-color: var(--sub); color: var(--sub); }
+
+.node.leaf { border-color: var(--leaf); color: var(--leaf); background: rgb=
+(248, 250, 252); }
+
+.node.six { border-color: var(--six); color: var(--six); }
+
+svg.wires { position: absolute; top: 0px; left: 0px; overflow: visible; z-i=
+ndex: 1; }
+
+.steps { list-style: none; margin: 0px; padding: 0px; font-size: 13px; }
+
+.steps li { padding: 6px 0px; border-bottom: 1px dashed rgb(229, 231, 235);=
+ }
+
+.steps li:last-child { border-bottom-width: medium; border-bottom-style: no=
+ne; border-bottom-color: currentcolor; }
+
+.steps .op { font-weight: 700; color: var(--mul); }
+
+.steps .lv { color: var(--muted); font-weight: 700; margin-right: 6px; }
+
+.steps code { font-family: ui-monospace, Menlo, Consolas, monospace; word-b=
+reak: break-all; }
+
+.kv { font-size: 14px; line-height: 1.7; }
+
+.kv b { display: inline-block; min-width: 120px; color: var(--muted); font-=
+weight: 600; }
+
+.canon { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: =
+15px; word-break: break-all; }
+------MultipartBoundary--ozLbRlYaTE1ZrMlp1EycHVsJdNn5XoCu2SCIpwoKaJ------

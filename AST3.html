@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canonical AST Transformer</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --panel: #ffffff; --ink: #1f2430; --muted: #6b7280;
+    --accent: #2563eb; --mul: #7c3aed; --add: #059669; --sub: #dc2626;
+    --leaf: #334155; --six: #b45309;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: var(--bg); color: var(--ink); margin: 0; padding: 24px;
+  }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .sub { color: var(--muted); margin: 0 0 16px; font-size: 14px; line-height: 1.5; }
+  .sub code { background: #eef1f6; padding: 1px 6px; border-radius: 4px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+  input {
+    flex: 1 1 320px; min-width: 220px; padding: 11px 12px; font-size: 16px;
+    border: 1px solid #cbd2dc; border-radius: 8px; background: #fff;
+  }
+  input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+  button {
+    padding: 10px 16px; font-size: 14px; font-weight: 600; cursor: pointer;
+    border: none; border-radius: 8px; background: var(--accent); color: #fff;
+  }
+  button.ghost { background: #e5e9f0; color: var(--ink); }
+  button.alt   { background: #7c3aed; }
+  button.alt2  { background: #b45309; }
+  button:hover { filter: brightness(1.05); }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0 10px; }
+  .toolbar .label { font-size: 13px; color: var(--muted); font-weight: 600; margin-right: 2px; }
+  .examples { font-size: 13px; color: var(--muted); margin: 2px 0 14px; }
+  .examples a { color: var(--accent); text-decoration: none; margin-right: 12px; cursor: pointer; }
+  .examples a:hover { text-decoration: underline; }
+  .status {
+    padding: 12px 16px; border-radius: 10px; margin: 12px 0; font-size: 15px;
+    border: 1px solid transparent;
+  }
+  .status.ok  { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+  .status.no  { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+  .status.err { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+  .status.info{ background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
+  .status b { font-weight: 700; }
+  .panels { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 900px) { .panels { grid-template-columns: 1fr 300px; } }
+  .card { background: var(--panel); border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; }
+  .card h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 10px; }
+  .tree-container { position: relative; min-height: 220px; overflow: auto; }
+  .node {
+    position: absolute; transform: translate(-50%, 0); padding: 5px 10px;
+    background: #fff; border: 2px solid var(--leaf); border-radius: 8px;
+    text-align: center; font-weight: 700; font-size: 14px; white-space: nowrap; z-index: 2;
+  }
+  .node.mul  { border-color: var(--mul); color: var(--mul); }
+  .node.add  { border-color: var(--add); color: var(--add); }
+  .node.sub  { border-color: var(--sub); color: var(--sub); }
+  .node.leaf { border-color: var(--leaf); color: var(--leaf); background: #f8fafc; }
+  .node.six  { border-color: var(--six); color: var(--six); }
+  svg.wires { position: absolute; top: 0; left: 0; overflow: visible; z-index: 1; }
+  .steps { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+  .steps li { padding: 6px 0; border-bottom: 1px dashed #e5e7eb; }
+  .steps li:last-child { border-bottom: none; }
+  .steps .op { font-weight: 700; color: var(--mul); }
+  .steps .lv { color: var(--muted); font-weight: 700; margin-right: 6px; }
+  .steps code { font-family: ui-monospace, Menlo, Consolas, monospace; word-break: break-all; }
+  .kv { font-size: 14px; line-height: 1.7; }
+  .kv b { display: inline-block; min-width: 120px; color: var(--muted); font-weight: 600; }
+  .canon { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 15px; word-break: break-all; }
+</style>
+</head>
+<body>
+
+<h1>Canonical AST Transformer</h1>
+<p class="sub">
+  Enter an arithmetic expression (<code>+ &minus; * ( )</code>). Three views of the value:
+  <b>Canonical</b> factors it into a tree rooted at <code>*</code> with every prime leg drawn in its
+  <code>6k&plusmn;1</code> skeleton (<code>5 = 2&middot;3&minus;1</code>, <code>7 = 2&middot;3+1</code>, &hellip;) &mdash;
+  so every <b>composite</b> gets a <code>*</code> root, while a <b>prime</b> has no factor and stays at a
+  <code>&plusmn;1</code> remainder; <b>Expand</b> applies the distributive law down to atoms;
+  <b>6k&plusmn;1 core</b> peels the value into sixes plus its remainder.
+</p>
+
+<div class="controls">
+  <input id="exprInput" placeholder="e.g.  2*2*2*3+1   or   3*(2*3-1)" />
+  <button onclick="runCanonical()">Canonical (root &times;)</button>
+  <button class="ghost" onclick="clearAll()">Clear</button>
+</div>
+
+<div class="toolbar">
+  <span class="label">Distributive:</span>
+  <button class="alt" onclick="expandStep()">Expand one level</button>
+  <button class="alt" onclick="expandFull()">Expand fully</button>
+  <button class="alt2" onclick="showSixCore()">Show 6k&plusmn;1 core</button>
+  <span id="levelTag" class="label"></span>
+</div>
+
+<div class="examples">
+  Try:
+  <a onclick="setEx('35')">35</a>
+  <a onclick="setEx('49')">49</a>
+  <a onclick="setEx('143')">143</a>
+  <a onclick="setEx('97')">97</a>
+  <a onclick="setEx('2*2*2*3+1')">2*2*2*3+1</a>
+</div>
+
+<div id="status"></div>
+
+<div class="panels">
+  <div class="card">
+    <h2 id="treeTitle">Tree</h2>
+    <div id="treeArea" class="tree-container"></div>
+  </div>
+  <div>
+    <div class="card" style="margin-bottom:16px">
+      <h2>Summary</h2>
+      <div id="summary" class="kv">&mdash;</div>
+    </div>
+    <div class="card">
+      <h2 id="stepsTitle">Detail</h2>
+      <ol id="steps" class="steps"><li>&mdash;</li></ol>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+// ============================================================
+// AST Node + helpers
+// ============================================================
+class Node {
+  constructor({ op = null, left = null, right = null, value = null } = {}) {
+    this.op = op; this.left = left; this.right = right; this.value = value;
+  }
+  isLeaf() { return this.op === null; }
+}
+const leaf = v => new Node({ value: v });
+
+// ============================================================
+// Parser:  + - *  and parentheses
+// ============================================================
+function tokenize(expr) {
+  const m = expr.replace(/\s+/g, "").match(/(\d+|[\+\-\*\(\)])/g);
+  return m || [];
+}
+function parseExpression(expr) {
+  const tokens = tokenize(expr);
+  let pos = 0;
+  function primary() {
+    const t = tokens[pos++];
+    if (t === "(") { const n = addsub(); if (tokens[pos] === ")") pos++; return n; }
+    if (t === undefined || !/^\d+$/.test(t)) throw new Error("Unexpected token: " + t);
+    return leaf(Number(t));
+  }
+  function mul() {
+    let n = primary();
+    while (tokens[pos] === "*") { pos++; n = new Node({ op: "*", left: n, right: primary() }); }
+    return n;
+  }
+  function addsub() {
+    let n = mul();
+    while (tokens[pos] === "+" || tokens[pos] === "-") {
+      const op = tokens[pos++]; n = new Node({ op, left: n, right: mul() });
+    }
+    return n;
+  }
+  const ast = addsub();
+  if (pos !== tokens.length) throw new Error("Trailing input near: " + tokens[pos]);
+  return ast;
+}
+function evalAst(node) {
+  if (node.isLeaf()) return node.value;
+  const L = evalAst(node.left), R = evalAst(node.right);
+  if (node.op === "+") return L + R;
+  if (node.op === "-") return L - R;
+  if (node.op === "*") return L * R;
+}
+function toInfix(node) {
+  if (node.isLeaf()) return String(node.value);
+  return "(" + toInfix(node.left) + " " + node.op + " " + toInfix(node.right) + ")";
+}
+function countLeaves(node) {
+  return node.isLeaf() ? 1 : countLeaves(node.left) + countLeaves(node.right);
+}
+
+// ============================================================
+// (A) Canonical builder  -- root '*', moves {-1,+1,*2,*3}
+// ============================================================
+function shortestChain(M) {
+  if (M < 1) return null;
+  const CAP = Math.max(2 * M + 4, 12);
+  const prev = new Map(); const q = [];
+  for (const s of [1, 2, 3]) if (s <= CAP) { prev.set(s, { from: null, op: "seed" }); q.push(s); }
+  let head = 0;
+  while (head < q.length) {
+    const v = q[head++];
+    if (v === M) break;
+    for (const [op, nv] of [["+1", v + 1], ["-1", v - 1], ["*2", v * 2], ["*3", v * 3]]) {
+      if (nv >= 1 && nv <= CAP && !prev.has(nv)) { prev.set(nv, { from: v, op }); q.push(nv); }
+    }
+  }
+  if (!prev.has(M)) return null;
+  const seq = []; let cur = M;
+  while (prev.get(cur).from !== null) { const p = prev.get(cur); seq.push({ op: p.op, val: cur }); cur = p.from; }
+  seq.reverse();
+  const seed = cur; let node = leaf(seed);
+  for (const s of seq) {
+    if (s.op === "*2") node = new Node({ op: "*", left: node, right: leaf(2) });
+    else if (s.op === "*3") node = new Node({ op: "*", left: node, right: leaf(3) });
+    else if (s.op === "+1") node = new Node({ op: "+", left: node, right: leaf(1) });
+    else if (s.op === "-1") node = new Node({ op: "-", left: node, right: leaf(1) });
+  }
+  return { node, steps: seq.length, seed, seq };
+}
+function canonicalize(M) {
+  if (!Number.isInteger(M)) return { rooted: false, reason: "non-integer", M };
+  if (M < 1) return { rooted: false, reason: "non-positive", M };
+  const opts = [];
+  if (M % 2 === 0) { const c = shortestChain(M / 2); if (c) opts.push({ r: 2, inner: c }); }
+  if (M % 3 === 0) { const c = shortestChain(M / 3); if (c) opts.push({ r: 3, inner: c }); }
+  if (opts.length === 0) return { rooted: false, reason: "coprime-to-6", M };
+  opts.sort((a, b) => a.inner.steps - b.inner.steps);
+  const best = opts[0];
+  const tree = new Node({ op: "*", left: best.inner.node, right: leaf(best.r) });
+  const seq = best.inner.seq.concat([{ op: "*" + best.r, val: M }]);
+  return { rooted: true, M, tree, r: best.r, seed: best.inner.seed, seq };
+}
+
+// ------------------------------------------------------------
+// (A2) Coprime-to-6 rewrite:  when no '*' root exists, turn the
+//      trailing +1 into (3-2) and -1 into (2-3), then factor out
+//      a 2 or a 3 to expose a *2 / *3 node.
+//        6m+1 = 3(2m+1) - 2   (×3)   |   6m+1 = 2(3m-1) + 3  (×2)
+//        6m+5 = 2(3m+1) - 3   (×2)   |   6m+5 = 3(2m-1) + 2  (×3)
+// ------------------------------------------------------------
+function buildMultiplier(v) {
+  const c = canonicalize(v);
+  if (c.rooted) return c.tree;
+  const s = shortestChain(v);
+  return s ? s.node : leaf(v);
+}
+function mulNode(m, r) { return new Node({ op: "*", left: buildMultiplier(m), right: leaf(r) }); }
+
+function coprimeRewrite(N) {
+  const mod = ((N % 6) + 6) % 6;
+  const variants = [];
+  if (mod === 1) {
+    const m = (N - 1) / 6;
+    if (2 * m + 1 >= 1) variants.push({ label: "×3 exposed", residual: "&minus; 2",
+      expr: "3&middot;(2&middot;" + m + "+1) &minus; 2", tree: new Node({ op: "-", left: mulNode(2 * m + 1, 3), right: leaf(2) }) });
+    if (3 * m - 1 >= 1) variants.push({ label: "×2 exposed", residual: "+ 3",
+      expr: "2&middot;(3&middot;" + m + "&minus;1) + 3", tree: new Node({ op: "+", left: mulNode(3 * m - 1, 2), right: leaf(3) }) });
+  } else if (mod === 5) {
+    const m = (N + 1) / 6;
+    if (3 * m + 1 >= 1) variants.push({ label: "×2 exposed", residual: "&minus; 3",
+      expr: "2&middot;(3&middot;" + m + "+1) &minus; 3", tree: new Node({ op: "-", left: mulNode(3 * m + 1, 2), right: leaf(3) }) });
+    if (2 * m - 1 >= 1) variants.push({ label: "×3 exposed", residual: "+ 2",
+      expr: "3&middot;(2&middot;" + m + "&minus;1) + 2", tree: new Node({ op: "+", left: mulNode(2 * m - 1, 3), right: leaf(2) }) });
+  } else return null;
+  variants.forEach(v => v.leaves = countLeaves(v.tree));
+  variants.sort((a, b) => a.leaves - b.leaves);
+  return variants;
+}
+
+// mod-6 signature readout
+function mod6Readout(N) {
+  const mod = ((N % 6) + 6) % 6;
+  const names = {
+    0: "&equiv; 0  &mdash; divisible by 6",
+    1: "&equiv; 1  &mdash; 6k+1, coprime to 6",
+    2: "&equiv; 2  &mdash; even",
+    3: "&equiv; 3  &mdash; divisible by 3",
+    4: "&equiv; 4  &mdash; even",
+    5: "&equiv; 5  &mdash; 6k&minus;1, coprime to 6"
+  };
+  let pair = "&mdash;";
+  if (mod === 1) pair = "&minus;2 (×3-form) &nbsp;/&nbsp; +3 (×2-form) &nbsp;&middot;&nbsp; spread 5";
+  else if (mod === 5) pair = "+2 (×3-form) &nbsp;/&nbsp; &minus;3 (×2-form) &nbsp;&middot;&nbsp; spread 5";
+  return { mod, name: names[mod], pair, coprime: mod === 1 || mod === 5 };
+}
+
+// ------------------------------------------------------------
+// (A3) Canonical root '*' by full prime factorization.
+//      Each prime leg is drawn in its 6k+-1 skeleton:
+//        2,3 -> leaves;  p>=5 -> (6k-tree) +- 1
+//      so 5 = (2*3-1), 7 = (2*3+1), 11 = (2*2*3 - 1), ...
+//      => every COMPOSITE roots at '*'; a PRIME has no '*' root.
+// ------------------------------------------------------------
+function primeFactorize(n) {
+  const f = [];
+  for (let d = 2; d * d <= n; d++) while (n % d === 0) { f.push(d); n /= d; }
+  if (n > 1) f.push(n);
+  return f;
+}
+function primeNode(p) {
+  if (p === 2) return leaf(2);
+  if (p === 3) return leaf(3);
+  const sixK = (p % 6 === 1) ? p - 1 : p + 1;   // p = 6k +- 1  (p>=5 prime)
+  const sign = (p % 6 === 1) ? "+" : "-";
+  const sixTree = canonicalizeV2(sixK).tree;     // 6k is divisible by 6 -> product tree
+  return new Node({ op: sign, left: sixTree, right: leaf(1) });
+}
+function fiveNode() { return primeNode(5); } // kept for compatibility
+function canonicalizeV2(N) {
+  if (!Number.isInteger(N) || N < 1) return { rooted: false, reason: "non-positive" };
+  if (N === 1) return { rooted: false, reason: "unit" };
+  const facs = primeFactorize(N);
+  if (facs.length === 1) return { rooted: false, reason: "prime", prime: N };
+  const legs = facs.map(primeNode);
+  let tree = legs[0];
+  for (let i = 1; i < legs.length; i++) tree = new Node({ op: "*", left: tree, right: legs[i] });
+  return { rooted: true, tree, factors: facs, remainder: 1 };
+}
+
+// ============================================================
+// (B) Distributive expansion  --  2*X=X+X, 3*X=X+X+X, ... down to atoms
+// ============================================================
+function anyProduct(n) {
+  if (n.isLeaf()) return false;
+  if (n.op === "*") return true;
+  return anyProduct(n.left) || anyProduct(n.right);
+}
+function flattenFactors(n, o = []) {
+  if (n.isLeaf()) { o.push(n.value); return o; }
+  flattenFactors(n.left, o); flattenFactors(n.right, o); return o;
+}
+function productTree(fs) { let n = leaf(fs[0]); for (let i = 1; i < fs.length; i++) n = new Node({ op: "*", left: n, right: leaf(fs[i]) }); return n; }
+function sumTree(nodes) { let n = nodes[0]; for (let i = 1; i < nodes.length; i++) n = new Node({ op: "+", left: n, right: nodes[i] }); return n; }
+function onesTree(n) { return sumTree(Array.from({ length: n }, () => leaf(1))); }
+
+// Pull the smallest factor f out of a pure product chain -> f copies of the rest.
+function expandChain(node) {
+  const fs = flattenFactors(node).slice().sort((a, b) => a - b);
+  const f = fs[0], rest = fs.slice(1);
+  const base = () => rest.length ? productTree(rest) : leaf(1);
+  return sumTree(Array.from({ length: f }, () => base()));
+}
+// One "notch": while any product remains, expand each product chain once;
+// otherwise unravel bare leaves (>1) into sums of ones.
+function expandNotch(node) {
+  const mode = anyProduct(node) ? "prod" : "atom";
+  return (function rec(n) {
+    if (n.isLeaf()) return mode === "atom" && n.value > 1 ? onesTree(n.value) : leaf(n.value);
+    if (n.op === "*") return expandChain(n);
+    return new Node({ op: n.op, left: rec(n.left), right: rec(n.right) });
+  })(node);
+}
+function isFullyExpanded(node) {
+  return !anyProduct(node) && flattenFactors(node).every(v => v === 1);
+}
+
+// ============================================================
+// (C) 6k +/- 1 core
+// ============================================================
+function sixCore(N) {
+  const k = Math.round(N / 6), r = N - 6 * k;
+  let tree;
+  if (k >= 1) tree = sumTree(Array.from({ length: k }, () => new Node({ op: "*", left: leaf(2), right: leaf(3) })));
+  else tree = leaf(0);
+  if (r > 0) for (let i = 0; i < r; i++) tree = new Node({ op: "+", left: tree, right: leaf(1) });
+  else if (r < 0) for (let i = 0; i < -r; i++) tree = new Node({ op: "-", left: tree, right: leaf(1) });
+  return { tree, k, r };
+}
+
+// ============================================================
+// Rendering
+// ============================================================
+function classFor(node) {
+  if (node.isLeaf()) return "leaf";
+  if (node.op === "*") return (node.left.isLeaf() && node.left.value === 2 && node.right.isLeaf() && node.right.value === 3) ? "six" : "mul";
+  if (node.op === "+") return "add";
+  return "sub";
+}
+function renderTree(root) {
+  const area = document.getElementById("treeArea");
+  area.innerHTML = "";
+  const n = countLeaves(root);
+  if (n > 160) {
+    area.innerHTML = "<p style='padding:12px;color:#6b7280'>Tree has " + n +
+      " leaves &mdash; too large to draw. Infix form:</p><p class='canon' style='padding:0 12px 12px'>" +
+      toInfix(root) + "</p>";
+    return;
+  }
+  let counter = 0;
+  const pos = new Map();
+  (function assign(nd, depth) {
+    if (!nd.isLeaf()) assign(nd.left, depth + 1);
+    pos.set(nd, { col: counter++, depth });
+    if (!nd.isLeaf()) assign(nd.right, depth + 1);
+  })(root, 0);
+  const colGap = 60, rowGap = 74, padX = 34, padY = 14;
+  let maxCol = 0, maxDepth = 0;
+  pos.forEach(p => { maxCol = Math.max(maxCol, p.col); maxDepth = Math.max(maxDepth, p.depth); });
+  const width = padX * 2 + maxCol * colGap, height = padY * 2 + maxDepth * rowGap + 36;
+  area.style.width = "100%"; area.style.minHeight = height + "px";
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("class", "wires"); svg.setAttribute("width", width); svg.setAttribute("height", height);
+  area.appendChild(svg);
+  const xy = nd => { const p = pos.get(nd); return { x: padX + p.col * colGap, y: padY + p.depth * rowGap }; };
+  (function wires(nd) {
+    if (nd.isLeaf()) return;
+    const a = xy(nd);
+    for (const c of [nd.left, nd.right]) {
+      const b = xy(c);
+      const ln = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      ln.setAttribute("x1", a.x); ln.setAttribute("y1", a.y + 13);
+      ln.setAttribute("x2", b.x); ln.setAttribute("y2", b.y);
+      ln.setAttribute("stroke", "#94a3b8"); ln.setAttribute("stroke-width", "2");
+      svg.appendChild(ln); wires(c);
+    }
+  })(root);
+  pos.forEach((p, nd) => {
+    const pt = xy(nd);
+    const div = document.createElement("div");
+    div.className = "node " + classFor(nd);
+    div.style.left = pt.x + "px"; div.style.top = pt.y + "px";
+    div.textContent = nd.isLeaf() ? nd.value : nd.op;
+    area.appendChild(div);
+  });
+}
+
+// ============================================================
+// Controller
+// ============================================================
+let expandState = null; // { expr, tree, level, history:[] }
+
+function setStatus(kind, html) {
+  const el = document.getElementById("status");
+  el.className = "status " + kind; el.innerHTML = html;
+}
+function setTitles(tree, steps) {
+  document.getElementById("treeTitle").innerHTML = tree;
+  document.getElementById("stepsTitle").innerHTML = steps;
+}
+function currentValue() {
+  const raw = document.getElementById("exprInput").value.trim();
+  if (!raw) { setStatus("err", "Enter an expression first."); return null; }
+  try { const ast = parseExpression(raw); return { raw, value: evalAst(ast), ast }; }
+  catch (e) { setStatus("err", "Could not parse: " + e.message); return null; }
+}
+
+// ---- (A) Canonical ----
+function runCanonical() {
+  const cur = currentValue(); if (!cur) return;
+  expandState = null; document.getElementById("levelTag").textContent = "";
+  setTitles("Canonical tree (root = &times;)", "Build sequence");
+  const summary = document.getElementById("summary"), stepsEl = document.getElementById("steps");
+  const m6 = mod6Readout(cur.value);
+  const result = canonicalizeV2(cur.value);
+
+  if (!result.rooted) {
+    // unit or small prime atoms (1,2,3): just show the atom
+    if (cur.value <= 3) {
+      renderTree(leaf(cur.value));
+      const kind = cur.value === 1 ? "the unit 1" : "a prime atom";
+      setStatus("no", "<b>" + cur.raw + "</b> = <b>" + cur.value + "</b> is " + kind + " &mdash; no product form.");
+      summary.innerHTML = kv({ Expression: cur.raw, Value: cur.value, "mod 6": m6.name, "*-rooted?": "no (" + kind + ")" });
+      stepsEl.innerHTML = "<li>&mdash;</li>"; return;
+    }
+    // prime > 3  =>  coprime to 6  =>  no '*' root; show the +-1 skeleton
+    const variants = coprimeRewrite(cur.value);
+    if (variants && variants.length) {
+      const primary = variants[0];
+      setTitles("PRIME &mdash; no &times; root (&plusmn;1 skeleton)", "Prime evidence");
+      renderTree(primary.tree);
+      const check = evalAst(primary.tree);
+      setStatus("no",
+        "<b>" + cur.raw + "</b> = <b>" + cur.value + "</b> is <b>PRIME</b> &nbsp;<b>[" + m6.name + "]</b> " +
+        "&mdash; it has no factors, so no <code>*</code> root. Its 6k&plusmn;1 skeleton is " +
+        "<span class='canon'>" + primary.expr + "</span>. Value: " + check +
+        (check === cur.value ? " &#10003;" : " &#10007;"));
+      summary.innerHTML = kv({
+        Expression: cur.raw, Value: cur.value, "mod 6": m6.name, "Residual pair": m6.pair,
+        Classification: "PRIME (irreducible)", "Best skeleton": primary.expr, "Exposed": primary.label,
+        "Root op": primary.tree.op + "  (residual " + primary.residual + ")",
+        "Re-evaluates": check + (check === cur.value ? " &#10003;" : " &#10007;")
+      });
+      stepsEl.innerHTML = variants.map(v =>
+        "<li><span class='lv'>" + v.label + "</span><code>" + v.expr + "</code></li>").join("") +
+        "<li><span class='lv'>note</span>a &times; root would require a factor; a prime has none, so it stays at the &plusmn;1 remainder.</li>";
+      return;
+    }
+    setStatus("no", "<b>" + cur.raw + "</b> = <b>" + cur.value + "</b>. No <code>*</code>-rooted form.");
+    document.getElementById("treeArea").innerHTML =
+      "<p style='color:#991b1b;padding:12px'>" + cur.value + " &mdash; no rewrite available.</p>";
+    summary.innerHTML = kv({ Expression: cur.raw, Value: cur.value, "mod 6": m6.name, "*-rooted?": "no" });
+    stepsEl.innerHTML = "<li>&mdash;</li>"; return;
+  }
+
+  // COMPOSITE: rooted at * over prime legs, each prime drawn as its 6k+-1 skeleton
+  setTitles("Canonical tree (root = &times;, prime legs in 6k&plusmn;1 form)", "Prime factorization");
+  renderTree(result.tree);
+  const check = evalAst(result.tree);
+  const cnt = {};
+  result.factors.forEach(p => cnt[p] = (cnt[p] || 0) + 1);
+  const facStr = Object.keys(cnt).map(Number).sort((a, b) => a - b)
+    .map(p => cnt[p] > 1 ? p + "<sup>" + cnt[p] + "</sup>" : "" + p).join(" &middot; ");
+  setStatus(check === cur.value ? "ok" : "err",
+    "<b>" + cur.raw + "</b> = <b>" + cur.value + "</b> is <b>composite</b> &nbsp;<b>[" + m6.name + "]</b> = " + facStr +
+    " &rarr; <span class='canon'>" + toInfix(result.tree) + "</span>" + (check === cur.value ? "" : "  (mismatch!)"));
+  summary.innerHTML = kv({
+    Expression: cur.raw, Value: cur.value, "mod 6": m6.name,
+    Classification: "composite", Root: "*", "Prime factors": facStr,
+    "Legs drawn as": "2,3 = leaves; p&ge;5 = 6k&plusmn;1 (5=2&middot;3&minus;1, 7=2&middot;3+1, ...)",
+    "Re-evaluates": check + (check === cur.value ? " &#10003;" : " &#10007;")
+  });
+  stepsEl.innerHTML =
+    "<li><span class='lv'>value</span><code>" + cur.value + " = " + result.factors.join(" · ") + "</code></li>" +
+    Object.keys(cnt).map(Number).filter(p => p >= 5).sort((a, b) => a - b)
+      .map(p => "<li><span class='lv'>" + p + "</span><code>= " + toInfix(primeNode(p)) + "</code></li>").join("") +
+    "<li><span class='lv'>tree</span><code>" + toInfix(result.tree) + "</code></li>";
+}
+
+// ---- (B) Distributive expansion ----
+function ensureExpandState() {
+  const cur = currentValue(); if (!cur) return null;
+  if (!expandState || expandState.expr !== cur.raw) {
+    expandState = { expr: cur.raw, value: cur.value, tree: cur.ast, level: 0, history: [toInfix(cur.ast)] };
+  }
+  return cur;
+}
+function renderExpand(cur, note) {
+  setTitles("Distributive expansion", "Levels");
+  document.getElementById("levelTag").textContent = "level " + expandState.level +
+    " · " + countLeaves(expandState.tree) + " leaves";
+  renderTree(expandState.tree);
+  const check = evalAst(expandState.tree);
+  setStatus("info", "<b>" + cur.raw + "</b> = <b>" + cur.value + "</b> &mdash; " + note +
+    " Value preserved: " + check + (check === cur.value ? " &#10003;" : " &#10007;"));
+  document.getElementById("summary").innerHTML = kv({
+    Expression: cur.raw, Value: cur.value, Level: expandState.level,
+    Leaves: countLeaves(expandState.tree),
+    Done: isFullyExpanded(expandState.tree) ? "yes (all 1s)" : "no"
+  });
+  const hist = expandState.history;
+  document.getElementById("steps").innerHTML = hist.map((h, i) =>
+    "<li><span class='lv'>L" + i + "</span><code>" + h + "</code></li>").join("");
+}
+function expandStep() {
+  const cur = ensureExpandState(); if (!cur) return;
+  if (isFullyExpanded(expandState.tree)) { renderExpand(cur, "already fully expanded to atoms."); return; }
+  const before = toInfix(expandState.tree);
+  const next = expandNotch(expandState.tree);
+  if (toInfix(next) === before) { renderExpand(cur, "no further expansion."); return; }
+  expandState.tree = next; expandState.level++; expandState.history.push(toInfix(next));
+  renderExpand(cur, "one distributive level applied.");
+}
+function expandFull() {
+  const cur = ensureExpandState(); if (!cur) return;
+  let guard = 0;
+  while (!isFullyExpanded(expandState.tree) && guard++ < 60) {
+    if (countLeaves(expandState.tree) > 400) break;
+    const next = expandNotch(expandState.tree);
+    if (toInfix(next) === toInfix(expandState.tree)) break;
+    expandState.tree = next; expandState.level++; expandState.history.push(toInfix(next));
+  }
+  renderExpand(cur, "expanded fully.");
+}
+
+// ---- (C) 6k +/- 1 core ----
+function showSixCore() {
+  const cur = currentValue(); if (!cur) return;
+  expandState = null; document.getElementById("levelTag").textContent = "";
+  setTitles("6k &plusmn; 1 core", "Reading");
+  const { tree, k, r } = sixCore(cur.value);
+  renderTree(tree);
+  const check = evalAst(tree);
+  const rem = r === 0 ? "0 (a clean multiple of 6)" : (r > 0 ? "+" + r : "" + r);
+  const coprime = (cur.value % 6 === 1 || cur.value % 6 === 5);
+  setStatus(coprime ? "no" : "ok",
+    "<b>" + cur.raw + "</b> = <b>" + cur.value + "</b> = <b>6&middot;" + k + (r >= 0 ? " + " + r : " &minus; " + (-r)) +
+    "</b>" + (coprime ? " &mdash; coprime to 6 (prime-like &plusmn;1)" : ""));
+  document.getElementById("summary").innerHTML = kv({
+    Expression: cur.raw, Value: cur.value, "mod 6": mod6Readout(cur.value).name,
+    "k (sixes)": k, "Remainder r": rem,
+    "6k form": "6&middot;" + k + (r >= 0 ? "+" + r : r), "Re-evaluates": check + (check === cur.value ? " &#10003;" : " &#10007;")
+  });
+  document.getElementById("steps").innerHTML =
+    "<li><span class='lv'>core</span><code>" + k + " &times; (2*3) = " + 6 * k + "</code></li>" +
+    "<li><span class='lv'>rem</span><code>" + rem + "</code></li>" +
+    "<li><span class='lv'>note</span>" + (r === 1 ? "6k+1 form" : r === -1 ? "6k&minus;1 form" :
+      r === 0 ? "divisible by 6" : "residue " + rem + " (mod 6)") + "</li>";
+}
+
+// ---- shared ----
+function kv(obj) {
+  return Object.entries(obj).map(([k, v]) => "<div><b>" + k + "</b> " + v + "</div>").join("");
+}
+function setEx(s) { document.getElementById("exprInput").value = s; runCanonical(); }
+function clearAll() {
+  expandState = null;
+  document.getElementById("exprInput").value = "";
+  document.getElementById("levelTag").textContent = "";
+  document.getElementById("status").className = "status";
+  document.getElementById("status").innerHTML = "";
+  document.getElementById("treeArea").innerHTML = "";
+  document.getElementById("summary").innerHTML = "&mdash;";
+  document.getElementById("steps").innerHTML = "<li>&mdash;</li>";
+  setTitles("Tree", "Detail");
+}
+document.getElementById("exprInput").addEventListener("keydown", e => { if (e.key === "Enter") runCanonical(); });
+</script>
+
+</body>
+</html>

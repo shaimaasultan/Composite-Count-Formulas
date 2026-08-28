@@ -1055,4 +1055,79 @@ print("Composites in B1:", C1)
 print("Composites in B5:", C5)
 \end{lstlisting}
 
+\section{Companion Mapping Theorem in the $6k\pm1$ Lattice}
+
+\begin{theorem}[Companion Mapping in the $6k\pm1$ Lattice]
+Let $a$ be an integer of the form
+\[
+a = 6m \pm 1, \qquad m \in \mathbb{Z},
+\]
+and let
+\[
+b_k = 6k \pm 1, \qquad k \in \mathbb{Z}_{\geq 1}.
+\]
+Define the companion set of $a$ by
+\[
+C(a) = \{\, a b_k : b_k = 6k \pm 1,\ k \geq 1 \,\}.
+\]
+Then:
+
+\begin{enumerate}
+\item \textbf{Closure in the lattice.} Every companion $c \in C(a)$ is again of
+the form
+\[
+c = 6n \pm 1
+\]
+for some integer $n$. In particular, $C(a)$ is contained in the $6k\pm1$
+lattice.
+
+\item \textbf{Composite generation.} If $|a| > 1$, then every $c \in C(a)$ is
+composite and has $a$ as a non-trivial factor.
+
+\item \textbf{Factor family.} For fixed $a$, the set $C(a)$ is exactly the set
+of all lattice elements that are divisible by $a$ and have a cofactor in the
+lattice:
+\[
+C(a) = \{\, n \in \mathbb{Z} : n = ab,\ b = 6k\pm1,\ k \geq 1 \,\}.
+\]
+\end{enumerate}
+\end{theorem}
+
+\subsection*{Proof}
+Let $a = 6m + \varepsilon$ and $b_k = 6k + \delta$, where
+$\varepsilon, \delta \in \{-1, 1\}$. Then
+\[
+c = a b_k = (6m+\varepsilon)(6k+\delta) = 36mk + 6m\delta + 6k\varepsilon + \varepsilon\delta.
+\]
+Factor out $6$:
+\[
+c = 6(6mk + m\delta + k\varepsilon) + \varepsilon\delta.
+\]
+Since $\varepsilon, \delta \in \{-1, 1\}$, we have $\varepsilon\delta \in \{-1, 1\}$.
+Thus
+\[
+c = 6n \pm 1, \qquad n = 6mk + m\delta + k\varepsilon \in \mathbb{Z},
+\]
+which proves closure in the $6k\pm1$ lattice.
+
+If $|a| > 1$, then $c = a b_k$ has a non-trivial factor $a$, so $c$ is
+composite, proving composite generation.
+
+Finally, any lattice element $n$ divisible by $a$ with cofactor $b$ in the
+lattice must satisfy
+\[
+n = ab, \qquad a = 6m\pm1, \qquad b = 6k\pm1,
+\]
+so $n \in C(a)$. Conversely, every element of $C(a)$ is of this form, proving
+the factor family characterization. \qed
+
+\subsection*{Python Implementation: Companion Set}
+\begin{lstlisting}
+k_values = np.arange(1, 100+1)
+def companions(a, k_values):
+    # a is a lattice element, k_values is a list of k
+    return [a * (6*k - 1) for k in k_values] + [a * (6*k + 1) for k in k_values]
+print(companions(25,k_values))
+\end{lstlisting}
+
 \end{document}
