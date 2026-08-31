@@ -3173,17 +3173,17 @@ argument does not supply.
 
 Fix $E$ and $C$, so that $X = 2E^2 - C^2$ is determined, and write
 \[
-\delta = X - E^2 .
+\delta_{\text{real}} = X - E^2 .
 \]
 The parametrisation then gives
 \[
-H^2 = A^2 - \delta, \qquad F^2 = A^2 + \delta ,
+H^2 = A^2 - \delta_{\text{real}}, \qquad F^2 = A^2 + \delta_{\text{real}} ,
 \]
-so $H^2$ is positive precisely when $A > \sqrt{\delta}$. This is a
+so $H^2$ is positive precisely when $A > \sqrt{\delta_{\text{real}}}$. This is a
 genuine restriction: roots below the threshold cannot serve as $A$ at
 all, independently of any squareness condition.
 
-Among the admissible roots, $H^2 = A^2 - \delta$ is increasing in $A$.
+Among the admissible roots, $H^2 = A^2 - \delta_{\text{real}}$ is increasing in $A$.
 The smallest admissible root therefore yields the smallest forced value
 of $H^2$. Since consecutive squares near $n$ differ by roughly
 $2\sqrt n$, the density of squares near $n$ falls like $n^{-1/2}$, and a
@@ -3192,11 +3192,11 @@ square. This gives a heuristic rule:
 
 \begin{quote}
 Among the roots available at a given centre, the most promising choice
-of $A$ is the smallest one exceeding $\sqrt{\delta}$.
+of $A$ is the smallest one exceeding $\sqrt{\delta_{\text{real}}}$.
 \end{quote}
 
 At $E = 425$ with $C = 373$ we have $X = 222121$ and
-$\delta = 41496$, so $\sqrt\delta \approx 203.7$. The available roots
+$\delta_{\text{real}} = 41496$, so $\sqrt{\delta_{\text{real}}} \approx 203.7$. The available roots
 are $23, 205, 289, 373, 527, 565$; the root $23$ falls below the
 threshold and is inadmissible, and $205$ is the smallest root above it.
 It yields $H^2 = 529 = 23^2$, and the resulting square attains seven
@@ -3219,30 +3219,30 @@ $A < E$ without loss.
 \section{An Admissibility Threshold}
 
 \begin{proposition}\label{prop:threshold}
-Fix $E$ and $C$, and set $X = 2E^2 - C^2$ and $\delta = X - E^2$. Then
+Fix $E$ and $C$, and set $X = 2E^2 - C^2$ and $\delta_{\text{real}} = X - E^2$. Then
 \[
-H^2 = A^2 - \delta, \qquad F^2 = A^2 + \delta ,
+H^2 = A^2 - \delta_{\text{real}}, \qquad F^2 = A^2 + \delta_{\text{real}} ,
 \]
 and the nine entries are all positive only if
 \[
-A > \sqrt{\delta} \quad\text{when } \delta > 0,
+A > \sqrt{\delta_{\text{real}}} \quad\text{when } \delta_{\text{real}} > 0,
 \qquad
-A > \sqrt{-\delta} \cdot 0 \ \ \text{(no lower constraint)}
-\quad\text{when } \delta \le 0 .
+A > \sqrt{-\delta_{\text{real}}} \cdot 0 \ \ \text{(no lower constraint)}
+\quad\text{when } \delta_{\text{real}} \le 0 .
 \]
 \end{proposition}
 
 \begin{proof}
-From \eqref{eq:H}, $H^2 = E^2 + A^2 - X = A^2 - \delta$, and from
-\eqref{eq:F}, $F^2 = A^2 + X - E^2 = A^2 + \delta$. If $\delta > 0$
-then $H^2 > 0$ requires $A^2 > \delta$; if $\delta \le 0$ then
+From \eqref{eq:H}, $H^2 = E^2 + A^2 - X = A^2 - \delta_{\text{real}}$, and from
+\eqref{eq:F}, $F^2 = A^2 + X - E^2 = A^2 + \delta_{\text{real}}$. If $\delta_{\text{real}} > 0$
+then $H^2 > 0$ requires $A^2 > \delta_{\text{real}}$; if $\delta_{\text{real}} \le 0$ then
 $H^2 \ge A^2 > 0$ automatically, while $F^2 > 0$ requires
-$A^2 > -\delta$. In either case the smaller of the two cells imposes
-the bound $A^2 > |\delta|$.
+$A^2 > -\delta_{\text{real}}$. In either case the smaller of the two cells imposes
+the bound $A^2 > |\delta_{\text{real}}|$.
 \end{proof}
 
 \begin{corollary}
-Roots $A$ with $A^2 \le |\delta|$ are inadmissible: no magic square
+Roots $A$ with $A^2 \le |\delta_{\text{real}}|$ are inadmissible: no magic square
 with positive entries has that value in the corner cell, whatever the
 squareness of the remaining cells.
 \end{corollary}
@@ -3252,7 +3252,7 @@ heuristic. It applies before any question of squareness arises, and it
 removes candidates from the search unconditionally.
 
 At $E = 425$ with $C = 373$ one has $X = 222121$ and
-$\delta = 41496$, whence $\sqrt{\delta} \approx 203.7$. Of the roots
+$\delta_{\text{real}} = 41496$, whence $\sqrt{\delta_{\text{real}}} \approx 203.7$. Of the roots
 $23, 205, 289, 373, 527, 565$ occurring at this centre, the root $23$
 lies below the threshold and is inadmissible; the remaining five are
 admissible. Taking $A = 205$, the smallest admissible root, gives
@@ -3260,7 +3260,7 @@ $H^2 = 42025 - 41496 = 529 = 23^2$, and the configuration attains seven
 square entries.
 
 \begin{remark}
-Since $H^2 = A^2 - \delta$ increases with $A$, the smallest admissible
+Since $H^2 = A^2 - \delta_{\text{real}}$ increases with $A$, the smallest admissible
 root produces the smallest forced value of $H^2$. As the density of
 squares near $n$ decreases like $n^{-1/2}$, this suggests examining the
 smallest admissible root first. That suggestion is heuristic;
@@ -3270,21 +3270,21 @@ Proposition~\ref{prop:threshold} itself is not.
 \section{An Admissibility Threshold}
 
 \begin{proposition}\label{prop:threshold}
-Fix $E$ and $C$, and set $X = 2E^2 - C^2$ and $\delta = X - E^2$. Then
+Fix $E$ and $C$, and set $X = 2E^2 - C^2$ and $\delta_{\text{real}} = X - E^2$. Then
 \[
-H^2 = A^2 - \delta, \qquad F^2 = A^2 + \delta ,
+H^2 = A^2 - \delta_{\text{real}}, \qquad F^2 = A^2 + \delta_{\text{real}} ,
 \]
 and all nine entries are positive if and only if
 \[
-A^2 > \lvert \delta \rvert = \lvert X - E^2 \rvert .
+A^2 > \lvert \delta_{\text{real}} \rvert = \lvert X - E^2 \rvert .
 \]
 \end{proposition}
 
 \begin{proof}
-From \eqref{eq:H}, $H^2 = E^2 + A^2 - X = A^2 - \delta$; from
-\eqref{eq:F}, $F^2 = A^2 + X - E^2 = A^2 + \delta$. Their minimum is
-$A^2 - \lvert\delta\rvert$, so both are positive exactly when
-$A^2 > \lvert\delta\rvert$. Equality gives a vanishing entry, which is
+From \eqref{eq:H}, $H^2 = E^2 + A^2 - X = A^2 - \delta_{\text{real}}$; from
+\eqref{eq:F}, $F^2 = A^2 + X - E^2 = A^2 + \delta_{\text{real}}$. Their minimum is
+$A^2 - \lvert\delta_{\text{real}}\rvert$, so both are positive exactly when
+$A^2 > \lvert\delta_{\text{real}}\rvert$. Equality gives a vanishing entry, which is
 excluded. The remaining cells are positive whenever $C^2 < 2E^2$ and
 $A^2 < 2E^2$, which the choice of $C$ and $A$ already assumes.
 \end{proof}
@@ -3303,14 +3303,14 @@ of Section~\ref{sec:ex}, in which $X$ is not a square --- and may be
 used to prune a search before any squareness test is performed.
 
 At $E = 425$ with $C = 373$ one has $X = 222121$, which is not a
-square, and $\delta = 41496$, so $\lvert\delta\rvert^{1/2} \approx
+square, and $\delta_{\text{real}} = 41496$, so $\lvert\delta_{\text{real}}\rvert^{1/2} \approx
 203.7$. Of the roots $23, 205, 289, 373, 527, 565$ occurring at this
 centre, only $23$ falls below the threshold. Taking $A = 205$, the
 smallest admissible root, gives $H^2 = 42025 - 41496 = 529 = 23^2$ and
 a configuration with seven square entries.
 
 \begin{remark}
-Since $H^2 = A^2 - \delta$ increases with $A$ when $\delta > 0$, the
+Since $H^2 = A^2 - \delta_{\text{real}}$ increases with $A$ when $\delta_{\text{real}} > 0$, the
 smallest admissible root produces the smallest forced value of $H^2$;
 as the density of squares near $n$ decreases like $n^{-1/2}$, this
 suggests testing that root first. The suggestion is heuristic.
