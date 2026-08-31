@@ -4064,6 +4064,117 @@ odd probe) also satisfies the forced linear relations of
 \eqref{eq:C}--\eqref{eq:F} is a finer question that the count of
 representations alone does not answer.
 
+\section{The Maximum Spread, and an Obstruction When $\sigma_{\text{real}}=\delta_{\text{real}}$}\label{sec:maxspread}
+
+The walk-from-$E^2$ decomposition of Section~\ref{sec:norm} orders the
+nine cells as
+\[
+H^2=E^2-3\delta_{\text{real}}-\sigma_{\text{real}}, \ \ldots, \ E^2,
+\ \ldots, \ B^2=E^2+3\delta_{\text{real}}+\sigma_{\text{real}} ,
+\]
+with $H^2$ the smallest cell and $B^2$ the largest. Positivity of the
+whole configuration is therefore governed entirely by $H^2$.
+
+\begin{proposition}[The maximum spread]\label{prop:maxspread}
+All nine entries are positive if and only if
+\[
+3\delta_{\text{real}} + \sigma_{\text{real}} < E^2 ,
+\]
+equivalently, in terms of the scale $S$ and ratio $t$ of
+Sections~\ref{sec:independentscales} and~\ref{sec:param},
+\[
+S < \frac{2E^2}{2-t} .
+\]
+\end{proposition}
+
+\begin{proof}
+Since $\delta_{\text{real}},\sigma_{\text{real}}>0$ in the normalised
+ordering, $H^2=E^2-3\delta_{\text{real}}-\sigma_{\text{real}}$ is the
+smallest of the nine cells and every other cell exceeds it; hence
+$H^2>0$ is necessary and sufficient. Substituting
+$\delta_{\text{real}}=\tfrac{1-t}{2}S$ and
+$\sigma_{\text{real}}=\tfrac{2t-1}{2}S$ gives
+$3\delta_{\text{real}}+\sigma_{\text{real}} =
+\tfrac{S}{2}\bigl(3(1-t)+(2t-1)\bigr) = \tfrac{S}{2}(2-t)$, and
+$\tfrac{S}{2}(2-t) < E^2$ rearranges to $S < 2E^2/(2-t)$.
+\end{proof}
+
+At $E=425$: $3\delta_{\text{real}}+\sigma_{\text{real}} =
+3(41496)+55608 = 180096 < 180625 = E^2$, close to the ceiling ---
+consistent with $H^2=529$ being by far the smallest of the nine cells.
+
+The two real gaps $\delta_{\text{real}}$ and $\sigma_{\text{real}}$
+need not be equal, and the difference between them is not incidental.
+
+\begin{proposition}[An obstruction at $\sigma_{\text{real}}=\delta_{\text{real}}$]\label{prop:sigmaequaldelta}
+If $\sigma_{\text{real}}=\delta_{\text{real}}\neq0$, no configuration
+with all nine entries square exists.
+\end{proposition}
+
+\begin{proof}
+Write $\delta=\delta_{\text{real}}$. Under the hypothesis, the nine
+cells become $E^2+k\delta$ for $k=-4,-3,\ldots,3,4$ --- an exact
+arithmetic progression. If all nine were perfect squares, the four
+consecutive terms at $k=-4,-3,-2,-1$, namely $H^2,A^2,F^2,C^2$, would
+be four distinct perfect squares in arithmetic progression. No such
+four squares exist, by Fermat's classical theorem on arithmetic
+progressions of squares. Hence not all nine cells can be square.
+\end{proof}
+
+\begin{remark}
+The square of Section~\ref{sec:ex} shows why the hypothesis matters.
+There, $H^2$, $F^2$, $E^2$, $D^2$ are all four square
+($23^2,289^2,425^2,527^2$), which is possible only because they do
+\emph{not} lie in arithmetic progression --- their consecutive gaps are
+$82992$, $97104$, $97104$, not a constant. Forcing
+$\sigma_{\text{real}}=\delta_{\text{real}}$ would make all three gaps
+equal to $82992$, placing $H^2,F^2,E^2,D^2$ in exact arithmetic
+progression and, by Proposition~\ref{prop:sigmaequaldelta}'s argument,
+making it impossible for $H^2,F^2,D^2$ to remain square alongside
+$E^2$. The two independent scales are therefore not a redundancy in
+the parametrisation: their inequality is precisely what keeps the
+configuration clear of Fermat's obstruction, narrowing the search for
+nine squares to the region $\sigma_{\text{real}}\neq\delta_{\text{real}}$
+--- a genuine, if partial, answer to where the configuration of
+Section~\ref{sec:cone} cannot be found.
+\end{remark}
+
+\begin{remark}[The obstruction is arithmetic, not structural]
+Setting $\sigma_{\text{real}}=\delta_{\text{real}}$ does not violate
+any magic-square condition: every row, column, diagonal, and
+opposite-pair identity holds identically for all values of
+$\delta_{\text{real}}$ and $\sigma_{\text{real}}$, by the linear
+parametrisation of Section~\ref{sec:param}. The line
+$\sigma_{\text{real}}=\delta_{\text{real}}$ produces a perfectly valid
+magic square of integers; Proposition~\ref{prop:sigmaequaldelta} rules
+it out only on squareness, via Fermat's theorem, not on any structural
+ground.
+\end{remark}
+
+\begin{corollary}[Distance from the forbidden line]\label{cor:fermatdistance}
+\[
+\sigma_{\text{real}} - \delta_{\text{real}}
+= \left(\sigma_{\text{norm}}-\delta_{\text{norm}}\right) S
+= \frac{3t-2}{2}\,S .
+\]
+\end{corollary}
+
+\begin{proof}
+$\sigma_{\text{norm}}-\delta_{\text{norm}}
+= \left(t-\tfrac12\right) - \tfrac{1-t}{2} = \tfrac{3t-2}{2}$; multiply
+by $S$.
+\end{proof}
+
+At $E=425$: $\tfrac{3t-2}{2} = \tfrac{14}{275}$, and
+$\tfrac{14}{275}\cdot277200 = 14112 = 55608-41496$, matching
+$\sigma_{\text{real}}-\delta_{\text{real}}$ exactly. This single
+normalised quantity, $\tfrac{3t-2}{2}$, measures how far a given
+configuration sits from the line
+$\sigma_{\text{real}}=\delta_{\text{real}}$ that
+Proposition~\ref{prop:sigmaequaldelta} forbids: zero on the forbidden
+line itself, and $14112$, in real units, for the square of
+Section~\ref{sec:ex}.
+
 \section{Conclusion}
 
 The family of $3\times3$ magic squares is a three-parameter linear
