@@ -4103,6 +4103,30 @@ At $E=425$: $3\delta_{\text{real}}+\sigma_{\text{real}} =
 3(41496)+55608 = 180096 < 180625 = E^2$, close to the ceiling ---
 consistent with $H^2=529$ being by far the smallest of the nine cells.
 
+\begin{corollary}[Ceilings on $\delta_{\text{real}}$ and $\sigma_{\text{real}}$ alone]\label{cor:deltasigmaceiling}
+\[
+0 < \frac{\delta_{\text{real}}}{E^2} < \frac{1-t}{2-t} ,
+\qquad
+\left\lvert \frac{\sigma_{\text{real}}}{E^2} \right\rvert
+< \frac{\lvert 2t-1 \rvert}{2-t} .
+\]
+\end{corollary}
+
+\begin{proof}
+Substitute the bound $S<2E^2/(2-t)$ of
+Proposition~\ref{prop:maxspread} directly into
+$\delta_{\text{real}}=\tfrac{1-t}{2}S$ and
+$\sigma_{\text{real}}=\tfrac{2t-1}{2}S$.
+\end{proof}
+
+At $E=425$: $\delta_{\text{real}}/E^2 = 0.22974$ against a ceiling of
+$(1-t)/(2-t)=0.23041$, and $\sigma_{\text{real}}/E^2 = 0.30786$
+against $\lvert2t-1\rvert/(2-t)=0.30877$ --- both close to their
+ceilings, since the bound is obtained by direct substitution of the
+exact maximum spread rather than by combining two separate
+inequalities, and so is tight: both sides coincide exactly at the
+forbidden point $t=2/3$, $S=2E^2/(2-t)$.
+
 The two real gaps $\delta_{\text{real}}$ and $\sigma_{\text{real}}$
 need not be equal, and the difference between them is not incidental.
 
