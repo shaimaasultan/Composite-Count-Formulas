@@ -1,0 +1,459 @@
+<title>Formation Explorer</title>
+<style>
+:root {
+  --bg: #F5F2EA;
+  --surface: #FFFFFF;
+  --surface-2: #FBF9F4;
+  --ink: #23262B;
+  --ink-soft: #5C5F5A;
+  --grid: #DEDACB;
+  --border: #D8D3C4;
+  --structure: #2B4257;
+  --midpoint: #0F6E56;
+  --reflection: #8A550C;
+  --delta: #A32D2D;
+  --sigma: #8A5A0A;
+  --baseline: #3D5A80;
+  --drag: #C6491F;
+  --pill-bg: #ECE7D8;
+  --font-display: 'Archivo', 'Arial Narrow', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Consolas', monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14171B;
+    --surface: #1C2024;
+    --surface-2: #202428;
+    --ink: #E9E7E0;
+    --ink-soft: #9A9D97;
+    --grid: #2A2E33;
+    --border: #33383D;
+    --structure: #8FB4D9;
+    --midpoint: #5DCAA5;
+    --reflection: #EFA53E;
+    --delta: #F0999A;
+    --sigma: #E3B15C;
+    --baseline: #A9C4E0;
+    --drag: #F0997B;
+    --pill-bg: #262A2E;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14171B;
+  --surface: #1C2024;
+  --surface-2: #202428;
+  --ink: #E9E7E0;
+  --ink-soft: #9A9D97;
+  --grid: #2A2E33;
+  --border: #33383D;
+  --structure: #8FB4D9;
+  --midpoint: #5DCAA5;
+  --reflection: #EFA53E;
+  --delta: #F0999A;
+  --sigma: #E3B15C;
+  --baseline: #A9C4E0;
+  --drag: #F0997B;
+  --pill-bg: #262A2E;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-display);
+  margin: 0;
+  padding: 28px 20px 48px;
+}
+.wrap { max-width: 1080px; margin: 0 auto; }
+header { margin-bottom: 20px; }
+h1 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.sub {
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 66ch;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; }
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.canvas-panel { padding: 4px; }
+svg { display: block; width: 100%; height: auto; touch-action: none; }
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+}
+.hint { font-size: 12.5px; color: var(--ink-soft); }
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.check input { accent-color: var(--structure); cursor: pointer; }
+.circle-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px 10px;
+  margin-bottom: 4px;
+}
+.circle-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.circle-row input { cursor: pointer; }
+.circle-row i {
+  width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: none;
+}
+button {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--ink);
+  cursor: pointer;
+}
+button:hover { border-color: var(--structure); }
+button:focus-visible, .vtx:focus-visible { outline: 2px solid var(--drag); outline-offset: 2px; }
+.readout { padding: 16px 18px 18px; }
+.readout h2 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin: 0 0 10px;
+}
+.group { margin-bottom: 18px; }
+.group:last-child { margin-bottom: 0; }
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.row:last-child { border-bottom: none; }
+.row .label { color: var(--ink-soft); }
+.row .val {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 4px;
+}
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.legend i {
+  width: 9px; height: 9px; border-radius: 50%; display: inline-block;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--pill-bg);
+  color: var(--ink-soft);
+}
+.pill.match { color: var(--midpoint); }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Formation explorer</h1>
+    <p class="sub">Drag F², D², or B² — the three vertices of the medial triangle. E², X, and I² recompute as midpoints; A², C², and H² recompute as their reflections through E². E² is the midpoint of all four opposite pairs — (D²,F²), (B²,H²), (I²,A²), (X,C²) — so every point's circle is centered at E², with radius equal to its own distance from E²; that same circle always passes through its partner too. Toggle each one below.</p>
+  </header>
+
+  <div class="layout">
+    <div class="panel canvas-panel">
+      <svg id="canvas" viewBox="0 0 640 460" role="img" aria-label="Draggable triangle of F squared, D squared, B squared with derived points"></svg>
+      <div class="controls">
+        <span class="hint">Drag the three dark vertices. Everything else follows.</span>
+        <button id="reset">Reset to line (t ≈ 0.701)</button>
+      </div>
+    </div>
+
+    <div class="panel readout">
+      <h2>½-length segments</h2>
+      <div class="group" id="half-rows"></div>
+
+      <h2>t/2-length segments</h2>
+      <div class="group" id="baseline-rows"></div>
+
+      <h2>δ-length segments</h2>
+      <div class="group" id="delta-rows"></div>
+
+      <h2>σ-length segments</h2>
+      <div class="group" id="sigma-rows"></div>
+
+      <h2>Circles</h2>
+      <div class="circle-list" id="circle-list"></div>
+
+      <h2>Legend</h2>
+      <div class="legend">
+        <span><i style="background:var(--structure)"></i>F², D², B² (dragged)</span>
+        <span><i style="background:var(--midpoint)"></i>E², X, I² (midpoints)</span>
+        <span><i style="background:var(--reflection)"></i>A², C², H² (reflections)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var svgNS = "http://www.w3.org/2000/svg";
+  var svg = document.getElementById("canvas");
+  var W = 640, H = 460;
+
+  var pts = { F: null, D: null, B: null };
+
+  var circleMeta = [
+    { key: "F", label: "F²", color: "var(--structure)", center: "E", ref: "F", mult: 1 },
+    { key: "D", label: "D²", color: "var(--structure)", center: "E", ref: "D", mult: 1 },
+    { key: "B", label: "B²", color: "var(--structure)", center: "E", ref: "B", mult: 1 },
+    { key: "X", label: "X",  color: "var(--midpoint)", center: "E", ref: "X", mult: 1 },
+    { key: "I", label: "I²", color: "var(--midpoint)", center: "E", ref: "I", mult: 1 },
+    { key: "A", label: "A²", color: "var(--reflection)", center: "E", ref: "A", mult: 1 },
+    { key: "C", label: "C²", color: "var(--reflection)", center: "E", ref: "C", mult: 1 },
+    { key: "H", label: "H²", color: "var(--reflection)", center: "E", ref: "H", mult: 1 },
+    { key: "3E2", label: "3E²", color: "var(--drag)", center: "F", ref: "E", mult: 3 }
+  ];
+  var circleOn = {};
+  circleMeta.forEach(function (m) { circleOn[m.key] = false; });
+
+  var listEl = document.getElementById("circle-list");
+  listEl.innerHTML = circleMeta.map(function (m) {
+    return '<label class="circle-row"><input type="checkbox" data-key="' + m.key +
+      '"><i style="background:' + m.color + '"></i>' + m.label + '</label>';
+  }).join("");
+  listEl.querySelectorAll("input").forEach(function (inp) {
+    inp.addEventListener("change", function (e) {
+      circleOn[e.target.getAttribute("data-key")] = e.target.checked;
+      render();
+    });
+  });
+
+  function canonical() {
+    var t = 578 / 825;
+    var x0 = 90, x1 = 560, y = 340;
+    return {
+      F: { x: x0, y: y },
+      D: { x: x0 + t * (x1 - x0), y: y },
+      B: { x: x1, y: y }
+    };
+  }
+
+  function mid(p, q) { return { x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 }; }
+  function reflect(through, p) { return { x: 2 * through.x - p.x, y: 2 * through.y - p.y }; }
+  function dist(p, q) { return Math.hypot(p.x - q.x, p.y - q.y); }
+  function fmt(v) { return (v / 100).toFixed(3); }
+
+  function gridLines() {
+    var g = "";
+    for (var x = 0; x <= W; x += 40) g += '<line x1="' + x + '" y1="0" x2="' + x + '" y2="' + H + '" stroke="var(--grid)" stroke-width="1"/>';
+    for (var yy = 0; yy <= H; yy += 40) g += '<line x1="0" y1="' + yy + '" x2="' + W + '" y2="' + yy + '" stroke="var(--grid)" stroke-width="1"/>';
+    return g;
+  }
+
+  function render() {
+    var F = pts.F, D = pts.D, B = pts.B;
+    var E = mid(D, F), X = mid(F, B), I = mid(D, B);
+    var A = reflect(E, I), C = reflect(E, X), Hh = reflect(E, B);
+
+    var html = gridLines();
+
+    function line(p, q, color, dash) {
+      html += '<line x1="' + p.x + '" y1="' + p.y + '" x2="' + q.x + '" y2="' + q.y +
+        '" stroke="' + color + '" stroke-width="1.6"' + (dash ? ' stroke-dasharray="4,4"' : '') + '/>';
+    }
+    function dot(p, color, r) {
+      html += '<circle cx="' + p.x + '" cy="' + p.y + '" r="' + (r || 5) + '" fill="' + color + '"/>';
+    }
+    function label(p, text, dx, dy, color) {
+      html += '<text x="' + (p.x + dx) + '" y="' + (p.y + dy) + '" font-family="Archivo, sans-serif" font-size="13" font-weight="600" fill="' + color + '">' + text + '</text>';
+    }
+    function ring(center, r, color) {
+      html += '<circle cx="' + center.x + '" cy="' + center.y + '" r="' + r +
+        '" fill="none" stroke="' + color + '" stroke-width="1" stroke-dasharray="3,3" opacity="0.55"/>';
+    }
+
+    // most circles are centered at E^2, radius = distance from E^2 to the
+    // point (since E^2 is the midpoint of all four opposite pairs, that
+    // circle always passes through the partner too); the 3E^2 circle is a
+    // relative-scale exception, centered at F^2 with radius = 3x the F-E gap
+    var pointLookup = { F: F, D: D, B: B, X: X, I: I, A: A, C: C, H: Hh, E: E };
+    circleMeta.forEach(function (m) {
+      if (!circleOn[m.key]) return;
+      var center = pointLookup[m.center];
+      var r = dist(center, pointLookup[m.ref]) * m.mult;
+      ring(center, r, m.color);
+    });
+
+    line(F, D, "var(--structure)");
+    line(D, B, "var(--structure)");
+    line(F, B, "var(--structure)");
+    line(F, X, "var(--midpoint)");
+    line(X, B, "var(--midpoint)");
+    line(F, E, "var(--baseline)");
+    line(E, D, "var(--baseline)");
+    line(F, A, "var(--delta)");
+    line(A, Hh, "var(--delta)");
+    line(D, I, "var(--delta)");
+    line(I, B, "var(--delta)");
+    line(C, E, "var(--delta)");
+    line(E, X, "var(--delta)");
+    line(F, C, "var(--sigma)");
+    line(X, D, "var(--sigma)");
+
+    dot(F, "var(--structure)", 7);
+    dot(D, "var(--structure)", 7);
+    dot(B, "var(--structure)", 7);
+    dot(E, "var(--midpoint)");
+    dot(X, "var(--midpoint)");
+    dot(I, "var(--midpoint)");
+    dot(A, "var(--reflection)");
+    dot(C, "var(--reflection)");
+    dot(Hh, "var(--reflection)");
+
+    label(F, "F²", -24, 4, "var(--structure)");
+    label(D, "D²", 10, 4, "var(--structure)");
+    label(B, "B²", 10, 4, "var(--structure)");
+    label(E, "E²", 6, -8, "var(--midpoint)");
+    label(X, "X", 6, -8, "var(--midpoint)");
+    label(I, "I²", 6, -8, "var(--midpoint)");
+    label(A, "A²", -22, -8, "var(--reflection)");
+    label(C, "C²", -8, 18, "var(--reflection)");
+    label(Hh, "H²", -8, 18, "var(--reflection)");
+
+    // draggable handles on top (invisible larger hit targets)
+    ["F", "D", "B"].forEach(function (k) {
+      var p = pts[k];
+      html += '<circle class="vtx" data-k="' + k + '" cx="' + p.x + '" cy="' + p.y + '" r="14" fill="transparent" stroke="none" style="cursor:grab" tabindex="0"/>';
+    });
+
+    svg.innerHTML = html;
+
+    var halfLens = {
+      "F² – X": dist(F, X),
+      "X – B²": dist(X, B)
+    };
+    var baselineLens = {
+      "F² – E²": dist(F, E),
+      "E² – D²": dist(E, D)
+    };
+    var deltaLens = {
+      "F² – A²": dist(F, A),
+      "A² – H²": dist(A, Hh),
+      "D² – I²": dist(D, I),
+      "I² – B²": dist(I, B),
+      "C² – E²": dist(C, E),
+      "E² – X": dist(E, X)
+    };
+    var sigmaLens = {
+      "F² – C²": dist(F, C),
+      "X – D²": dist(X, D)
+    };
+
+    function fillGroup(id, obj) {
+      var vals = Object.keys(obj).map(function (k) { return obj[k]; });
+      var ref = vals[0];
+      var el = document.getElementById(id);
+      el.innerHTML = Object.keys(obj).map(function (k) {
+        var v = obj[k];
+        var isMatch = Math.abs(v - ref) < 1.2;
+        return '<div class="row"><span class="label">' + k + '</span>' +
+          '<span class="val">' + fmt(v) +
+          '<span class="pill' + (isMatch ? ' match' : '') + '">' +
+          (isMatch ? 'matches' : 'off by ' + fmt(Math.abs(v - ref))) +
+          '</span></span></div>';
+      }).join("");
+    }
+    fillGroup("half-rows", halfLens);
+    fillGroup("baseline-rows", baselineLens);
+    fillGroup("delta-rows", deltaLens);
+    fillGroup("sigma-rows", sigmaLens);
+  }
+
+  function setCanonical() {
+    var c = canonical();
+    pts.F = c.F; pts.D = c.D; pts.B = c.B;
+    render();
+  }
+
+  setCanonical();
+
+  var dragging = null;
+  function toSvgPoint(evt) {
+    var rect = svg.getBoundingClientRect();
+    var scaleX = W / rect.width, scaleY = H / rect.height;
+    return {
+      x: (evt.clientX - rect.left) * scaleX,
+      y: (evt.clientY - rect.top) * scaleY
+    };
+  }
+
+  svg.addEventListener("pointerdown", function (e) {
+    var t = e.target;
+    if (t.classList && t.classList.contains("vtx")) {
+      dragging = t.getAttribute("data-k");
+      e.preventDefault();
+    }
+  });
+  window.addEventListener("pointermove", function (e) {
+    if (!dragging) return;
+    var p = toSvgPoint(e);
+    p.x = Math.max(20, Math.min(W - 20, p.x));
+    p.y = Math.max(20, Math.min(H - 20, p.y));
+    pts[dragging] = p;
+    render();
+  });
+  function endDrag() { dragging = null; }
+  window.addEventListener("pointerup", endDrag);
+  window.addEventListener("pointercancel", endDrag);
+
+  document.getElementById("reset").addEventListener("click", setCanonical);
+})();
+</script>

@@ -221,11 +221,29 @@ they force $D^2 = F^2$ and $D^2 = B^2$ respectively.
 
 \begin{center}
 \begin{tikzpicture}[x=1cm,y=1cm]
-  \draw[gray] (-0.4,0) -- (12.4,0);
+  \draw[gray] (-4,0) -- (12.4,0);
   \foreach \p/\n in {0/F^2, 8.407/D^2, 12/B^2}
-    {\fill (\p,0) circle (2.6pt); \node[above] at (\p,0.1) {$\n$};}
+    {\fill (\p,0) circle (2.6pt); \node[above] at (\p,0.35) {$\n$};}
   \foreach \p/\n in {4.204/E^2, 6/X, 10.204/I^2}
     {\fill[gray] (\p,0) circle (2.6pt); \node[below] at (\p,-0.1) {$\n$};}
+  \foreach \p/\n in {0/0, 8.407/{t}, 12/1}
+    {\node[blue] at (\p,0.3) {\footnotesize $\n$};}
+  \fill[red] (-1.796,0) circle (2.6pt);
+  \node[above,red] at (-1.796,0.35) {$A^2$};
+  \fill[purple] (2.407,0) circle (2.6pt);
+  \node[above,purple] at (2.407,0.35) {$C^2$};
+  \fill[brown] (-3.593,0) circle (2.6pt);
+  \node[above,brown] at (-3.593,0.35) {$H^2$};
+  \draw[red] (-3.593,-0.4) -- (-1.796,-0.4);
+  \node[below,red] at (-2.7,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw[red] (-1.796,-0.4) -- (0,-0.4);
+  \node[below,red] at (-0.9,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw[red] (2.407,-0.4) -- (4.204,-0.4);
+  \node[below,red] at (3.3,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw[red] (8.407,-0.4) -- (10.204,-0.4);
+  \node[below,red] at (9.3,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw[red] (10.204,-0.4) -- (12,-0.4);
+  \node[below,red] at (11.1,-0.5) {\footnotesize $\delta_{\text{norm}}$};
   \draw (0,-1.1) -- (12,-1.1);
   \fill[gray] (6,-1.1) circle (2.6pt);
   \node[below] at (6,-1.2)
@@ -238,8 +256,146 @@ they force $D^2 = F^2$ and $D^2 = B^2$ respectively.
   \fill[gray] (4.204,-3.3) circle (2.6pt);
   \node[below] at (4.204,-3.4)
     {\footnotesize $E^2$ midway between $D^2$ and $F^2$};
+  \draw[red] (4.204,-4.4) -- (6,-4.4);
+  \node[below,red] at (5.1,-4.5)
+    {\footnotesize $\delta_{\text{norm}} = (1-t)/2$};
+  \draw[orange] (6,-5.5) -- (8.407,-5.5);
+  \node[below,orange] at (7.2,-5.6)
+    {\footnotesize $\sigma_{\text{norm}} = t - 1/2$};
+  \draw[orange] (0,-6.6) -- (2.407,-6.6);
+  \node[below,orange] at (1.2,-6.7)
+    {\footnotesize $\sigma_{\text{norm}}$};
 \end{tikzpicture}
 \end{center}
+
+Here $\delta_{\text{norm}}$ and $\sigma_{\text{norm}}$ are the
+normalised (dimensionless) gap sizes on the $[0,1]$ line; the
+corresponding real quantities, in cell units, are
+$\delta_{\text{real}} = X - E^2 = \delta_{\text{norm}}\cdot S$ and
+$\sigma_{\text{real}} = D^2 - X = \sigma_{\text{norm}}\cdot S$, with
+$S = B^2 - F^2$ as in the de-normalised form above. The last gap,
+$\sigma_{\text{norm}} = t - 1/2$, is the one segment of the six not
+already accounted for by a midpoint or by $\delta_{\text{norm}}$; for
+the square of Section~\ref{sec:ex}, $\sigma_{\text{real}} = 55608$.
+The same length reappears elsewhere on the line:
+$\sigma_{\text{real}} = C^2 - F^2$ as well, since $C^2$'s normalised
+position is $t - 1/2 = \sigma_{\text{norm}}$ directly
+(Section~\ref{sec:norm}'s de-normalised form places $F^2$ at the
+origin).
+
+\paragraph{Two more reflections: $C^2$ and $H^2$.}
+The mechanism that placed $A^2 = 2E^2 - I^2$ on the line works for the
+other two opposite-pair partners not yet plotted. Since
+$C^2 = 2E^2 - X$,
+\[
+C^2 = F^2 + \left(t - \tfrac12\right)S,
+\]
+which places $C^2$ \emph{between} $F^2$ and $E^2$ --- for the square
+of Section~\ref{sec:ex}, $C^2 = 139129$, sitting between
+$F^2 = 83521$ and $E^2 = 180625$. Since $H^2 = 2E^2 - B^2$,
+\[
+H^2 = F^2 + (t - 1)S,
+\]
+which places $H^2 = 529$ even further left than $A^2$. In fact
+$H^2 - F^2 = 2(A^2 - F^2)$ exactly: $A^2$'s formula carries an extra
+factor of $\tfrac12$ because its partner $I^2$ sits at $(1+t)/2$
+rather than $B^2$'s full $1$.
+
+\begin{remark}[Six gaps, one length]
+With $A^2, C^2, H^2$ on the line alongside the original six, six
+distinct gaps --- in normalised terms, fractions of the line, not
+real cell values --- all equal the same
+$\delta_{\text{norm}} = (1-t)/2$:
+\[
+F^2 - A^2 = I^2 - D^2 = B^2 - I^2 = X - E^2 = A^2 - H^2 = E^2 - C^2
+= \delta_{\text{norm}} .
+\]
+Each follows from an identity already established: the first from
+$F^2 = A^2 + \delta_{\text{real}}$ (Proposition~\ref{prop:threshold},
+divided through by $S$); the next two from $D^2 + F^2 = 2E^2$ and
+$B^2 + D^2 = 2I^2$, which force $I^2 - D^2$ and $B^2 - I^2$ to match
+$X - E^2$'s own formula; the last two from the positions of $H^2$ and
+$C^2$ just derived. For the square of Section~\ref{sec:ex}, all six
+gaps equal $\delta_{\text{real}} = 41496$ in real terms
+($\delta_{\text{norm}} \cdot S$, with $S = 277200$).
+\end{remark}
+
+\begin{remark}[Eight segments, and a mirrored midpoint]
+Laid end to end from $H^2$ to $B^2$, the nine points split into
+exactly eight adjacent segments, alternating
+\[
+\delta_{\text{norm}},\ \delta_{\text{norm}},\ \sigma_{\text{norm}},\
+\delta_{\text{norm}},\ \delta_{\text{norm}},\ \sigma_{\text{norm}},\
+\delta_{\text{norm}},\ \delta_{\text{norm}}
+\]
+--- a palindrome, with $F^2$ and $D^2$ sitting at the two seams where
+a $\delta_{\text{norm}}\delta_{\text{norm}}$ pair meets a
+$\sigma_{\text{norm}}$. Summing the two $\sigma_{\text{norm}}$'s and
+two of the $\delta_{\text{norm}}$'s spanning $F^2$ to $X$ gives
+\[
+2\delta_{\text{norm}} + 2\sigma_{\text{norm}} = t
+= 2 \cdot \text{position}(E^2),
+\]
+recovering $E^2$'s own position doubled. This is a trace of a genuine
+symmetry: since $E^2$ is flanked by $\delta_{\text{norm}}$ on both
+sides ($E^2 - C^2 = X - E^2 = \delta_{\text{norm}}$), it is the
+midpoint of $C^2$ and $X$,
+\[
+E^2 = \frac{C^2 + X}{2},
+\]
+exactly mirroring the Medial Configuration's own
+$I^2 = (D^2+B^2)/2$. $E^2$ and $I^2$ play the same role --- midpoint
+of the two points $\delta_{\text{norm}}$ away on either side ---
+relative to different neighbours, not the same position.
+\end{remark}
+
+\begin{remark}[All nine cells as one walk from $E^2$]
+Accumulating the eight-segment palindrome above, starting from $E^2$
+and walking outward in both directions, gives every cell as a single
+closed form in $E^2$, $\delta_{\text{real}}$, and $\sigma_{\text{real}}$
+alone:
+\[
+H^2 = E^2-3\delta_{\text{real}}-\sigma_{\text{real}}, \quad
+A^2 = E^2-2\delta_{\text{real}}-\sigma_{\text{real}}, \quad
+F^2 = E^2-\delta_{\text{real}}-\sigma_{\text{real}}, \quad
+C^2 = E^2-\delta_{\text{real}},
+\]
+\[
+X = E^2+\delta_{\text{real}}, \quad
+D^2 = E^2+\delta_{\text{real}}+\sigma_{\text{real}}, \quad
+I^2 = E^2+2\delta_{\text{real}}+\sigma_{\text{real}}, \quad
+B^2 = E^2+3\delta_{\text{real}}+\sigma_{\text{real}} ,
+\]
+all verified exactly for the square of Section~\ref{sec:ex}
+($\delta_{\text{real}}=41496$, $\sigma_{\text{real}}=55608$). This
+makes the automatic $2E^2$ identity visible directly: each opposite
+pair sits symmetrically about $E^2$ in $\delta_{\text{real}},
+\sigma_{\text{real}}$ terms, so those terms cancel on sight,
+\[
+A^2+I^2 = D^2+F^2 = B^2+H^2 = C^2+X = 2E^2 ,
+\]
+without appealing to Corollary~\ref{cor:pairs} at all --- the pair
+identity is not a separate fact to invoke here, it is the
+$\pm$-symmetry of the walk itself.
+\end{remark}
+
+\paragraph{The admissibility threshold, on the same line.}
+The gap marked in red is $\delta_{\text{norm}} = X - E^2$, the
+normalised version of the quantity in Proposition~\ref{prop:threshold},
+which is stated there in real terms as
+$\delta_{\text{real}} = X - E^2$ (no division by $S$): a seed is
+admissible only when $A^2 > \delta_{\text{real}}$, i.e.\
+$A > \sqrt{\delta_{\text{real}}}$. Since
+$F^2 = A^2 + \delta_{\text{real}}$, plotted on the same
+\emph{normalised} axis $A^2$ falls exactly $\delta_{\text{norm}}$ to
+the left of the origin --- the red dot is the
+$\delta_{\text{norm}}$ gap reflected across $F^2$, even though the
+threshold itself is a comparison of real quantities. For the square
+of Section~\ref{sec:ex}, $\delta_{\text{real}} = 41496$ and
+$A^2 = 42025$, clearing the threshold by only $529 = H^2$: since
+$H^2 = A^2 - \delta_{\text{real}}$ by definition, the admissibility
+margin visible here \emph{is} $H^2$, the same small forced value
+discussed in Section~\ref{sec:formationnote}.
 
 The figure is drawn to scale for the square of Section~\ref{sec:ex},
 for which $t \approx 0.7006$. The midpoint structure is universal; the
@@ -258,6 +414,64 @@ with the two free parameters $F^2$ and $S$, which carry the square's
 actual size. For the square of Section~\ref{sec:ex}, $F^2 = 83521$ and
 $S = 277200$, and these reproduce $X = 222121$, $E^2 = 180625$,
 $D^2 = 277729$, $I^2 = 319225$ exactly.
+
+\section{$E$ and $S$ Are Independent Scales}\label{sec:independentscales}
+
+The construction so far uses two quantities that carry size: $E$,
+through $2E^2$ and $3E^2$, measures the magic constant --- the scale
+of every pair and line sum. $S = B^2 - F^2$ measures the spread of
+the medial triangle --- the scale that $t$, $\delta$, and $\sigma$ are
+built from. It is natural to expect these to be the same scale in
+disguise, differing only by a fixed factor. They are not.
+
+\begin{proposition}\label{prop:independentscales}
+The ratio $S/E^2$ is not determined by $E$ alone: distinct seeds at
+the same centre $E$ give distinct values of $S/E^2$.
+\end{proposition}
+
+\begin{proof}
+At $E = 425$, three admissible seeds give
+\[
+(A,D) = (205,527): \ \frac{S}{E^2} = \frac{11088}{7225} \approx 1.5347,
+\qquad
+(A,D) = (7,85): \ \frac{S}{E^2} = \frac{361152}{180625} \approx 1.9995,
+\]
+\[
+(A,D) = (329,355): \ \frac{S}{E^2} = \frac{144768}{180625} \approx 0.8015,
+\]
+three different values at one fixed $E$.
+\end{proof}
+
+This is consistent with, and sharpens, the scale-invariance of $t$
+(Section~\ref{sec:scaleinvariants}): rescaling a \emph{fixed} seed by
+$k$ sends $E \mapsto kE$ and $S \mapsto k^2S$ together, so $S/E^2$
+is invariant along that one rescaling --- which is exactly why $t$,
+built from $S$ alone, survives rescaling unchanged. But $S/E^2$ is a
+function of the \emph{shape} (equivalently, of $t$ itself), not of
+$E$: holding $E$ fixed and varying the seed moves $S/E^2$ freely, as
+the three values above show. $E$ and $S$ are therefore genuinely
+independent coordinates of the family, not one scale measured two
+ways: $E$ alone fixes the magic constant, but says nothing about
+$\delta$, $\sigma$, or where any cell other than $E^2$ itself sits;
+$S$ (or, equivalently, a seed) is required in addition to pin down
+the shape. Neither pair is complete by itself: $t$ is still needed
+alongside $E$ and $S$, exactly as it was alongside $F^2$ and $S$ in
+the de-normalised form of Section~\ref{sec:norm}. Substituting
+$F^2 = E^2 - \tfrac{t}{2}S$ rewrites that form with $E^2$ as the
+anchor instead of $F^2$:
+\[
+F^2 = E^2 - \tfrac{t}{2}S, \qquad
+X = E^2 + \tfrac{1-t}{2}S, \qquad
+D^2 = E^2 + \tfrac{t}{2}S,
+\]
+\[
+I^2 = E^2 + \tfrac12 S, \qquad
+B^2 = E^2 + S - \tfrac{t}{2}S ,
+\]
+all verified exactly for the square of Section~\ref{sec:ex}. The
+triples $(F^2,S,t)$ and $(E^2,S,t)$ are two equally valid, complete
+descriptions of the same three degrees of freedom --- related by one
+substitution, not by dropping a coordinate.
 
 \section{A Second Normalisation: $D^2$ and $B^2$}\label{sec:norm2}
 
@@ -291,15 +505,73 @@ $X$ and $I^2 - E^2$ were the fixed quantities in
 Section~\ref{sec:norm}. As before, $t' = 0$ and $t' = 1$ are excluded,
 forcing $F^2 = D^2$ and $F^2 = B^2$ respectively.
 
+The six points themselves do not move --- it is the same diagram as
+Section~\ref{sec:norm}, with the blue labels below marking where $0$,
+$1$, and $t'$ now fall:
+
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \draw[gray] (-4,0) -- (12.4,0);
+  \foreach \p/\n in {0/F^2, 8.407/D^2, 12/B^2}
+    {\fill (\p,0) circle (2.6pt); \node[above] at (\p,0.35) {$\n$};}
+  \foreach \p/\n in {4.204/E^2, 6/X, 10.204/I^2}
+    {\fill[gray] (\p,0) circle (2.6pt); \node[below] at (\p,-0.1) {$\n$};}
+  \foreach \p/\n in {0/{t'}, 8.407/0, 12/1}
+    {\node[blue] at (\p,0.3) {\footnotesize $\n$};}
+  \fill[red] (-1.796,0) circle (2.6pt);
+  \node[above,red] at (-1.796,0.35) {$A^2$};
+  \fill[purple] (2.407,0) circle (2.6pt);
+  \node[above,purple] at (2.407,0.35) {$C^2$};
+  \fill[brown] (-3.593,0) circle (2.6pt);
+  \node[above,brown] at (-3.593,0.35) {$H^2$};
+  \draw[red] (-3.593,-0.4) -- (-1.796,-0.4);
+  \node[below,red] at (-2.7,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw[red] (-1.796,-0.4) -- (0,-0.4);
+  \node[below,red] at (-0.9,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw[red] (2.407,-0.4) -- (4.204,-0.4);
+  \node[below,red] at (3.3,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw[red] (8.407,-0.4) -- (10.204,-0.4);
+  \node[below,red] at (9.3,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw[red] (10.204,-0.4) -- (12,-0.4);
+  \node[below,red] at (11.1,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw (0,-1.3) -- (12,-1.3);
+  \fill[gray] (6,-1.3) circle (2.6pt);
+  \node[below] at (6,-1.4)
+    {\footnotesize $X$ midway between $F^2$ and $B^2$};
+  \draw (8.407,-2.4) -- (12,-2.4);
+  \fill[gray] (10.204,-2.4) circle (2.6pt);
+  \node[below] at (9.8,-2.5)
+    {\footnotesize $I^2$ midway between $D^2$ and $B^2$};
+  \draw (0,-3.5) -- (8.407,-3.5);
+  \fill[gray] (4.204,-3.5) circle (2.6pt);
+  \node[below] at (4.204,-3.6)
+    {\footnotesize $E^2$ midway between $D^2$ and $F^2$};
+  \draw[red] (4.204,-4.6) -- (6,-4.6);
+  \node[below,red] at (5.1,-4.7)
+    {\footnotesize $\delta_{\text{norm}} = 1/2$};
+  \draw[orange] (6,-5.7) -- (8.407,-5.7);
+  \node[below,orange] at (7.2,-5.8)
+    {\footnotesize $\sigma_{\text{norm}} = -(1+t')/2$};
+  \draw[orange] (0,-6.8) -- (2.407,-6.8);
+  \node[below,orange] at (1.2,-6.9)
+    {\footnotesize $\sigma_{\text{norm}}$};
+\end{tikzpicture}
+\end{center}
+
 For the square of Section~\ref{sec:ex}, $t' = -578/247 \approx -2.340$
 --- negative, and outside $[0,1]$, because $F^2$ is the smallest of
 the three vertices $B^2, D^2, F^2$, not a point strictly between $D^2$
-and $B^2$. The six points themselves are unchanged --- this is the
-same diagram as Section~\ref{sec:norm}, read with a different pair
-fixed as $0$ and $1$ --- only their coordinates differ:
-$D^2 = 8.407$, $I^2 = 10.204$, $B^2 = 12$ in the earlier figure's
-units, with $F^2$ now falling to the left of the origin rather than
-at it.
+and $B^2$; that is why its blue label falls to the left of the origin
+rather than at it. The point $A^2$ and the real values
+$\delta_{\text{real}} = X - E^2$ and
+$\sigma_{\text{real}} = D^2 - X = C^2 - F^2$ are unchanged from
+Section~\ref{sec:norm} --- they depend only on the six points' actual
+positions, which this normalisation does not move --- but their
+\emph{normalised} formulas, in terms of $t'$, are not the same as in
+terms of $t$: here $\delta_{\text{norm}}$ is the constant $1/2$ (with
+no $t'$ dependence at all, since $X$ and $E^2$ share the same $t'/2$
+term), while $\sigma_{\text{norm}} = -(1+t')/2$ carries the dependence
+instead.
 
 \paragraph{De-normalised form.}
 Writing $S' = B^2 - D^2$,
@@ -312,6 +584,709 @@ I^2 = D^2 + \tfrac12 S' .
 For the square of Section~\ref{sec:ex}, $D^2 = 277729$ and
 $S' = 82992$, reproducing $F^2 = 83521$, $E^2 = 180625$,
 $X = 222121$, $I^2 = 319225$ exactly.
+
+\section{A Third Normalisation: $F^2$ and $D^2$}\label{sec:norm3}
+
+The third and last way to fix two of the Medial Configuration's
+vertices is $F^2$ and $D^2$, leaving $B^2$ as the free parameter:
+\[
+t'' = \frac{B^2 - F^2}{D^2 - F^2}.
+\]
+
+\begin{center}
+\begin{tabular}{lcl}
+\hline
+Point & Position & Origin \\
+\hline
+$F^2$ & $0$          & endpoint \\
+$E^2$ & $1/2$        & midpoint of $D^2, F^2$ \\
+$X$   & $t''/2$      & midpoint of $F^2, B^2$ \\
+$D^2$ & $1$          & endpoint \\
+$I^2$ & $(1+t'')/2$  & midpoint of $D^2, B^2$ \\
+$B^2$ & $t''$        & free parameter \\
+\hline
+\end{tabular}
+\end{center}
+
+Here $E^2$ is the constant one, fixed at $1/2$ --- not by any
+coincidence, but because $F^2$ and $D^2$ are themselves the very pair
+$E^2$ bisects. The other fixed gap is $I^2 - X = 1/2$, mirroring
+Sections~\ref{sec:norm} and~\ref{sec:norm2}, where $X$ and
+$I^2 - E^2$ played that role in turn. As always, the degenerate values
+$t'' = 0$ and $t'' = 1$ are excluded, forcing $B^2 = F^2$ and
+$B^2 = D^2$ respectively.
+
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \draw[gray] (-4,0) -- (12.4,0);
+  \foreach \p/\n in {0/F^2, 8.407/D^2, 12/B^2}
+    {\fill (\p,0) circle (2.6pt); \node[above] at (\p,0.35) {$\n$};}
+  \foreach \p/\n in {4.204/E^2, 6/X, 10.204/I^2}
+    {\fill[gray] (\p,0) circle (2.6pt); \node[below] at (\p,-0.1) {$\n$};}
+  \foreach \p/\n in {0/0, 8.407/1, 12/{t''}}
+    {\node[blue] at (\p,0.3) {\footnotesize $\n$};}
+  \fill[red] (-1.796,0) circle (2.6pt);
+  \node[above,red] at (-1.796,0.35) {$A^2$};
+  \fill[purple] (2.407,0) circle (2.6pt);
+  \node[above,purple] at (2.407,0.35) {$C^2$};
+  \fill[brown] (-3.593,0) circle (2.6pt);
+  \node[above,brown] at (-3.593,0.35) {$H^2$};
+  \draw[red] (-3.593,-0.4) -- (-1.796,-0.4);
+  \node[below,red] at (-2.7,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw[red] (-1.796,-0.4) -- (0,-0.4);
+  \node[below,red] at (-0.9,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw[red] (2.407,-0.4) -- (4.204,-0.4);
+  \node[below,red] at (3.3,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw[red] (8.407,-0.4) -- (10.204,-0.4);
+  \node[below,red] at (9.3,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw[red] (10.204,-0.4) -- (12,-0.4);
+  \node[below,red] at (11.1,-0.5) {\footnotesize $\delta_{\text{norm}}$};
+  \draw (0,-1.1) -- (12,-1.1);
+  \fill[gray] (6,-1.1) circle (2.6pt);
+  \node[below] at (6,-1.2)
+    {\footnotesize $X$ midway between $F^2$ and $B^2$};
+  \draw (8.407,-2.2) -- (12,-2.2);
+  \fill[gray] (10.204,-2.2) circle (2.6pt);
+  \node[below] at (9.8,-2.3)
+    {\footnotesize $I^2$ midway between $D^2$ and $B^2$};
+  \draw (0,-3.3) -- (8.407,-3.3);
+  \fill[gray] (4.204,-3.3) circle (2.6pt);
+  \node[below] at (4.204,-3.4)
+    {\footnotesize $E^2$ midway between $D^2$ and $F^2$};
+  \draw[red] (4.204,-4.4) -- (6,-4.4);
+  \node[below,red] at (5.1,-4.5)
+    {\footnotesize $\delta_{\text{norm}} = (t''-1)/2$};
+  \draw[orange] (6,-5.5) -- (8.407,-5.5);
+  \node[below,orange] at (7.2,-5.6)
+    {\footnotesize $\sigma_{\text{norm}} = 1 - t''/2$};
+  \draw[orange] (0,-6.6) -- (2.407,-6.6);
+  \node[below,orange] at (1.2,-6.7)
+    {\footnotesize $\sigma_{\text{norm}}$};
+\end{tikzpicture}
+\end{center}
+
+For the square of Section~\ref{sec:ex}, $t'' = 825/578 \approx 1.427$
+--- greater than $1$, because $B^2$ is the \emph{largest} of the three
+vertices $B^2, D^2, F^2$, not a point strictly between $F^2$ and
+$D^2$; that is why its blue label falls to the right of $D^2$ rather
+than coinciding with it. The six points, and the real values $A^2$,
+$\delta_{\text{real}} = X - E^2$, and
+$\sigma_{\text{real}} = D^2-X = C^2-F^2$, are exactly as before ---
+only their \emph{normalised} formulas in terms of $t''$ change, since
+$E^2 = 1/2$ is now the constant point rather than $X$.
+
+\paragraph{De-normalised form.}
+Writing $S'' = D^2 - F^2$,
+\[
+E^2 = F^2 + \tfrac12 S'', \qquad
+X = F^2 + \tfrac{t''}{2} S'', \qquad
+I^2 = F^2 + \tfrac{1+t''}{2} S'', \qquad
+B^2 = F^2 + t''S'' .
+\]
+For the square of Section~\ref{sec:ex}, $F^2 = 83521$ and
+$S'' = 194208$, reproducing $E^2 = 180625$, $X = 222121$,
+$I^2 = 319225$, $B^2 = 360721$ exactly.
+
+\begin{remark}[Exactly three normalisations]
+The Medial Configuration has exactly three vertices, $B^2, D^2, F^2$,
+and a normalisation fixes two of them as endpoints, leaving the third
+free. There are only $\binom{3}{2} = 3$ such choices, and
+Sections~\ref{sec:norm}--\ref{sec:norm3} are all of them. No other
+pair of cells supports the same construction: $A^2$ and $I^2$ are an
+opposite pair rather than independent vertices, so their midpoint is
+trivially $E^2$ and nothing further follows; $C^2$ and $H^2$ are
+themselves derived from the basis ($C^2 = 2E^2 - X$,
+$H^2 = 2E^2 - B^2$), and the "third vertex" built from them comes out
+negative. No fourth triangle, and so no fourth normalisation, exists.
+\end{remark}
+
+\section{A Folded View: the Same Line as a Right Triangle}\label{sec:folded}
+
+The points of Section~\ref{sec:norm} and its extension all lie on one
+line, but the same relations are equally visible folded into a right
+angle at $F^2$ and $D^2$: $F^2$-to-$D^2$ along the base, $D^2$-to-$B^2$
+up one side, $F^2$-to-$H^2$ down the other, and the diagonal
+$F^2$-to-$B^2$ recovering $X$ as its midpoint.
+
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \draw[blue!70!black] (0,0) -- (8.407,0);
+  \draw (8.407,0) -- (8.407,3.593);
+  \draw (0,0) -- (0,-3.593);
+  \draw[orange] (0,0) -- (8.407,3.593);
+  \draw[red] (4.204,1.797) -- (8.407,0);
+  \draw[gray, dashed] (4.204,0) -- (4.204,1.797);
+
+  \fill (0,0) circle (2.6pt); \node[left] at (-0.1,0) {$F^2$};
+  \fill[purple] (2.407,0) circle (2.6pt); \node[above] at (2.407,0.15) {$C^2$};
+  \fill[gray] (4.204,0) circle (2.6pt); \node[below] at (4.204,-0.15) {$E^2$};
+  \fill (8.407,0) circle (2.6pt); \node[right] at (8.507,0) {$D^2$};
+  \fill[gray] (4.204,1.797) circle (2.6pt); \node[above left] at (4.204,1.797) {$X$};
+  \fill[gray] (8.407,1.797) circle (2.6pt); \node[right] at (8.507,1.797) {$I^2$};
+  \fill (8.407,3.593) circle (2.6pt); \node[right] at (8.507,3.593) {$B^2$};
+  \fill[red] (0,-1.796) circle (2.6pt); \node[left] at (-0.1,-1.796) {$A^2$};
+  \fill[brown] (0,-3.593) circle (2.6pt); \node[left] at (-0.1,-3.593) {$H^2$};
+
+  \node[blue, left] at (-0.15,0.3) {\footnotesize $0$};
+  \node[blue, right] at (8.55,-0.3) {\footnotesize $t$};
+  \node[blue, right] at (8.55,3.85) {\footnotesize $1$};
+
+  \node[below, gray] at (1.2,-0.15) {\footnotesize $\sigma_{\text{norm}}$};
+  \node[below, red] at (3.3,-0.15) {\footnotesize $\delta_{\text{norm}}$};
+  \node[below, gray] at (6.3,-0.15) {\footnotesize $t/2$};
+  \node[red, left] at (-0.15,-0.9) {\footnotesize $\delta_{\text{norm}}$};
+  \node[brown, left] at (-0.15,-2.7) {\footnotesize $\delta_{\text{norm}}$};
+  \node[red, right] at (8.6,0.9) {\footnotesize $\delta_{\text{norm}}$};
+  \node[red, right] at (8.6,2.7) {\footnotesize $\delta_{\text{norm}}$};
+  \node[teal] at (1.9,1.15) {\footnotesize $1/2$};
+  \node[teal] at (6.9,2.9) {\footnotesize $1/2$};
+  \node[orange] at (6.7,1.15) {\footnotesize $\sigma_{\text{norm}}$};
+\end{tikzpicture}
+\end{center}
+
+\begin{remark}[Choosing $E^2$ chooses everything]
+$E^2$'s position is $t/2$, so fixing where $E^2$ falls on the line
+fixes $t = 2\cdot\text{position}(E^2)$ outright. Since $X, D^2, I^2,
+B^2$ --- and, from the reflections added above, $A^2, C^2, H^2$ ---
+are each a fixed formula in $t$ alone, every one of their positions,
+and the $\pm$ structure of the formula producing each, is settled at
+the same moment: the full relative arrangement of the square is
+chosen as soon as $E^2$'s position is. This restates $t$ being the
+family's single scale-and-translation-invariant coordinate
+(Section~\ref{sec:scaleinvariants}); the two remaining degrees of
+freedom, translation ($F^2$) and scale ($S=B^2-F^2$), still have to be
+chosen separately to recover actual numbers. It should not be
+confused with the unrelated forced-vs-free \emph{sign} result of
+Proposition~\ref{prop:esign}, which concerns which of two algebraic
+root-sign forms reproduces $B,F$ --- a fact about square roots, not
+about position on this line.
+\end{remark}
+
+\begin{remark}[The fold need not be straight]
+Nothing above requires $F^2, D^2, B^2$ to be collinear. Treating them
+as points in the plane, with $E^2, X, I^2$ the literal vector
+midpoints of $D^2F^2$, $F^2B^2$, $D^2B^2$ and $A^2, C^2, H^2$ the
+literal vector reflections of $I^2, X, B^2$ through $E^2$, the same
+six segments $F^2$-$A^2$, $A^2$-$H^2$, $D^2$-$I^2$, $I^2$-$B^2$,
+$C^2$-$E^2$, $E^2$-$X$ remain equal in length to each other, and the
+two segments $F^2$-$C^2$, $X$-$D^2$ remain equal to each other, for
+\emph{any} placement of the triangle's three vertices, not only the
+degenerate collinear one. This is an affine fact, not a numerical
+coincidence of the straight line: it follows from
+$D^2 + F^2 = 2E^2$, $B^2 + F^2 = 2X$, and $B^2 + D^2 = 2I^2$ holding
+as vector identities regardless of whether the three points are
+collinear.
+\end{remark}
+
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \draw (0,0) -- (6,-1) -- (7,3) -- cycle;
+  \draw[red] (0,0) -- (-0.5,-2) -- (-1,-4);
+  \draw[red] (6,-1) -- (6.5,1) -- (7,3);
+  \draw[red] (2.5,-2.5) -- (3,-0.5) -- (3.5,1.5);
+  \draw[orange] (0,0) -- (2.5,-2.5);
+  \draw[orange] (3.5,1.5) -- (6,-1);
+
+  \fill (0,0) circle (2.6pt); \node[left] at (-0.1,0) {$F^2$};
+  \fill (6,-1) circle (2.6pt); \node[below] at (6,-1.15) {$D^2$};
+  \fill (7,3) circle (2.6pt); \node[right] at (7.1,3) {$B^2$};
+  \fill[gray] (3,-0.5) circle (2.6pt); \node[above] at (3,-0.35) {$E^2$};
+  \fill[gray] (3.5,1.5) circle (2.6pt); \node[above] at (3.5,1.65) {$X$};
+  \fill[gray] (6.5,1) circle (2.6pt); \node[right] at (6.6,1) {$I^2$};
+  \fill[red] (-0.5,-2) circle (2.6pt); \node[left] at (-0.6,-2) {$A^2$};
+  \fill[purple] (2.5,-2.5) circle (2.6pt); \node[below] at (2.5,-2.65) {$C^2$};
+  \fill[brown] (-1,-4) circle (2.6pt); \node[left] at (-1.1,-4) {$H^2$};
+\end{tikzpicture}
+\end{center}
+
+A concrete non-collinear check: placing $F^2, D^2, B^2$ at
+$(0,0), (6,-1), (7,3)$ gives, exactly, all six red segments equal to
+$\sqrt{4.25}$ and both orange segments equal to $\sqrt{12.5}$ ---
+verified directly from the midpoint and reflection formulas, with no
+three of $F^2, D^2, B^2$ collinear.
+
+\begin{remark}[Three half-sides, and the one quantity that is not]
+Writing the three medial-triangle vertices as points, three of the
+lengths above reduce to half of a single side of the triangle, and
+depend on nothing else:
+\[
+t/2 = \tfrac12 |D^2 - F^2|, \qquad
+1/2 = \tfrac12 |F^2 - B^2|, \qquad
+\delta = \tfrac12 |D^2 - B^2| .
+\]
+Each is pinned to exactly the two vertices its side joins: moving
+$D^2$ alone (with $F^2, B^2$ fixed) changes $t/2$ and $\delta$ but
+never $1/2$; moving $B^2$ alone changes $1/2$ and $\delta$ but never
+$t/2$; moving $F^2$ alone changes $t/2$ and $1/2$ but --- somewhat
+surprisingly --- leaves $\delta$ exactly fixed, since $\delta$ depends
+only on $D^2$ and $B^2$. The quantity $\sigma$ is the one exception:
+$\sigma = \bigl|\tfrac12(F^2+B^2) - D^2\bigr|$ genuinely mixes all
+three vertices, so it moves whenever any one of $F^2, D^2, B^2$ does.
+\end{remark}
+
+\section{Scale Is Irrelevant to the Search for Nine Squares}\label{sec:scaleirrelevant}
+
+Section~\ref{sec:folded}'s remark showed that fixing $E^2$'s position
+fixes $t$, and hence the relative arrangement of the whole square.
+Combined with $t$'s scale invariance (Section~\ref{sec:scaleinvariants}),
+this has a sharp consequence for the search that motivates the whole
+paper: whether any given cell is a perfect square does not depend on
+scale at all.
+
+\begin{proposition}\label{prop:scaleirrelevant}
+Let $k$ be a positive integer, and scale a $3\times3$ magic square of
+squares by $k$ (every root multiplied by $k$, every cell by $k^2$).
+Then a cell is a perfect square in the scaled square if and only if
+the corresponding cell was a perfect square in the original.
+\end{proposition}
+
+\begin{proof}
+For a positive integer $n$, write $n = s q^2$ with $s$ squarefree.
+Then $k^2 n = s (kq)^2$ has the same squarefree part $s$, so $k^2n$ is
+a perfect square exactly when $s = 1$ --- exactly when $n$ already
+was one. Scaling multiplies every cell by the fixed perfect square
+$k^2$, so this applies to each cell individually.
+\end{proof}
+
+\begin{remark}
+Checked directly on the square of Section~\ref{sec:ex}: scaling by
+$k = 2$ (the $E = 850$ family) leaves every one of the nine cells'
+square/non-square status unchanged:
+\[
+\{A^2, C^2, D^2, E^2, F^2, H^2, I^2\} \text{ remain squares}, \qquad
+\{B^2, X\} \text{ remain non-squares},
+\]
+exactly as at $E = 425$.
+\end{remark}
+
+Since $t$ is preserved exactly under scaling, and
+Proposition~\ref{prop:scaleirrelevant} shows the perfect-square status
+of every cell is preserved too, an entire scaling family --- one
+\emph{formation} --- either achieves nine squares at every scale or at
+none. Enlarging $E$ within a fixed formation cannot repair a
+non-square closing cell, and no formation that fails at its smallest,
+primitive representative will ever succeed at a larger one.
+
+\begin{remark}[What the search is actually over]
+A search for a nine-square instance is therefore a search over
+\emph{formations} --- primitive centre-and-seed choices $(E, A, D)$
+taken in lowest terms, equivalently $t$ at its primitive
+representative --- checking whether that formation's closing cells
+happen to be square. It is not a search over $E$ ranging freely at
+fixed shape: every multiple of a fixed formation inherits its answer
+unchanged. This sharpens the admissibility-threshold search of
+Proposition~\ref{prop:threshold}: that search already implicitly
+favours the smallest admissible seed at each centre, and
+Proposition~\ref{prop:scaleirrelevant} confirms nothing is lost by
+restricting to that smallest representative --- larger multiples of
+the same formation add no new possibilities.
+\end{remark}
+
+\section{The Admissibility Threshold in Terms of $t$}\label{sec:thresholdt}
+
+Section~\ref{sec:norm} identified $\delta_{\text{real}} = X - E^2$
+(Proposition~\ref{prop:threshold}'s own quantity) with the normalised
+quantity $\delta_{\text{norm}} = (1-t)/2$, up to the scale
+$S = B^2 - F^2$:
+\[
+\delta_{\text{real}} = \delta_{\text{norm}}\cdot S
+= \frac{1-t}{2}\,S .
+\]
+Substituting into the admissibility threshold of
+Proposition~\ref{prop:threshold} rewrites it in terms of $t$:
+\[
+A > \sqrt{\delta_{\text{real}}}
+= \sqrt{S}\cdot\sqrt{\delta_{\text{norm}}}
+= \sqrt{S}\cdot\sqrt{\frac{1-t}{2}} .
+\]
+
+\begin{remark}
+The factor $\sqrt{S}$ cannot be dropped. Comparing $A$ directly to
+$\sqrt{\delta_{\text{norm}}}$ alone --- a number less than $1$ ---
+would be satisfied trivially by any positive $A$ and carries no
+threshold information: for the square of Section~\ref{sec:ex},
+\[
+\sqrt{\delta_{\text{norm}}} = \sqrt{(1-t)/2} \approx 0.387,
+\]
+while $A = 205$, so the un-scaled comparison is vacuous. The genuine
+threshold,
+\[
+A > \sqrt{S}\cdot\sqrt{\delta_{\text{norm}}}
+= \sqrt{\delta_{\text{real}}} = \sqrt{41496} \approx 203.7 ,
+\]
+only becomes meaningful once the scale $S$ is restored. $t$ fixes the
+\emph{proportion} of the threshold relative to $S$; the admissibility
+condition itself is a statement about real quantities that scale
+together as $E$ scales, not about $t$ in isolation.
+\end{remark}
+
+\section{A Matrix Form of the Normalisation}\label{sec:matrix}
+
+Collecting the nine cells into a single vector,
+\[
+V = (F^2,\ E^2,\ X,\ D^2,\ I^2,\ B^2,\ A^2,\ C^2,\ H^2)^\top ,
+\]
+each entry is a fixed linear function of $t$ once the scale
+$S = B^2 - F^2$ and translation $F^2$ are factored out:
+\[
+V = S\,M \begin{pmatrix} t \\ 1 \end{pmatrix} + F^2\,\mathbf{1}_9 ,
+\]
+where $\mathbf{1}_9$ is the all-ones vector and $M$ is the
+\emph{shape matrix}
+\[
+M =
+\begin{pmatrix}
+0 & 0 \\
+1/2 & 0 \\
+0 & 1/2 \\
+1 & 0 \\
+1/2 & 1/2 \\
+0 & 1 \\
+1/2 & -1/2 \\
+1 & -1/2 \\
+1 & -1
+\end{pmatrix} ,
+\]
+with rows in the same order as $V$. $M$'s first column is each cell's
+coefficient of $t$ from the normalised table of
+Section~\ref{sec:norm} and the reflections added afterward; its
+second column is the corresponding constant term.
+
+\begin{proposition}\label{prop:matrixform}
+For the square of Section~\ref{sec:ex}, with $S = 277200$,
+$F^2 = 83521$, $t = 578/825$,
+\[
+V = S\,M \begin{pmatrix} t \\ 1 \end{pmatrix} + F^2\,\mathbf{1}_9
+\]
+reproduces
+\[
+(83521,\ 180625,\ 222121,\ 277729,\ 319225,\ 360721,\ 42025,\
+139129,\ 529)
+\]
+exactly.
+\end{proposition}
+
+\begin{remark}
+$M$ itself never changes: it is fixed by which cell each row is, not
+by which square is being examined. Everything specific to one square
+--- its actual size and position --- lives entirely in the two
+numbers $S$ and $F^2$. Two squares share the same formation (the same
+$t$) exactly when they are related by such an $(S,F^2)$ rescaling ---
+this is scale invariance (Section~\ref{sec:scaleinvariants}), restated
+as: same $M$, same $t$, different $(S,F^2)$.
+\end{remark}
+
+\subsection{The Same Matrix, for $t'$ and $t''$}
+
+Sections~\ref{sec:norm2} and~\ref{sec:norm3} give the identical
+construction relative to their own origin and scale. With
+$S' = B^2 - D^2$ and origin $D^2$,
+\[
+V = S'\,M' \begin{pmatrix} t' \\ 1 \end{pmatrix} + D^2\,\mathbf{1}_9 ,
+\qquad
+M' =
+\begin{pmatrix}
+1 & 0 \\ 1/2 & 0 \\ 1/2 & 1/2 \\ 0 & 0 \\ 0 & 1/2 \\ 0 & 1 \\
+1 & -1/2 \\ 1/2 & -1/2 \\ 1 & -1
+\end{pmatrix} ,
+\]
+and with $S'' = D^2 - F^2$ and origin $F^2$,
+\[
+V = S''\,M'' \begin{pmatrix} t'' \\ 1 \end{pmatrix} + F^2\,\mathbf{1}_9 ,
+\qquad
+M'' =
+\begin{pmatrix}
+0 & 0 \\ 0 & 1/2 \\ 1/2 & 0 \\ 0 & 1 \\ 1/2 & 1/2 \\ 1 & 0 \\
+-1/2 & 1/2 \\ -1/2 & 1 \\ -1 & 1
+\end{pmatrix} ,
+\]
+rows in the same order as $V$ throughout. Both reproduce the square of
+Section~\ref{sec:ex} exactly, the same as $M$ did.
+
+$M$, $M'$, $M''$ are not related to each other by any simple algebraic
+operation, because $t$, $t'$, $t''$ are not related \emph{affinely}:
+Section~\ref{sec:norm3} showed $t'' = 1/t$ and $t' = t/(t-1)$, both
+M\"obius transformations. In homogeneous coordinates these are
+themselves $2\times2$ matrices, but acting projectively --- rescale
+$(t,1)^\top$ by the matrix, then read off the ratio of the two
+entries --- rather than by the plain linear action $M$ uses on
+$(t,1)^\top$:
+\[
+N'' = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}
+\ \ (t'' = 1/t), \qquad
+N' = \begin{pmatrix} 1 & 0 \\ 1 & -1 \end{pmatrix}
+\ \ (t' = t/(t-1)) .
+\]
+So the construction has two distinct layers: the affine matrices
+$M, M', M''$ turn a normalised coordinate into real cell values; the
+projective matrices $N', N''$ move between the coordinates $t, t',
+t''$ themselves.
+
+\subsection{The Scales as Differences of Roots}
+
+The three scales are themselves differences of two squares, using
+only the roots $D, F, H, B$. Since $D^2 + F^2 = 2E^2 = B^2 + H^2$
+(both opposite pairs), that single equation rearranges two ways:
+\[
+S = B^2 - F^2 = D^2 - H^2 = (D-H)(D+H) , \qquad
+S' = B^2 - D^2 = F^2 - H^2 = (F-H)(F+H) ,
+\]
+and $S'' = D^2 - F^2 = (D-F)(D+F)$ directly, with no substitution
+needed. For the square of Section~\ref{sec:ex},
+\[
+S = 504 \times 550 = 277200, \qquad
+S' = 266 \times 312 = 82992, \qquad
+S'' = 238 \times 816 = 194208 ,
+\]
+matching exactly. Since this used only the two opposite-pair
+identities, it holds for any valid instance, not just this example.
+Combined with $S = S' + S'' = (B^2-D^2) + (D^2-F^2)$ (immediate from
+the definitions), it gives an identity purely among the four roots:
+\[
+(D-H)(D+H) = (F-H)(F+H) + (D-F)(D+F) .
+\]
+
+\subsection{A Matrix in the Roots Alone}
+
+Substituting $S = D^2 - H^2$ and $S\,t = D^2 - F^2$ (both from the
+factorisations just derived) into $V = S\,M(t,1)^\top + F^2\mathbf{1}_9$
+eliminates $S$ and $t$ entirely, leaving $V$ as a fixed linear
+combination of just three cells:
+\[
+V = R \begin{pmatrix} D^2 \\ F^2 \\ H^2 \end{pmatrix} , \qquad
+R =
+\begin{pmatrix}
+0 & 1 & 0 \\
+1/2 & 1/2 & 0 \\
+1/2 & 1 & -1/2 \\
+1 & 0 & 0 \\
+1 & 1/2 & -1/2 \\
+1 & 1 & -1 \\
+0 & 1/2 & 1/2 \\
+1/2 & 0 & 1/2 \\
+0 & 0 & 1
+\end{pmatrix} ,
+\]
+rows in the same order as $V$. No scale, translation, or normalised
+coordinate remains --- the whole square is a fixed linear image of
+$(D^2, F^2, H^2)$ alone, verified exactly against the square of
+Section~\ref{sec:ex}.
+
+Reading off two rows gives identities not yet observed:
+\[
+A^2 = \frac{F^2+H^2}{2} , \qquad C^2 = \frac{D^2+H^2}{2} ,
+\]
+so $A^2$ is the midpoint of $F^2, H^2$ and $C^2$ is the midpoint of
+$D^2, H^2$, alongside the midpoints already known. The $B^2$ row,
+$B^2 = D^2+F^2-H^2$, is $S = D^2-H^2 = B^2-F^2$ rearranged.
+
+\subsection{Three More Bases: $EXI$, $ACH$, $BDF$}
+
+$\{D^2, F^2, H^2\}$ is only one of several triples of cells that
+determine the other six. Writing $V$ against each of the other
+natural triples gives three more matrices, all verified exactly
+against the square of Section~\ref{sec:ex}, rows again in the order
+$F^2, E^2, X, D^2, I^2, B^2, A^2, C^2, H^2$:
+\[
+V = R_{EXI} \begin{pmatrix} E^2 \\ X \\ I^2 \end{pmatrix} ,
+\qquad
+R_{EXI} =
+\begin{pmatrix}
+1 & 1 & -1 \\ 1 & 0 & 0 \\ 0 & 1 & 0 \\ 1 & -1 & 1 \\ 0 & 0 & 1 \\
+-1 & 1 & 1 \\ 2 & 0 & -1 \\ 2 & -1 & 0 \\ 3 & -1 & -1
+\end{pmatrix} ,
+\]
+recovering the pre-existing anchor forms of Section~\ref{sec:anchors}
+in matrix form;
+\[
+V = R_{ACH} \begin{pmatrix} A^2 \\ C^2 \\ H^2 \end{pmatrix} ,
+\qquad
+R_{ACH} =
+\begin{pmatrix}
+2 & 0 & -1 \\ 1 & 1 & -1 \\ 2 & 1 & -2 \\ 0 & 2 & -1 \\ 1 & 2 & -2 \\
+2 & 2 & -3 \\ 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1
+\end{pmatrix} ,
+\]
+built from $E^2 = A^2+C^2-H^2$, itself new: solving $H^2=2E^2-B^2$
+and $B^2=3E^2-A^2-C^2$ (the two routes to $B^2$) forces
+$E^2 = A^2+C^2-H^2$ directly; and
+\[
+V = R_{BDF} \begin{pmatrix} B^2 \\ D^2 \\ F^2 \end{pmatrix} ,
+\qquad
+R_{BDF} =
+\begin{pmatrix}
+0 & 0 & 1 \\ 0 & 1/2 & 1/2 \\ 1/2 & 0 & 1/2 \\ 0 & 1 & 0 \\
+1/2 & 1/2 & 0 \\ 1 & 0 & 0 \\ -1/2 & 1/2 & 1 \\ -1/2 & 1 & 1/2 \\
+-1 & 1 & 1
+\end{pmatrix} ,
+\]
+the Medial Configuration of Section~\ref{sec:anchors} in matrix form.
+
+\begin{remark}[Comparing the bases by determinant]
+Each generating triple's own three rows form, trivially, the
+$3\times3$ identity, determinant $1$. Taking every other triple's
+rows within each matrix gives the full table
+\[
+\begin{array}{c|cccc}
+ & DFH\text{ rows} & EXI\text{ rows} & ACH\text{ rows} & BDF\text{ rows} \\
+\hline
+R_{DFH} & 1 & -1/4 & -1/4 & -1 \\
+R_{EXI} & -4 & 1 & 1 & 4 \\
+R_{ACH} & -4 & 1 & 1 & 4 \\
+R_{BDF} & -1 & 1/4 & 1/4 & 1
+\end{array}
+\]
+Two features hold in general, not just for this example. First, each
+entry is the reciprocal of its transpose partner ---
+$\det(EXI\text{ rows of }R_{DFH}) \cdot \det(DFH\text{ rows of }R_{EXI})
+= (-1/4)(-4) = 1$, and likewise for every other pair --- since
+changing basis from one triple to another and back is the identity,
+so the two determinants multiply to $1$. Second, $\{E^2,X,I^2\}$ and
+$\{A^2,C^2,H^2\}$ sit at exactly the same determinant-distance from
+both $\{D^2,F^2,H^2\}$ and $\{B^2,D^2,F^2\}$ ($-1/4$ and $4$
+respectively, matching in every row), while $\{D^2,F^2,H^2\}$ and
+$\{B^2,D^2,F^2\}$ are close to unimodular with each other ($-1$ both
+ways). The two medial-triangle-adjacent triples ($DFH$, $BDF$) form
+one family; the two reflection-based triples ($EXI$, $ACH$) form
+another, and the two families are related by the fixed factor $4$.
+\end{remark}
+
+\subsection{Bases from the Grid's Own Rows and Columns}
+
+The grid's rows and columns are themselves candidate generating
+triples, since each sums to $3E^2$. Column 1, $\{A^2, D^2, X\}$,
+gives
+\[
+V = R_{ADX} \begin{pmatrix} A^2 \\ D^2 \\ X \end{pmatrix} , \qquad
+R_{ADX} = \frac13
+\begin{pmatrix}
+2&-1&2\\ 1&1&1\\ 0&0&3\\ 0&3&0\\ -1&2&2\\ -2&1&4\\
+3&0&0\\ 2&2&-1\\ 4&1&-2
+\end{pmatrix} ,
+\]
+with $E^2 = (A^2+D^2+X)/3$ the new row --- the first basis built from
+a \emph{sum} rather than a difference, which is why it needs thirds
+instead of the halves and integers the earlier matrices used. Column
+3, $\{C^2,F^2,I^2\}$, row 1, $\{A^2,B^2,C^2\}$, and row 3,
+$\{X,H^2,I^2\}$, all give analogous valid matrices $R_{CFI}$,
+$R_{ABC}$, $R_{XHI}$ by the same construction, each verified exactly
+against the square of Section~\ref{sec:ex}:
+\[
+R_{CFI} = \frac13
+\begin{pmatrix}
+0&3&0\\ 1&1&1\\ -1&2&2\\ 2&-1&2\\ 0&0&3\\ -2&1&4\\
+2&2&-1\\ 3&0&0\\ 4&1&-2
+\end{pmatrix} , \quad
+R_{ABC} = \frac13
+\begin{pmatrix}
+4&1&-2\\ 1&1&1\\ 2&2&-1\\ -2&1&4\\ -1&2&2\\ 0&3&0\\
+3&0&0\\ 0&0&3\\ 2&-1&2
+\end{pmatrix} ,
+\]
+\[
+R_{XHI} = \frac13
+\begin{pmatrix}
+4&1&-2\\ 1&1&1\\ 3&0&0\\ -2&1&4\\ 0&0&3\\ 2&-1&2\\
+2&2&-1\\ -1&2&2\\ 0&3&0
+\end{pmatrix} .
+\]
+
+\begin{remark}[Exactly the four lines through the centre fail]
+The grid has eight lines: four pass through the centre cell $E^2$
+(both diagonals, row 2, column 2) and four do not (rows 1, 3 and
+columns 1, 3). Every line through the centre fails as a basis, for
+the same reason $\{A^2,I^2\}$ failed in Section~\ref{sec:norm}: each
+pairs an opposite-pair partner with the centre it already sums to,
+\[
+A^2+I^2-2E^2 = 0, \qquad C^2+X-2E^2 = 0,
+\]
+\[
+D^2+F^2-2E^2 = 0, \qquad B^2+H^2-2E^2 = 0,
+\]
+all identically, confining each triple to a two-dimensional subspace
+rather than the three it would need. Every line avoiding the centre
+succeeds, with the four matrices given above. The split is exact and
+exhaustive: of the eight lines, the four through the centre fail and
+the four away from it succeed, with no exceptions on either side.
+\end{remark}
+
+\begin{remark}[It is the pairing, not the centre, that fails]
+$E^2$ itself is not the problem: it fails only when paired with a
+\emph{matched} opposite pair, since that specific combination is what
+forces the dependency. $E^2$ alongside any two cells that are not
+opposite partners of each other works exactly as well as any other
+triple. For instance,
+\[
+V = R_{EIC} \begin{pmatrix} E^2 \\ I^2 \\ C^2 \end{pmatrix} , \qquad
+R_{EIC} =
+\begin{pmatrix}
+3&-1&-1\\ 1&0&0\\ 2&0&-1\\ -1&1&1\\ 0&1&0\\ 1&1&-1\\
+2&-1&0\\ 0&0&1\\ 1&-1&1
+\end{pmatrix} ,
+\]
+\[
+V = R_{ECB} \begin{pmatrix} E^2 \\ C^2 \\ B^2 \end{pmatrix} , \qquad
+R_{ECB} =
+\begin{pmatrix}
+4&-2&-1\\ 1&0&0\\ 2&-1&0\\ -2&2&1\\ -1&1&1\\ 0&0&1\\
+3&-1&-1\\ 0&1&0\\ 2&0&-1
+\end{pmatrix} ,
+\]
+both rows in the usual order, both verified exactly. Since there are
+exactly four opposite pairs, there are exactly four ways to build
+"$E^2$ plus a matched pair," which is precisely the four failing
+lines already found --- not a general restriction on $E^2$, but the
+combinatorial count of one specific bad combination.
+\end{remark}
+
+\begin{remark}[What this means for a search: the determinant, not the sum]
+A search for a magic square typically fixes some triple of cells as
+free parameters and derives the rest from it, so it matters which
+triples are safe to use this way. It is tempting to think the test is
+whether the triple sums to $3E^2$, since all eight lines do --- but
+$\{E^2,I^2,C^2\}$ works perfectly as a basis without summing to
+anything special, and row 2's sum to $3E^2$ turns out to add no
+information at all, being already implied by $D^2+F^2=2E^2$ alone.
+The real, general test is whether the triple's $3\times3$ coefficient
+matrix, expressed against any known basis such as $(E^2,I^2,X)$, has
+nonzero determinant. A zero determinant --- exactly the four lines
+through the centre --- means the triple carries only two genuine
+degrees of freedom dressed up as three: a search using it either
+explores an artificially constrained subspace or silently
+double-counts. A nonzero determinant, as for every other triple
+checked in this section, means the triple safely parametrises the
+full three-dimensional family, and $3E^2$ never has to enter the
+check at all.
+\end{remark}
+
+\begin{remark}[$3E^2$ and $2E^2$ are scaffolding, not a filter]
+Within the space of already-valid magic squares, every line summing
+to $3E^2$ is automatic, not informative: every matrix $R$ built in
+this section is constructed to satisfy all eight line-sums at once,
+so no configuration reachable through a valid $R$ could ever fail to
+sum to $3E^2$ somewhere, whether or not its cells happen to be
+perfect squares. Checking $3E^2$ can therefore never distinguish a
+nine-square instance from any other --- every candidate the
+construction produces already passes it. The condition would carry
+real information only in a \emph{relaxed} setting, one not yet
+restricted to valid magic squares, where imposing it would cut a
+larger space down to this one; once inside the valid-square subspace,
+as every $R$ matrix here already is, it does no further work.
+
+The same phenomenon occurs one level down, at the level of a single
+opposite pair. The partner function of Section~\ref{sec:partner},
+$g(x) = \sqrt{2E^2 - x}$, is built by solving $u^2+v^2=2E^2$ for $v$,
+so $x + g(x)^2 = 2E^2$ holds identically, for every input $x$, not
+only for the real cells of some square. $g$ cannot be made to violate
+the pair identity any more than an $R$ matrix can be made to violate
+a line identity: both are guarantees of consistency, not tests of it.
+
+The information relevant to the nine-square search lives elsewhere
+entirely: in the rank of the chosen parametrisation (this section),
+and in the purely arithmetic question of Section~\ref{sec:scaleirrelevant}
+--- whether the resulting cells are perfect squares --- which has
+nothing to do with the linear structure at all.
+\end{remark}
 
 \section{The Determinant}
 
@@ -2667,6 +3642,32 @@ Substituting $X=3E^2-A^2-D^2$ gives
 $C^2 = 2E^2-(3E^2-A^2-D^2) = A^2+D^2-E^2$.
 \end{proof}
 
+The other closing cell, $B^2$, closes in the same way, from the top
+row rather than the first column.
+
+\begin{proposition}\label{prop:closedformB}
+For any positive integers $A,D$, with $C^2=A^2+D^2-E^2$ as in
+Proposition~\ref{prop:closedform},
+\[
+B^2 = 4E^2 - 2A^2 - D^2
+\]
+identically, the value forced by the top-row condition
+$A^2+B^2+C^2=3E^2$.
+\end{proposition}
+
+\begin{proof}
+$B^2 = 3E^2-A^2-C^2 = 3E^2-A^2-(A^2+D^2-E^2) = 4E^2-2A^2-D^2$.
+\end{proof}
+
+At $E=425$, $A=205$, $D=527$: $B^2=4(425)^2-2(205)^2-527^2=360721$,
+matching the square of Section~\ref{sec:ex} exactly, with the same
+no-search, single-\texttt{isqrt} character as Proposition~\ref{prop:closedform}.
+Between them, Propositions~\ref{prop:closedform}
+and~\ref{prop:closedformB} give both closing cells of
+Section~\ref{sec:ex} --- $X$ and $B^2$ --- as explicit closed-form
+functions of the seed $(A,D)$ and the centre $E$ alone, with no
+intermediate cell and no search over either.
+
 Proposition~\ref{prop:closedform} is the closed form of the check that
 the table $\{r(x)\}$ was performing implicitly: testing whether the
 column's forced $X$ equals $r(x)=2E^2-x^2$ for some $x$ is the same
@@ -2744,6 +3745,131 @@ difficulty, in miniature, that Section~\ref{sec:cone} identifies as the
 obstruction to a nine-square solution overall: not a wall of
 divisibility, but a drop from a curve with infinitely many
 easily-found points to one with only finitely many, possibly none.
+\end{remark}
+
+\section{A Shift by Twice the Gap, and a Closed Form for $S$}\label{sec:reflectionshift}
+
+For any real $x$, call $E^2-x^2$ the gap between $x^2$ and the centre
+value $E^2$. Adding twice that gap to $x^2$ does not move to some
+arbitrary new point: it lands exactly on the reflection of $x^2$
+through $E^2$.
+
+\begin{proposition}\label{prop:reflectionshift}
+For any real $x$,
+\[
+x^2 + 2\bigl(E^2-x^2\bigr) = 2E^2-x^2 ,
+\]
+the point obtained by reflecting $x^2$ through $E^2$.
+\end{proposition}
+
+\begin{proof}
+Immediate: $x^2+2(E^2-x^2)=2E^2-x^2$.
+\end{proof}
+
+This is not a new phenomenon so much as a restatement, as an
+operation, of a fact already used throughout: every opposite-pair
+identity $A^2+I^2=D^2+F^2=B^2+H^2=C^2+X=2E^2$
+(Corollary~\ref{cor:pairs}) says exactly that one member of the pair
+is the reflection of the other through $E^2$ --- $I^2=2E^2-A^2$ is
+$A^2$ shifted by twice its gap to the centre, and likewise for the
+other three pairs. ``Shift by twice the distance to $E^2$'' and
+``reflect through $E^2$'' are the same instruction.
+
+\begin{remark}[The gap at $x=A$ is the scale $S$]
+Specialising Proposition~\ref{prop:reflectionshift} to $x=A$ gives, by
+definition, the quantity $2(E^2-A^2)$. This is not merely a length
+associated with $A$: it is exactly the scale $S=B^2-F^2$ of
+Section~\ref{sec:independentscales}.
+\end{remark}
+
+\begin{proposition}\label{prop:Sclosedform}
+For any positive integers $A,D$, with $B^2$ as in
+Proposition~\ref{prop:closedformB},
+\[
+S = B^2-F^2 = 2E^2-2A^2
+\]
+identically --- independent of $D$.
+\end{proposition}
+
+\begin{proof}
+By Corollary~\ref{cor:pairs}, $F^2=2E^2-D^2$. By
+Proposition~\ref{prop:closedformB}, $B^2=4E^2-2A^2-D^2$. Subtracting,
+\[
+S = B^2-F^2 = \bigl(4E^2-2A^2-D^2\bigr)-\bigl(2E^2-D^2\bigr) = 2E^2-2A^2 .
+\]
+\end{proof}
+
+At $E=425$, $A=205$: $S=2(425)^2-2(205)^2=277200$, matching
+Section~\ref{sec:independentscales} exactly.
+
+\begin{corollary}\label{cor:Sstep}
+\[
+S = I^2-A^2
+\]
+identically: $S$ is exactly the step from $A^2$ to its own reflection
+$I^2$, not merely an unrelated quantity that happens to equal twice a
+gap.
+\end{corollary}
+
+\begin{proof}
+By Corollary~\ref{cor:pairs}, $I^2=2E^2-A^2$, so $I^2-A^2=2E^2-2A^2$,
+which is $S$ by Proposition~\ref{prop:Sclosedform}.
+\end{proof}
+
+\begin{remark}[Distance doubles at the midpoint]
+Since $E^2=(A^2+I^2)/2$ is the midpoint of $A^2$ and $I^2$
+(Corollary~\ref{cor:pairs}), the distance between the pair is
+automatically twice the distance from either member to the centre:
+\[
+I^2-A^2 = 2(E^2-A^2) = 2(I^2-E^2) .
+\]
+Corollary~\ref{cor:Sstep} identifies this doubled gap as exactly $S$:
+the scale is not an independent quantity laid on top of the $(E,A)$
+picture, it \emph{is} the $(E,A)$ gap, doubled.
+\end{remark}
+
+\begin{remark}[The same doubling at every root, and why only $A$ gives $S$]
+Nothing in Proposition~\ref{prop:reflectionshift} is special to $A$:
+for \emph{any} root $x\in\{A,C,D,F,H,I\}$, the quantity
+\[
+S_x := 2(E^2-x^2)
+\]
+is computable from $x$ and $E$ alone, with no reference to $B$ or $F$
+at all. At the square of Section~\ref{sec:ex},
+\[
+\begin{array}{c|c|c}
+\text{root } x & S_x = 2(E^2-x^2) & \text{in } \delta_{\text{real}},
+\sigma_{\text{real}} \\ \hline
+A = 205 & 277200 & =S \\
+C = 373 & 82992 & 2\delta_{\text{real}} \\
+D = 527 & -194208 & -2(\delta_{\text{real}}+\sigma_{\text{real}}) \\
+F = 289 & 194208 & 2(\delta_{\text{real}}+\sigma_{\text{real}}) \\
+H = 23 & 360192 & 6\delta_{\text{real}}+2\sigma_{\text{real}} \\
+I = 565 & -277200 & =-S
+\end{array}
+\]
+Only $A$ (and its mirror $I$, up to sign) reproduces the scale $S$
+itself; the other four values are genuine, but different, quantities
+--- already implicit in the walk-from-$E^2$ picture of
+Section~\ref{sec:norm} --- not alternative routes to $S$. This is not
+an accident of labelling: $S=B^2-F^2$ is specifically the gap of the
+pair $(F,B)$, and $S_x$ recovers it only when $x$'s own opposite-pair
+partner is the \emph{other} member of that same pair, which happens
+exactly at $x=A$ (partner $I$, with $A^2+I^2=2E^2$ giving
+$S_A=I^2-A^2=S$ by Corollary~\ref{cor:Sstep}) and, by the same sign
+flip, at $x=I$. $C$'s partner is $X$, and $F,D$'s own mutual gap is
+$tS$ rather than $S$; there is no reason for $S_C$ or $S_D$ to equal
+$S$, and they do not.
+\end{remark}
+
+\begin{remark}[Sharpening the independent-scales result]
+Proposition~\ref{prop:independentscales} showed only, by example, that
+$S/E^2$ varies across seeds. Proposition~\ref{prop:Sclosedform} gives
+the exact dependence: $S$ is a function of $E$ and $A$ alone, with $D$
+playing no role, so the three seeds of that proposition's proof can be
+read off directly from $A$ --- $2(425^2-205^2)=277200$,
+$2(425^2-7^2)=361152$, $2(425^2-329^2)=144768$ --- without computing
+$B^2$ or $F^2$ from $D$ at all.
 \end{remark}
 
 \section{The Unsimplified Form, and a Name for the Outcome}\label{sec:unsimplified}
