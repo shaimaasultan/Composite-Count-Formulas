@@ -4127,6 +4127,50 @@ exact maximum spread rather than by combining two separate
 inequalities, and so is tight: both sides coincide exactly at the
 forbidden point $t=2/3$, $S=2E^2/(2-t)$.
 
+\begin{remark}[The three ceilings are one bound]
+The spread itself carries the same ceiling, restated from
+Proposition~\ref{prop:maxspread}:
+\[
+0 < \frac{S}{E^2} < \frac{2}{2-t} .
+\]
+This is not a fourth, independent fact: since
+$S=4\delta_{\text{real}}+2\sigma_{\text{real}}$ identically
+(Section~\ref{sec:norm}), the ceiling on $S/E^2$ is exactly the same
+combination of the two ceilings of
+Corollary~\ref{cor:deltasigmaceiling},
+\[
+4\cdot\frac{1-t}{2-t} + 2\cdot\frac{2t-1}{2-t}
+= \frac{4(1-t)+2(2t-1)}{2-t} = \frac{2}{2-t} ,
+\]
+verified as an identity in $t$, not merely at $E=425$. The ceilings on
+$\delta_{\text{real}}/E^2$, $\sigma_{\text{real}}/E^2$, and $S/E^2$
+are therefore one bound seen three ways, with the $4\delta+2\sigma$
+decomposition of $S$ carrying through intact from the real quantities
+to their limits.
+\end{remark}
+
+\begin{corollary}[The ceiling as a bound on the seed]\label{cor:seedceiling}
+Via the duple-gap identity $S=2(E^2-A^2)$ of
+Proposition~\ref{prop:Sclosedform},
+\[
+\frac{1-t}{2-t} < \frac{A^2}{E^2} < 1 .
+\]
+\end{corollary}
+
+\begin{proof}
+Substituting $S=2(E^2-A^2)$ into $0<S/E^2<2/(2-t)$ gives
+$0 < 2(1-A^2/E^2) < 2/(2-t)$. The left inequality is $A^2/E^2<1$
+(the normalisation $A<E$); the right rearranges to
+$A^2/E^2 > 1-1/(2-t) = (1-t)/(2-t)$.
+\end{proof}
+
+At $E=425$: $A^2/E^2 = 0.23266$, against the lower ceiling
+$(1-t)/(2-t) = 0.23041$ and the upper bound $1$. The seed's own
+admissibility (Section~\ref{sec:thresholdt}) and the maximum spread of
+this section are therefore the same statement, viewed once through
+$\delta_{\text{real}}$ and once through the duple gap $S=2(E^2-A^2)$:
+both pin $A^2/E^2$ against the identical ceiling $(1-t)/(2-t)$.
+
 The two real gaps $\delta_{\text{real}}$ and $\sigma_{\text{real}}$
 need not be equal, and the difference between them is not incidental.
 
